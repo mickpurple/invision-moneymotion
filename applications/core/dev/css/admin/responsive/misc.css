@@ -1,0 +1,20 @@
+/* BOTH (and Small Desktop/Laptop screens) */
+@media screen and (max-width: 1250px) {
+	.cWithInfoPanel {
+		display: block;
+	}
+
+	.cWithInfoPanel_main {
+		margin: 0;
+	}
+
+	.cWithInfoPanel_info {
+		margin: 20px 0 0 0;
+		min-width: 0;
+		max-width: 100%;
+	}
+	
+	.cWithInfoPanel .ipsType_sectionTitle {
+	    margin: -7px -7px 7px -7px;
+	}
+}

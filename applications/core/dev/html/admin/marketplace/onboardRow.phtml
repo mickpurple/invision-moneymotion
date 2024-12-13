@@ -1,0 +1,74 @@
+<ips:template parameters="$id, $marketplaceId, $category, $title, $version, $author, $website, $type" />
+
+<tr data-controller="core.admin.marketplace.onboardRow" data-id="{$id}" data-marketplaceId="{$marketplaceId}" data-title="{$title}" data-category="{$category}">
+	<td style="width: 40%">
+		<div class="ipsPad_all:half">
+			<h4 class="ipsContained ipsType_break ipsType_reset">
+				{$title}
+				{{if $version}}
+					<span class='ipsType_small ipsType_unbold ipsType_light'>{$version}</span>
+				{{endif}}
+			</h4>
+			{{if $author or $website}}
+				<div class="ipsType_light ipsContained ipsType_break">
+					{{if $author}}
+						{lang="byline_nodate" sprintf="$author"}
+					{{endif}}
+					{{if $website}}
+						{template="basicUrl" group="global" app="core" location="global" params="$website, TRUE, $website, TRUE, TRUE, TRUE"}
+					{{endif}}
+				</div>
+			{{endif}}
+		</div>
+	</td>
+	<td style="width: 40%">
+		<div data-role="onboardLoading">
+			<i class='icon-spinner2 ipsLoading_tinyIcon'></i> &nbsp;{lang="loading"}
+		</div>
+		<div data-role="matchedFile" class="ipsAreaBackground_light" style="max-width: 250px">
+			
+		</div>
+		<div data-role="noMatchedFile" class="ipsHide">
+			{lang="marketplace_onboard_no_results"}
+		</div>
+	</td>
+	<td style="width: 20%">
+		<input type="hidden" name="match_{$type}[{$id}]" value="{$marketplaceId}" data-role="id">
+		<input type="hidden" name="confirmed[{$id}]" value="{{if $marketplaceId}}1{{else}}0{{endif}}" data-role="confirm">
+		<div data-role="confirm_match" class="ipsHide ipsSpacer_top">
+			<button class="ipsButton ipsButton_positive ipsButton_verySmall" data-action="confirmMatch"><i class="fa fa-check"></i> {lang="marketplace_onboard_match"}</button>
+			&nbsp;
+			<button class="ipsButton ipsButton_negative ipsButton_verySmall" data-ipsMenu id="elOnboardMatched{$id}"><i class="fa fa-times"></i> {lang="marketplace_onboard_no_match"} <i class="fa fa-caret-down"></i></button>
+			<ul id="elOnboardMatched{$id}_menu" class="ipsMenu ipsMenu_narrow ipsHide">
+				 <li class="ipsCursor_pointer ipsMenu_item" data-ipsMenuValue="searchMarketplace">
+				 	<a href="#">{lang="marketplace_onboard_search"}</a>
+				 </li>
+				 <li class="ipsCursor_pointer ipsMenu_item" data-ipsMenuValue="confirmCustom">
+				 	<a href="#">{lang="marketplace_onboard_custom"}</a>
+				 </li>
+			</ul>
+		</div>
+		<div data-role="confirm_nomatch" class="ipsHide">
+			<button class="ipsButton ipsButton_primary ipsButton_verySmall" data-ipsMenu id="elOnboardNotMatched{$id}">{lang="marketplace_onboard_match"} <i class="fa fa-caret-down"></i></button>
+			<ul id="elOnboardNotMatched{$id}_menu" class="ipsMenu ipsMenu_narrow ipsHide">
+				 <li class="ipsCursor_pointer ipsMenu_item" data-ipsMenuValue="searchMarketplace">
+				 	<a href="#">{lang="marketplace_onboard_search"}</a>
+				 </li>
+				 <li class="ipsCursor_pointer ipsMenu_item" data-ipsMenuValue="confirmCustom">
+				 	<a href="#">{lang="marketplace_onboard_custom"}</a>
+				 </li>
+			</ul>
+		</div>
+		<div data-role="confirmed" class="{{if !$marketplaceId}}ipsHide{{endif}}">
+			<span class="ipsType_success"><i class="fa fa-check"></i> {lang="marketplace_onboard_confirmed"}</span> &nbsp; <a href="#" class="ipsType_small ipsType_light" data-ipsMenu id="elOnboardChange{$id}">{lang="change"} <i class="fa fa-caret-down"></i></a>
+			<ul id="elOnboardChange{$id}_menu" class="ipsMenu ipsMenu_narrow ipsHide">
+				 <li class="ipsCursor_pointer ipsMenu_item" data-ipsMenuValue="searchMarketplace">
+				 	<a href="#">{lang="marketplace_onboard_search"}</a>
+				 </li>
+				 <li class="ipsCursor_pointer ipsMenu_item" data-ipsMenuValue="confirmCustom">
+				 	<a href="#">{lang="marketplace_onboard_custom"}</a>
+				 </li>
+			</ul>
+		</div>
+	</td>
+</tr>

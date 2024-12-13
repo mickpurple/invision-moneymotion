@@ -1,0 +1,24 @@
+<ips:template parameters="$file, $type, $marketplaceTcs, $authorTcs=''" />
+
+<div id="downloadTerms" data-title="{lang="marketplace_terms_and_conditions"}">
+<div class="ipsSpacer_bottom">
+	<div class="ipsPad">
+		{template="richText" group="global" app="core" location="global" params="$marketplaceTcs, array('ipsType_medium')"}
+	</div>
+	{{if !empty( $authorTcs )}}
+	<h3 class="ipsDialog_title">
+		{lang="marketplace_author_terms" sprintf="$file['author']['name']"}
+	</h3>
+	<hr class="ipsHr">
+	<div class="ipsPadding">
+		{template="richText" group="global" app="core" location="global" params="$authorTcs, array('ipsType_medium')"}
+	</div>
+	{{endif}}
+	<div class='ipsAreaBackground ipsType_right ipsPad'>
+		<ul class='ipsList_inline'>
+			<li><a href='{url="app=core&module=marketplace&controller=marketplace&do=viewFile&id={$file['id']}"}' class='ipsButton ipsButton_link ipsButton_medium' data-action='dialogClose'>{lang="cancel"}</a></li>
+			<li><a href='{{if $type=='purchase'}}{url="app=core&module=marketplace&controller=marketplace&do=buyFile&id={$file['id']}&confirm=1" csrf="true"}{{else}}{url="app=core&module=marketplace&controller=marketplace&do=install&id={$file['id']}&confirm=1" csrf="true"}{{endif}}' class='ipsButton ipsButton_primary ipsButton_medium' data-action='acceptDisclaimer' id="test">{lang="marketplace_agree_and_proceed"}</a></li>
+		</ul>
+	</div>
+</div>
+</div>

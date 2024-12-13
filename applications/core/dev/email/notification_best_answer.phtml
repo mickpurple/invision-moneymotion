@@ -1,0 +1,11 @@
+<ips:template parameters="$comment, $email" />
+
+{{$item = ( $comment instanceof \IPS\Content\Item ) ? $comment : $comment->item();}}
+
+{$email->language->addToStack("email_best_answer", FALSE, array( 'sprintf' => array( $comment->indefiniteArticle( $email->language ) ) ) )} <a href='{$item->url()}'>{$item->mapped('title')}</a>
+
+<br />
+<br />
+{$comment->emailContent( $email, 'html' )|raw}
+<br /><br />
+<em style='color: #8c8c8c'>&mdash; {setting="board_name"}</em>

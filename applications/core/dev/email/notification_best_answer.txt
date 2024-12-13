@@ -1,0 +1,7 @@
+<ips:template parameters="$comment, $email" />
+
+{{$item = ( $comment instanceof \IPS\Content\Item ) ? $comment : $comment->item();}}{$email->language->addToStack("email_best_answer", FALSE, array( 'sprintf' => array( $comment->indefiniteArticle( $email->language ) ) ) )} {$item->mapped('title')}
+
+{$comment->emailContent( $email, 'plaintext' )|raw}
+
+-- {setting="board_name"}

@@ -1,0 +1,5 @@
+<ips:template parameters="$plugin" />
+
+{{if $plugin->author != '' OR $plugin->website != '' }}
+{{if $plugin->author != '' }} {lang="byline_nodate" sprintf="$plugin->author"}{{endif}}{{if $plugin->website}} {template="basicUrl" group="global" app="core" location="global" params="$plugin->website(), TRUE, $plugin->website(), TRUE, TRUE, TRUE"}{{endif}}
+{{endif}}

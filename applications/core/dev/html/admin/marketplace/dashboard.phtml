@@ -1,0 +1,33 @@
+<ips:template parameters="$dataSet" />
+
+<div data-role="hideWhenSearching">
+	<div class='ipsColumns ipsColumns_collapsePhone' data-ipsLazyLoad>
+		<div class='ipsColumn ipsColumn_fluid'>
+	        <h2>{lang="marketplace_newest_files"}</h2>
+	        {template="fileCardList" group="marketplace" params="$dataSet['newest'], 'full', TRUE"}
+	
+			<h2 class="ipsMargin_top:double">{lang="marketplace_popular_applications"}</h2>
+			{template="fileCardList" group="marketplace" params="$dataSet['popularApps'], 'full', TRUE"}
+	
+			<h2 class="ipsMargin_top:double">{lang="marketplace_popular_themes"}</h2>
+			{template="fileCardList" group="marketplace" params="$dataSet['popularThemes'], 'full', TRUE"}
+		</div>
+
+        {{if \count( $dataSet['updated'] ) AND \count( $dataSet['popularLanguages'] )}}
+		<div class='ipsColumn ipsColumn_wide'>
+			<h2>{lang="marketplace_recently_updated"}</h2>
+	        {{foreach $dataSet['updated'] as $file}}
+	            {template="fileCardMini" group="marketplace" params="$file"}
+	        {{endforeach}}
+	        <h2>{lang="marketplace_popular_languages"}</h2>
+	        {{foreach $dataSet['popularLanguages'] as $file}}
+	        {template="fileCardMini" group="marketplace" params="$file"}
+	        {{endforeach}}
+		</div>
+        {{endif}}
+	</div>
+</div>
+
+<div data-role="results"></div>
+
+</div>

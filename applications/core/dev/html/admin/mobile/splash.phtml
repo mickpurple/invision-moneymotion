@@ -1,0 +1,30 @@
+<ips:template parameters="" />
+<div class="ipsGrid ipsSpacer_bottom ipsSpacer_double">
+	<div class="ipsGrid_span3 ipsType_center">
+		<div>
+			<img src="{resource="mobileapp/screenshot.png" app="core"}" class="ipsImage" style="max-height: 350px">
+		</div>
+	</div>
+	<div class="ipsGrid_span9 ipsType_normal">
+		<h2 class="ipsType_pageTitle">{lang="mobile_app_splash"}</h2>
+		<p>{lang="mobile_app_splash_info"}</p>
+		<!--<p>
+			{{if \IPS\CIC}}
+				{lang="mobile_app_splash_pricing_cic"}
+			{{else}}
+				{lang="mobile_app_splash_pricing"}
+			{{endif}}
+		</p>-->
+		<p>{lang="mobile_app_splash_requirements"}</p>
+		<div class="ipsSpacer_top ipsSpacer_double">
+			<a href="{url="app=core&module=mobile&controller=mobile&do=submit"}" class="ipsButton ipsButton_primary" data-ipsDialog data-ipsDialog-title="{lang="mobile_app_splash_get_started"}">{lang="mobile_app_splash_get_started"}</a>
+			&nbsp;
+			<a href="{url="mobile_app_info" ips="true"}" class="ipsButton ipsButton_alternate" target="_blank">{lang="learn_more"}</a>
+		</div>
+		<div class="ipsSpacer_top ipsSpacer_double">
+			{{$langCode = mb_substr( \IPS\Member::loggedIn()->language()->bcp47(), 0, 2 );}}
+			<a href="{expression="\IPS\APP_MULTICOMMUNITY_ITUNES_URL"}" target="_blank" rel="noopener"><img src="{resource="appstores/ios/{$langCode}.svg" app="core" location="global"}" class="ipsSpacer_both"></a>
+			<a href="{expression="\IPS\APP_MULTICOMMUNITY_PLAY_URL"}" target="_blank" rel="noopener"><img src="{resource="appstores/android/{$langCode}.png" app="core" location="global"}" style="height: 60px"></a>
+		</div>
+	</div>
+</div>

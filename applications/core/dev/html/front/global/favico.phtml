@@ -1,0 +1,10 @@
+<ips:template parameters="" />
+{{if \IPS\Settings::i()->icons_favicon}}
+	{{$file = \IPS\File::get( 'core_Icons', \IPS\Settings::i()->icons_favicon );}}
+	{{if \IPS\File::getMimeType( $file->originalFilename ) == 'image/x-icon'}}
+		<link rel='shortcut icon' href='{$file->url}' type="{expression="\IPS\File::getMimeType( $file->originalFilename )"}">
+	{{else}}
+		{{$dimensions = $file->getImageDimensions();}}
+		<link rel='shortcut icon' href='{$file->url}' type="{expression="\IPS\File::getMimeType( $file->originalFilename )"}" sizes="{$dimensions[0]}x{$dimensions[1]}">
+	{{endif}}
+{{endif}}

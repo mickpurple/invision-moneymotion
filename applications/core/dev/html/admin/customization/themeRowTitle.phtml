@@ -1,0 +1,14 @@
+<ips:template parameters="$theme" />
+{$theme->_title} <span class='ipsType_small ipsType_unbold ipsType_light'>{$theme->version}</span>
+<div class="ipsPos_right ipsTree_row_cells ipsType_unbold ipsType_normal">
+	&nbsp;
+	<span class="ipsTree_row_cell">
+		{{if $theme->marketplace_id}}
+			<a href="{url="app=core&module=marketplace&controller=marketplace&do=viewFile&id={$theme->marketplace_id}"}" class="ipsType_neutral"><i class="fa fa-shopping-basket"></i> {lang="menutab__marketplace"}</a>
+		{{elseif !$theme->customized}}
+			<span class="ipsType_success"><i class="fa fa-check"></i> {lang="invision"}</span>
+		{{else}}
+			<span class="ipsType_neutral"><i class="fa fa-info-circle"></i> {lang="theme_has_been_customized"}</span>
+		{{endif}}
+	</span>
+</div>

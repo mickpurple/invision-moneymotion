@@ -1,0 +1,32 @@
+<ips:template parameters="$results, $type='full', $carousel=FALSE" />
+
+{{if !\count( $results )}}
+    <p class="ipsType_normal ipsType_light ipsType_center">{lang="marketplace_error_no_resources"}</p>
+{{else}}
+    {{if $carousel AND $type!='mini'}}
+    <div class='ipsCarousel ipsClearfix' data-ipsCarousel data-ipsCarousel-showDots data-ipsLazyLoad>
+        <div class='ipsCarousel_inner'>
+            <ul class='cFileDashboardCarousel ipsClearfix' data-role="carouselItems">
+    {{else}}
+    <div class='ipsGrid ipsGrid_collapsePhone' data-ipsGrid data-ipsgrid-minitemsize="230" data-ipsGrid-maxitemsize="400" data-ipsGrid-equalheights="row" data-ipsLazyload>
+    {{endif}}
+    {{foreach $results as $result}}
+        {{if $type == 'mini'}}
+            {template="fileCardMini" group="marketplace" params="$result"}
+        {{else}}
+            {template="fileCard" group="marketplace" params="$result, ( $carousel AND $type=='full' )"}
+        {{endif}}
+    {{endforeach}}
+
+    {{if $carousel AND $type!='mini'}}
+            </ul>
+            <span class='ipsCarousel_shadow ipsCarousel_shadowLeft'></span>
+            <span class='ipsCarousel_shadow ipsCarousel_shadowRight'></span>
+            <a href='#' class='ipsCarousel_nav ipsHide' data-action='prev'><i class='fa fa-chevron-left'></i></a>
+            <a href='#' class='ipsCarousel_nav ipsHide' data-action='next'><i class='fa fa-chevron-right'></i></a>
+        </div>
+    </div>
+    {{else}}
+    </div>
+    {{endif}}
+{{endif}}

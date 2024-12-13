@@ -1,0 +1,14 @@
+<ips:template parameters="$advice" />
+<div class="ipsType_richText ipsType_normal">
+	<p>{lang="system_check_recommended_blurb"}</p>
+</div>
+<ul class="ipsSpacer_top">
+	{{foreach $advice as $item}}
+		<li>
+			{$item}
+		</li>
+	{{endforeach}}
+</ul>
+<div class="ipsType_richText ipsType_normal ipsSpacer_top">
+	<p>{lang="system_check_recommended_footer"}</p>
+</div>

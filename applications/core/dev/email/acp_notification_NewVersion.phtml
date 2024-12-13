@@ -1,0 +1,29 @@
+<ips:template parameters="$notification, $extra, $email" />
+<br />
+{$email->language->addToStack("new_version_email_header", FALSE, array( 'sprintf' => $notification->_details['version'] ))}
+<br />
+<br />
+{{if $notification->_details['security']}}
+	<table width='100%' cellpadding='15' cellspacing='0' border='0' style='background: #b52b38; color: #fff;'>
+		<tr>
+			<td dir='{dir}'>
+				{$email->language->addToStack('this_is_a_security_update')}
+			</td>
+		</tr>
+	</table>
+	<br />
+{{endif}}
+
+{$email->language->addToStack("new_version_email_whatsnew")}
+<br /><br />
+
+<table width='100%' cellpadding='10' cellspacing='0' border='0'>
+	<tr>
+		<td dir='{dir}' valign='top' style='background: #f9f9f9;'>
+			{$notification->_details['releasenotes']|raw}
+		</td>
+	</tr>
+</table>
+<br /><br />
+
+<a href='{url="&app=core&module=system&controller=upgrade&_new=1" base="admin"}' style="color: #fff; font-family: 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 12px; background: {setting="email_color"}; line-height: 32px; padding: 0 10px; display: inline-block; border-radius: 3px;">{$email->language->addToStack("upgrade_now")}</a>

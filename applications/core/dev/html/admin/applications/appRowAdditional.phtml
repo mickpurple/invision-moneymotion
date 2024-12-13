@@ -1,0 +1,14 @@
+<ips:template parameters="$app" />
+
+<div class="ipsPos_right ipsTree_row_cells ipsType_unbold ipsType_normal">
+	&nbsp;
+	<span class="ipsTree_row_cell">
+		{{if \in_array( $app->directory, \IPS\Application::$ipsApps )}}
+			<span class="ipsType_success"><i class="fa fa-check"></i> {lang="invision"}</span>
+		{{elseif $app->marketplace_id}}
+			<a href="{url="app=core&module=marketplace&controller=marketplace&do=viewFile&id={$app->marketplace_id}"}" class="ipsType_neutral"><i class="fa fa-shopping-basket"></i> {lang="menutab__marketplace"}</a>
+		{{else}}
+			<span class="ipsType_issue"><i class="fa fa-exclamation-triangle"></i> {lang="custom"}</span>
+		{{endif}}
+	</span>
+</div>
