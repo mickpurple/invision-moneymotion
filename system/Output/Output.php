@@ -914,12 +914,12 @@ class _Output
 		}
 
 		/* Check the request method */
-		if ( ! in_array( mb_strtolower( $_SERVER['REQUEST_METHOD'] ), [ 'get', 'head' ] ) )
+		if ( ! \in_array( mb_strtolower( $_SERVER['REQUEST_METHOD'] ), [ 'get', 'head' ] ) )
 		{
 			return false;
 		}
 
-		if ( ! in_array( $contentType, ['text/html', 'text/xml', 'application/manifest+json' ] ) )
+		if ( ! \in_array( $contentType, ['text/html', 'text/xml', 'application/manifest+json' ] ) )
 		{
 			return false;
 		}
