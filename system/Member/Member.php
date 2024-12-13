@@ -3741,7 +3741,7 @@ class _Member extends \IPS\Patterns\ActiveRecord
 			$this->_failedLoginCache[ \IPS\Request::i()->ipAddress() ] = iterator_to_array( \IPS\Db::i()->select( '*', 'core_login_failures', $where ) );
 		}
 
-		if( count( $this->_failedLoginCache[ \IPS\Request::i()->ipAddress() ] ) > \IPS\Settings::i()->ipb_bruteforce_attempts )
+		if( \count( $this->_failedLoginCache[ \IPS\Request::i()->ipAddress() ] ) > \IPS\Settings::i()->ipb_bruteforce_attempts )
 		{
 			if ( \IPS\Settings::i()->ipb_bruteforce_period and \IPS\Settings::i()->ipb_bruteforce_unlock )
 			{
