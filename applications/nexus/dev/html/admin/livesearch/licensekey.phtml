@@ -1,0 +1,9 @@
+<ips:template parameters="$lkey" />
+<li class='ipsPhotoPanel ipsPhotoPanel_mini ipsPad_half ipsClearfix' data-role='result'>
+	<div>
+		<h2 class='ipsType_sectionHead'>
+			<strong><a href='{$lkey->purchase->acpUrl()}' class='ipsPos_left'>{$lkey->key}</a></strong>
+		</h2><br>
+		{$lkey->purchase->name} &middot; {lang="purchase_number" sprintf="$lkey->purchase->id"} &middot; {$lkey->purchase->member->cm_name}
+	</div>
+</li>

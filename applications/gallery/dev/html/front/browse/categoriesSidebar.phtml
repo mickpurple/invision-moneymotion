@@ -1,0 +1,31 @@
+<ips:template parameters="$currentCategory=NULL" />
+{{$categories = $currentCategory ? $currentCategory->children() : \IPS\gallery\Category::roots();}}
+{{if \count($categories)}}
+<div id='elGalleryCategories' class='ipsSpacer_top'>
+	<h3 class='ipsType_reset ipsType_sectionTitle'>{{if $currentCategory}}{lang="subcategories"}{{else}}{lang="categories"}{{endif}}</h3>
+	<div class='ipsSideMenu ipsPad_half'>
+		<ul class='ipsSideMenu_list'>
+			{{foreach $categories as $category}}
+				<li>
+					<a href="{$category->url()}" class='ipsSideMenu_item ipsTruncate ipsTruncate_line'><span class='ipsBadge ipsBadge_style1 ipsPos_right cGalleryCategoryCount'>{expression="\IPS\gallery\Image::contentCount( $category )"}</span><strong class='ipsType_normal'>{$category->_title}</strong></a>
+					{{if $category->hasChildren()}}
+						<ul class="ipsSideMenu_list">
+							{{foreach $category->children() as $idx => $subcategory}}
+								<li>
+									{{if $idx >= 5}}
+										<a href='{$category->url()}' class='ipsSideMenu_item'><span class='ipsType_light ipsType_small'>{lang="and_x_more" pluralize="\count( $category->children() ) - 5"}</span></a>
+										{{break;}}
+									{{else}}
+										<a href="{$subcategory->url()}" class='ipsSideMenu_item ipsTruncate ipsTruncate_line'><strong class='ipsPos_right ipsType_small cGalleryCategoryCount'>{expression="\IPS\gallery\Image::contentCount( $subcategory )"}</strong>{$subcategory->_title}</a>
+									{{endif}}
+								</li>
+							{{endforeach}}
+						</ul>
+					{{endif}}
+				</li>
+			{{endforeach}}
+		</ul>
+		<a href='{url="app=gallery&module=gallery&controller=browse&do=categories" seoTemplate="gallery_categories"}' class='ipsButton ipsButton_fullWidth ipsButton_small ipsButton_light'>{lang="browse_categories"} &nbsp;<i class='fa fa-caret-right'></i></a>
+	</div>
+</div>
+{{endif}}

@@ -1,0 +1,18 @@
+<ips:template parameters="$image" />
+{template="pageHeader" if="!\IPS\Request::i()->isAjax()" group="global" app="core" params="\IPS\Member::loggedIn()->language()->addToStack('gallery_metadata', FALSE, array( 'sprintf' => array( $image->caption ) ) )"}
+<div class='ipsPad'>
+	{{if \count( $image->metadata )}}
+		<ol class='ipsDataList'>
+			{{foreach $image->metadata as $key => $value}}
+				{{if !\is_array( $value ) AND ( $image->gps_show OR mb_strpos( $key, 'GPS.' ) === FALSE ) AND ( mb_strpos( $key, 'UndefinedTag' ) === FALSE OR \IPS\Member::loggedIn()->language()->checkKeyExists( $key ) ) AND ( !\IPS\Member::loggedIn()->language()->checkKeyExists( $key ) OR ( \IPS\Member::loggedIn()->language()->checkKeyExists( $key ) AND \IPS\Member::loggedIn()->language()->get( $key ) ) )}}
+					<li class='ipsDataItem ipsClearfix'>
+						<div class='ipsDataItem_generic ipsDataItem_size7'><strong class='ipsPos_right'>{lang="$key"}</strong></div>
+						<div class='ipsDataItem_main'>{{if \IPS\Member::loggedIn()->language()->checkKeyExists( $key . '_map_' . $value )}}{lang="{$key}_map_{$value}"}{{else}}{$value}{{endif}}</div>
+					</li>
+				{{endif}}
+			{{endforeach}}
+		</ol>
+	{{else}}
+		<p class='ipsType ipsType_light'>{lang="gallery_no_metadata"}</p>
+	{{endif}}
+</div>

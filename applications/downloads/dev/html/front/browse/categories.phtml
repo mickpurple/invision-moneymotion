@@ -1,0 +1,20 @@
+<ips:template parameters="$clubsOnly=FALSE" />
+<div class="ipsPageHeader ipsClearfix ipsSpacer_bottom" id='elDownloadersHeader'>
+	<h1 class="ipsType_pageTitle">{lang="__app_downloads"}</h1>
+</div>
+{{if !$clubsOnly}}
+	<div class='ipsBox ipsSpacer_bottom'>
+		<h2 class='ipsType_sectionTitle ipsType_reset'>{lang="categories"}</h2>
+		<ol class="ipsDataList ipsDataList_large">
+			{template="categoryRow" group="browse" params="NULL, NULL, \IPS\downloads\Category::roots()"}
+		</ol>
+	</div>
+{{endif}}
+{{if settings.club_nodes_in_apps and $clubNodes = \IPS\downloads\Category::clubNodes()}}
+	<div class='ipsBox'>
+		<h2 class='ipsType_sectionTitle ipsType_reset'><a href="{url="app=downloads&module=downloads&controller=browse&id=clubs" seoTemplate="downloads_clubs"}">{lang="club_node_downloads"}</a></h2>
+		<ol class="ipsDataList ipsDataList_large">
+			{template="categoryRow" group="browse" params="NULL, NULL, $clubNodes"}
+		</ol>
+	</div>
+{{endif}}

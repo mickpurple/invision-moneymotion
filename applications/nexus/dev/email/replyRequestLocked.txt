@@ -1,0 +1,17 @@
+<ips:template parameters="$request, $member, $email" />
+{$email->language->addToStack("support_bounced")}
+
+{{if $request->department->email}}
+	{{if $member->member_id}}
+		{$email->language->addToStack("support_bounced_member", FALSE, array( 'htmlsprintf' => $request->department->email))}
+		
+		{$email->language->addToStack("support_bounced_link", FALSE)}: {url="app=nexus&module=support&controller=home&do=create" seoTemplate="support_create" base="front" plain="true"}
+	{{else}}
+		{$email->language->addToStack("support_bounced_guest", FALSE, array( 'htmlsprintf' => $request->department->email))}
+	{{endif}}
+{{elseif $member->member_id}}
+	{$email->language->addToStack("support_bounced_link", FALSE)}: {url="app=nexus&module=support&controller=home&do=create" seoTemplate="support_create" base="front" plain="true"}
+{{endif}}
+
+
+-- {setting="board_name"}

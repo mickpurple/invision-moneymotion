@@ -1,0 +1,84 @@
+<ips:template parameters="$pendingTransactions, $pendingShipments, $pendingWithdrawals, $openSupportRequests, $pendingAdvertisements, $hostingErrors" />
+
+<div class='ipsGrid ipsGrid_collapsePhone'>
+	<div class='ipsGrid_span6'>
+		<ul class="ipsDataList" id='elNexusActions'>
+			{{if $pendingTransactions !== NULL}}
+				<li class="ipsDataItem">
+					<a href="{url="app=nexus&module=payments&controller=transactions&filter=tstatus_hold" base="admin"}" class="ipsType_blendLinks">
+						<div class='ipsDataItem_generic ipsDataItem_size1'>
+							<span class='cNexusActionBadge {{if $pendingTransactions < 1}}cNexusActionBadge_off{{endif}}'>{{if $pendingTransactions > 99}}99+{{else}}{number="$pendingTransactions"}{{endif}}</span>
+						</div>
+						<div class='ipsDataItem_main ipsPos_middle ipsType_normal'>
+							{lang="pending_transactions"}
+						</div>
+					</a>
+				</li>
+			{{endif}}
+			{{if $pendingShipments !== NULL}}
+				<li class='ipsDataItem'>
+					<a href="{url="app=nexus&module=payments&controller=shipping&filter=sstatus_pend" base="admin"}" class="ipsType_blendLinks">
+						<div class='ipsDataItem_generic ipsDataItem_size1'>
+							<span class='cNexusActionBadge {{if $pendingShipments < 1}}cNexusActionBadge_off{{endif}}'>{{if $pendingShipments > 99}}99+{{else}}{number="$pendingShipments"}{{endif}}</span>
+						</div>
+						<div class='ipsDataItem_main ipsPos_middle ipsType_normal'>
+							{lang="pending_shipments"}
+						</div>
+					</a>
+				</li>
+			{{endif}}
+			{{if $pendingWithdrawals !== NULL}}
+				<li class="ipsDataItem">
+					<a href="{url="app=nexus&module=payments&controller=payouts&filter=postatus_pend" base="admin"}" class="ipsType_blendLinks">
+						<div class='ipsDataItem_generic ipsDataItem_size1'>
+							<span class='cNexusActionBadge {{if $pendingWithdrawals < 1}}cNexusActionBadge_off{{endif}}'>{{if $pendingWithdrawals > 99}}99+{{else}}{number="$pendingWithdrawals"}{{endif}}</span>
+						</div>
+						<div class='ipsDataItem_main ipsPos_middle ipsType_normal'>
+							{lang="pending_widthdrawals"}
+						</div>
+					</a>
+				</dli>
+			{{endif}}
+		</ul>
+	</div>
+	<div class='ipsGrid_span6'>
+		<ul class="ipsDataList" id='elNexusActions'>
+			{{if $openSupportRequests !== NULL}}
+				<li class="ipsDataItem">
+					<a href="{url="app=nexus&module=support&controller=requests" base="admin"}" class="ipsType_blendLinks">
+						<div class='ipsDataItem_generic ipsDataItem_size1'>
+							<span class='cNexusActionBadge {{if $openSupportRequests < 1}}cNexusActionBadge_off{{endif}}'>{{if $openSupportRequests > 99}}99+{{else}}{number="$openSupportRequests"}{{endif}}</span>
+						</div>
+						<div class='ipsDataItem_main ipsPos_middle ipsType_normal'>
+							{lang="open_support_requests"}
+						</div>
+					</a>
+				</li>
+			{{endif}}
+			{{if $pendingAdvertisements !== NULL}}
+				<li class="ipsDataItem">
+					<a href="{url="app=core&module=promotion&controller=advertisements" base="admin"}" class="ipsType_blendLinks">
+						<div class='ipsDataItem_generic ipsDataItem_size1'>
+							<span class='cNexusActionBadge {{if $pendingAdvertisements < 1}}cNexusActionBadge_off{{endif}}'>{{if $pendingAdvertisements > 99}}99+{{else}}{number="$pendingAdvertisements"}{{endif}}</span>
+						</div>
+						<div class='ipsDataItem_main ipsPos_middle ipsType_normal'>
+							{lang="pending_advertisements"}
+						</div>
+					</a>
+				</li>
+			{{endif}}
+			{{if $hostingErrors !== NULL and member.hasAcpRestriction( 'nexus', 'hosting', 'errors_manage' )}}
+				<li class="ipsDataItem">
+					<a href="{url="app=nexus&module=hosting&controller=errors" base="admin"}" class="ipsType_blendLinks">
+						<div class='ipsDataItem_generic ipsDataItem_size1'>
+							<span class='cNexusActionBadge {{if $hostingErrors < 1}}cNexusActionBadge_off{{endif}}'>{{if $hostingErrors > 99}}99+{{else}}{number="$hostingErrors"}{{endif}}</span>
+						</div>
+						<div class='ipsDataItem_main ipsPos_middle ipsType_normal'>
+							{lang="hosting_errors"}
+						</div>
+					</a>
+				</li>
+			{{endif}}
+		</ul>
+	</div>
+</div>

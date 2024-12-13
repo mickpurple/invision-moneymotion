@@ -1,0 +1,76 @@
+<ips:template parameters="$details, $settings = NULL" />
+{{if $details['status'] === 'pending'}}
+	<p class="ipsMessage ipsMessage_info">{lang="mobile_app_status_pending"}</p>
+{{elseif $details['status'] === 'expired'}}
+	<p class="ipsMessage ipsMessage_warning">{lang="mobile_app_status_expired"}</p>
+{{elseif $details['status'] === 'suspended'}}
+	<p class="ipsMessage ipsMessage_error">{lang="mobile_app_status_suspended"}</p>
+{{elseif $details['pending_changes']}}
+	<p class="ipsMessage ipsMessage_info">{lang="mobile_app_status_pending"}</p>
+{{endif}}
+{{if $details['status'] !== 'suspended'}}
+	<div class="ipsBox">
+		<h2 class="ipsBox_titleBar">
+			{lang="mobile_app_listing_details"}
+			{{if $details['status'] !== 'suspended'}}
+				&nbsp;
+				<span class="ipsType_medium">(<a href="{url="app=core&module=mobile&controller=mobile&do=submit"}" data-ipsDialog data-ipsDialog-title="{lang="mobile_app_listing_details"}">{lang="mobile_app_listing_update"}</a>)</span>
+			{{endif}}
+		</h2>
+		<div class="ipsColumns">
+			<div class="ipsColumn ipsColumn_narrow ipsPad">
+				{{if $details['pending_logo']}}
+					<img src="{$details['pending_logo']}" class="ipsImage">
+				{{else}}
+					<img src="{$details['logo']}" class="ipsImage">
+				{{endif}}
+			</div>
+			<div class="ipsColumn ipsColumn_fluid">
+				<ul class="ipsDataList">
+					<li class="ipsDataItem">
+						<span class="ipsDataItem_generic ipsDataItem_size4"><strong>{lang="mobile_app_listing_name"}</strong></span>
+						<span class="ipsDataItem_generic">
+							{{if $details['pending_name']}}
+								{$details['pending_name']}
+							{{else}}
+								{$details['name']}
+							{{endif}}
+						</span>
+					</li>
+					<li class="ipsDataItem">
+						<span class="ipsDataItem_generic ipsDataItem_size4"><strong>{lang="mobile_app_listing_desc"}</strong></span>
+						<span class="ipsDataItem_generic">
+							{{if $details['pending_description']}}
+								{expression="nl2br( htmlspecialchars( $details['pending_description'], ENT_QUOTES | ENT_DISALLOWED, 'UTF-8', FALSE ) )" raw="true"}
+							{{else}}
+								{expression="nl2br( htmlspecialchars( $details['description'], ENT_QUOTES | ENT_DISALLOWED, 'UTF-8', FALSE ) )" raw="true"}
+							{{endif}}
+						</span>
+					</li>
+					<li class="ipsDataItem">
+						<span class="ipsDataItem_generic ipsDataItem_size4"><strong>{lang="mobile_app_listing_category"}</strong></span>
+						<span class="ipsDataItem_generic">{$details['category_name']}</span>
+					</li>
+					<li class="ipsDataItem">
+						<span class="ipsDataItem_generic ipsDataItem_size4"><strong>{lang="mobile_app_listing_languages"}</strong></span>
+						<span class="ipsDataItem_generic">{expression="\IPS\Member::loggedIn()->language()->formatList( $details['languages'] )"}</span>
+					</li>
+				</ul>
+			</div>
+			<div class="ipsColumn ipsColumn_medium ipsType_center">
+				{{$langCode = mb_substr( \IPS\Member::loggedIn()->language()->bcp47(), 0, 2 );}}
+				<a href="{expression="\IPS\Settings::i()->mobile_app_itunes_url ?: \IPS\APP_MULTICOMMUNITY_ITUNES_URL"}" target="_blank" rel="noopener"><img src="{resource="appstores/ios/{$langCode}.svg" app="core" location="global"}" class="ipsSpacer_top"></a>
+				<br>
+				<a href="{expression="\IPS\Settings::i()->mobile_app_play_url ?: \IPS\APP_MULTICOMMUNITY_PLAY_URL"}" target="_blank" rel="noopener"><img src="{resource="appstores/android/{$langCode}.png" app="core" location="global"}" style="height: 61px"></a>
+			</div>
+		</div>
+	</div>
+{{endif}}
+{{if $settings}}
+	<div class="ipsSpacer_top">
+		<div class="ipsBox">
+			<h2 class="ipsBox_titleBar">{lang="settings"}</h2>
+			{$settings|raw}
+		</div>
+	</div>
+{{endif}}

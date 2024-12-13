@@ -1,0 +1,36 @@
+<ips:template parameters="$image, $commentsAndReviews=FALSE" />
+
+{{if $club = $image->container()->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $image->container()"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+<div data-controller='gallery.front.view.image,gallery.front.browse.imageLightbox' data-launchLightbox data-lightboxURL='{$image->url()}'>
+	<div class='cGalleryLightbox_inner ipsSpacer_bottom' data-role="imageSizer">
+		<div class='elGalleryHeader'>
+			{template="imageFrame" group="view" app="gallery" params="$image"}
+		</div>
+	</div>
+
+	<section data-role='imageInfo'>
+		{template="imageInfo" group="view" params="$image"}
+	</section>
+
+	<div data-role='imageComments'>
+	{{if $commentsAndReviews}}
+		<br>
+		{{if ( $image->directContainer()->allow_reviews && $image->container()->allow_reviews ) && ( $image->directContainer()->allow_comments && $image->container()->allow_comments ) }}
+			<a id="replies"></a>
+			<h2 class='ipsHide'>{lang="user_feedback"}</h2>
+		{{endif}}
+		{$commentsAndReviews|raw}
+	{{endif}}
+	</div>
+
+</div> 
+
+{{if $image->container()->club()}}
+	</div>
+{{endif}}

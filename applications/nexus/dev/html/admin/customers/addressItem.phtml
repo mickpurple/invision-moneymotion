@@ -1,0 +1,10 @@
+<ips:template parameters="$address" />
+
+<div class='ipsType_normal'>
+	{$address['address']|raw}
+
+	{{if $address['_buttons']}}
+		<br>
+		{template="controlStrip" params="$address['_buttons'], 'ipsControlStrip_showText'" group="global" app="core"}
+	{{endif}}
+</div>

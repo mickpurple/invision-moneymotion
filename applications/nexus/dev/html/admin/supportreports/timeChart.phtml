@@ -1,0 +1,32 @@
+<ips:template parameters="$chart, $url" />
+<div class="ipsPad ipsType_right">
+	<ul class="ipsList_inline">
+		{{if $url->queryString['timeframe'] !== 'last_24_hours'}}
+			<li data-role="groupingButtons">
+				<span class="ipsButton_split ipsClearfix">
+					<a class="ipsButton ipsButton_verySmall {{if $url->queryString['span'] === 'day'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}}" href="{$url->setQueryString( 'span', 'day' )}">{lang="daily"}</a>
+					<a class="ipsButton ipsButton_verySmall {{if $url->queryString['span'] === 'week'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}}" href="{$url->setQueryString( 'span', 'week' )}">{lang="weekly"}</a>
+				</span>
+			</li>
+			<li data-role="groupingButtons">
+				<span class="ipsButton_split ipsClearfix">
+					<a class="ipsButton ipsButton_verySmall {{if $url->queryString['type'] === 'total'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}}" href="{$url->setQueryString( 'type', 'total' )}" title="{lang="timechart_total_desc"}" data-ipsTooltip>{lang="total"}</a>
+					<a class="ipsButton ipsButton_verySmall {{if $url->queryString['type'] === 'average'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}}" href="{$url->setQueryString( 'type', 'average' )}" title="{lang="timechart_average_desc"}" data-ipsTooltip>{lang="daily_average"}</a>
+				</span>
+			</li>
+		{{endif}}
+		<li data-role="groupingButtons">
+			<span class="ipsButton_split ipsClearfix">
+				<a class="ipsButton ipsButton_verySmall {{if $url->queryString['timeframe'] === 'last_24_hours'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}}" href="{$url->setQueryString( 'timeframe', 'last_24_hours' )}">{lang="last_24_hours"}</a>
+				<a class="ipsButton ipsButton_verySmall {{if $url->queryString['timeframe'] === 'last_7_days'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}}" href="{$url->setQueryString( 'timeframe', 'last_7_days' )}">{lang="last_7_days"}</a>
+				<a class="ipsButton ipsButton_verySmall {{if $url->queryString['timeframe'] === 'last_30_days'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}}" href="{$url->setQueryString( 'timeframe', 'last_30_days' )}">{lang="last_30_days"}</a>
+			</span>
+		</li>
+	</ul>
+</div>
+{$chart|raw}
+<br>
+<div class="ipsType_center">
+	<span class="ipsType_light">{lang="times_are_your_timezone"}</span>
+</div>
+<br>

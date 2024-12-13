@@ -1,0 +1,278 @@
+<ips:template parameters="$date, $tomorrow, $yesterday, $iterator, $pagination, $tracked, $chart, $stats" />
+
+<div class='ipsBox'>
+	<h1 class='ipsBox_titleBar'>{lang="past_30_days"}</h1>
+	<div class='ipsPad'>
+		<div class='ipsSpacer_top ipsSpacer_half ipsGrid ipsGrid_collapsePhone'>
+			<div class='ipsGrid_span3'>
+				<p class='ipsType_reset cNexusHistoryStat {{if $stats['totalRepliesThis'] > $stats['totalRepliesPrev']}}cNexusHistoryStat_positive{{elseif $stats['totalRepliesThis'] == $stats['totalRepliesPrev']}}cNexusHistoryStat_neutral{{else}}cNexusHistoryStat_negative{{endif}}'>
+				{number="$stats['totalRepliesThis']"}
+				{{if $stats['totalRepliesThis'] > $stats['totalRepliesPrev']}}
+				<span class='cNexusHistoryStat_arrow ipsCursor_pointer' title='{lang="support_history_up" sprintf="$stats['totalRepliesPrev']"}' data-ipsTooltip><i class='fa fa-arrow-up'></i></span>
+                {{elseif $stats['totalRepliesThis'] == $stats['totalRepliesPrev']}}
+                <span class='cNexusHistoryStat_arrow ipsCursor_pointer' title='{lang="support_history_same" sprintf="$stats['totalRepliesPrev']"}' data-ipsTooltip><i class='fa fa-arrow-right'></i></span>
+				{{else}}
+				<span class='cNexusHistoryStat_arrow ipsCursor_pointer' title='{lang="support_history_down" sprintf="$stats['totalRepliesPrev']"}' data-ipsTooltip><i class='fa fa-arrow-down'></i></span>
+				{{endif}}
+				</p>
+				<h3 class='ipsType_minorHeading cNexusHistoryStat_title ipsType_noWrap ipsTruncate ipsTruncate_line'>{lang="support_history_total_replies"}</h3>
+			</div>
+			<div class='ipsGrid_span3'>
+				<p class='ipsType_reset cNexusHistoryStat {{if $stats['customersHelpedThis'] > $stats['customersHelpedPrev']}}cNexusHistoryStat_positive{{elseif $stats['customersHelpedThis'] == $stats['customersHelpedPrev']}}cNexusHistoryStat_neutral{{else}}cNexusHistoryStat_negative{{endif}}'>
+				{number="$stats['customersHelpedThis']"}
+				{{if $stats['customersHelpedThis'] > $stats['customersHelpedPrev']}}
+				<span class='cNexusHistoryStat_arrow ipsCursor_pointer' title='{lang="support_history_up" sprintf="$stats['customersHelpedPrev']"}' data-ipsTooltip><i class='fa fa-arrow-up'></i></span>
+                {{elseif $stats['customersHelpedThis'] == $stats['customersHelpedPrev']}}
+                <span class='cNexusHistoryStat_arrow ipsCursor_pointer' title='{lang="support_history_same" sprintf="$stats['customersHelpedPrev']"}' data-ipsTooltip><i class='fa fa-arrow-right'></i></span>
+				{{else}}
+				<span class='cNexusHistoryStat_arrow ipsCursor_pointer' title='{lang="support_history_down" sprintf="$stats['customersHelpedPrev']"}' data-ipsTooltip><i class='fa fa-arrow-down'></i></span>
+				{{endif}}
+				</p>
+				<h3 class='ipsType_minorHeading cNexusHistoryStat_title ipsType_noWrap ipsTruncate ipsTruncate_line'>{lang="support_history_customers"}</h3>
+			</div>
+			<div class='ipsGrid_span3'>
+				<p class='ipsType_reset cNexusHistoryStat {{if $stats['issuesResolvedThis'] > $stats['issuesResolvedPrev']}}cNexusHistoryStat_positive{{elseif $stats['issuesResolvedThis'] == $stats['issuesResolvedPrev']}}cNexusHistoryStat_neutral{{else}}cNexusHistoryStat_negative{{endif}}'>
+				{number="$stats['issuesResolvedThis']"}
+				{{if $stats['issuesResolvedThis'] > $stats['issuesResolvedPrev']}}
+				<span class='cNexusHistoryStat_arrow ipsCursor_pointer' title='{lang="support_history_up" sprintf="$stats['issuesResolvedPrev']"}' data-ipsTooltip><i class='fa fa-arrow-up'></i></span>
+                {{elseif $stats['issuesResolvedThis'] == $stats['issuesResolvedPrev']}}
+                <span class='cNexusHistoryStat_arrow ipsCursor_pointer' title='{lang="support_history_same" sprintf="$stats['issuesResolvedPrev']"}' data-ipsTooltip><i class='fa fa-arrow-right'></i></span>
+				{{else}}
+				<span class='cNexusHistoryStat_arrow ipsCursor_pointer' title='{lang="support_history_down" sprintf="$stats['issuesResolvedPrev']"}' data-ipsTooltip><i class='fa fa-arrow-down'></i></span>
+				{{endif}}
+				</p>
+				<h3 class='ipsType_minorHeading cNexusHistoryStat_title ipsType_noWrap ipsTruncate ipsTruncate_line'>{lang="support_history_resolved"}</h3>
+			</div>
+			{{if settings.nexus_support_satisfaction}}
+			<div class='ipsGrid_span3'>
+				<ul class="ipsList_inline ipsClearfix ipsRating ipsRating_large">
+					{{foreach range( 1, 5 ) as $i}}
+					{{if $i <= $stats['averageRatingThis']}}
+					<li class='ipsRating_on'>
+						<i class='fa fa-star'></i>
+					</li>
+					{{elseif ( $i - 0.5 ) <= $stats['averageRatingThis']}}
+					<li class='ipsRating_half'>
+						<i class='fa fa-star-half'></i><i class='fa fa-star-half fa-flip-horizontal'></i>
+					</li>
+					{{else}}
+					<li class='ipsRating_off'>
+						<i class='fa fa-star'></i>
+					</li>
+					{{endif}}
+					{{endforeach}}
+					<li>
+						<span class='ipsType_reset cNexusHistoryStat {{if $stats['averageRatingThis'] > $stats['averageRatingPrev']}}cNexusHistoryStat_positive{{elseif $stats['averageRatingThis'] == $stats['averageRatingPrev']}}cNexusHistoryStat_neutral{{else}}cNexusHistoryStat_negative{{endif}}'>
+						{{if $stats['averageRatingThis'] > $stats['averageRatingPrev']}}
+						&nbsp;<span class='cNexusHistoryStat_arrow ipsCursor_pointer cNexusHistoryStat_positive' title='{lang="support_history_up" sprintf="$stats['averageRatingPrev']"}' data-ipsTooltip><i class='fa fa-arrow-up'></i></span>
+                        {{elseif $stats['averageRatingThis'] == $stats['averageRatingPrev']}}
+                        &nbsp;<span class='cNexusHistoryStat_arrow ipsCursor_pointer cNexusHistoryStat_neutral' title='{lang="support_history_same" sprintf="$stats['averageRatingPrev']"}' data-ipsTooltip><i class='fa fa-arrow-right'></i></span>
+						{{else}}
+						&nbsp;<span class='cNexusHistoryStat_arrow ipsCursor_pointer cNexusHistoryStat_negative' title='{lang="support_history_down" sprintf="$stats['averageRatingPrev']"}' data-ipsTooltip><i class='fa fa-arrow-down'></i></span>
+						{{endif}}
+						</span>
+					</li>
+				</ul>
+				<h3 class='ipsType_minorHeading cNexusHistoryStat_title ipsType_noWrap ipsTruncate ipsTruncate_line'>{lang="average_rating"}</h3>
+			</div>
+			{{endif}}
+		</div>
+		<hr class='ipsHr'>
+		{$chart|raw}
+	</div>
+</div>
+
+<hr class='ipsHr'>
+
+
+<div class="" id='elNexusStaffDailyReview'>
+	<div class='ipsPad'>
+		<nav class="ipsPager ipsSpacer_bottom ipsSpacer_double">
+			<div class="ipsPager_prev">
+				<a href="{url="app=nexus&module=support&controller=requests&do=history&date="}{$yesterday->getTimestamp()}" title="{lang="prev"}">
+					<span class="ipsPager_type">{lang="support_history_prev_day"}</span>
+					<span class="ipsPager_title ipsType_break ipsTruncate ipsTruncate_line">{$yesterday->dayAndMonth()}</span>
+				</a>
+			</div>
+			<div class="ipsPager_center">
+				<h1 class="ipsType_pageTitle ipsType_center">{lang="support_history_daily_review" sprintf="$date->dayAndMonth()"}</h1>
+				<a href="#elDateJump_menu" data-ipsMenu id="elDateJump">{lang="support_history_go_to_date"} <i class="fa fa-chevron-down"></i></a>
+				<div class="ipsMenu ipsMenu_auto ipsMenu_withStem ipsHide" id="elDateJump_menu">
+					<form accept-charset='utf-8' action="{url="app=nexus&module=support&controller=requests&do=history"}" method="post" data-ipsForm>
+						<div class="ipsPad">
+							<input type="date" name="date_jump" data-control="date" placeholder='{expression="str_replace( array( 'YYYY', 'MM', 'DD' ), array( \IPS\Member::loggedIn()->language()->addToStack('_date_format_yyyy'), \IPS\Member::loggedIn()->language()->addToStack('_date_format_mm'), \IPS\Member::loggedIn()->language()->addToStack('_date_format_dd') ), str_replace( 'Y', 'YY', \IPS\Member::loggedIn()->language()->preferredDateFormat() ) )"}'>
+						</div>
+						<div class="ipsAreaBackground ipsPad_half ipsType_center">
+							<input type="submit" class="ipsButton ipsButton_primary" value="{lang="go"}">
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="ipsPager_next">
+				{{if $tomorrow->getTimestamp() < time()}}
+				<a href="{url="app=nexus&module=support&controller=requests&do=history&date="}{$tomorrow->getTimestamp()}" title="{lang="next"}">
+					<span class="ipsPager_type">{lang="support_history_next_day"}</span>
+					<span class="ipsPager_title ipsType_break ipsTruncate ipsTruncate_line">{$tomorrow->dayAndMonth()}</span>
+				</a>
+				{{endif}}
+			</div>
+		</nav>
+
+		{{if \count( $iterator )}}
+		{{if trim( $pagination ) !== ''}}
+		<div class='ipsSpacer_bottom'>
+			{$pagination|raw}
+		</div>
+		{{endif}}
+		<ul class='ipsList_reset' id='elNexusStaffTimeline'>
+			{{foreach $iterator as $reply}}
+			<li class='{{if $reply instanceof \IPS\nexus\Support\Reply and $reply->type == $reply::REPLY_HIDDEN}}cTimelineStaffNote{{endif}}'>
+						<span class='cTimelineTime'>
+							{{if $replyDate = $reply instanceof \IPS\nexus\Support\Reply ? \IPS\DateTime::ts( $reply->date ) : $reply->date}}
+								{{if mb_strpos( \IPS\DateTime::localeTimeFormat(), '%p' ) === FALSE}}
+									{expression="$replyDate->localeTime( FALSE )"}
+								{{else}}
+									{expression="$replyDate->strFormat( trim( str_replace( '%p', '', \IPS\DateTime::localeTimeFormat() ) ) )"}<span>{expression="$replyDate->strFormat( '%p' )"}</span>
+								{{endif}}
+							{{endif}}
+						</span>
+						<span class='cTimelineIcon'>
+							{{if $reply instanceof \IPS\nexus\Support\Reply}}
+								{{if $reply->type == $reply::REPLY_HIDDEN}}
+									<i class='fa fa-low-vision'></i>
+								{{else}}
+									<i class='fa fa-comment'></i>
+								{{endif}}
+							{{else}}
+								{{if $reply->action === 'status'}}
+									<i class='fa fa-tag'></i>
+								{{elseif $reply->action === 'department'}}
+									<i class='fa fa-folder'></i>
+								{{elseif $reply->action === 'severity'}}
+									<i class='fa fa-exclamation'></i>
+								{{elseif $reply->action === 'purchase'}}
+									{{if $reply->new}}
+										{{$link = "<a href='{$reply->new->acpUrl()}'>{$reply->new->name}</a>";}}
+										<i class='fa fa-cube'></i>
+									{{else}}
+										<i class='fa fa-minus-circle'></i>
+									{{endif}}
+								{{elseif $reply->action === 'staff'}}
+									{{if $reply->new}}
+										<i class='fa fa-user'></i>
+									{{else}}
+										<i class='fa fa-minus-circle'></i>
+									{{endif}}
+								{{elseif $reply->action === 'split_away'}}
+									<i class='fa fa-expand'></i>
+								{{elseif $reply->action === 'split_new'}}
+									<i class='fa fa-expand'></i> 
+								{{endif}}
+							{{endif}}
+						</span>
+				<div class='ipsAreaBackground_reset ipsPad'>
+					<p class='cTimelineAction'>
+						{{if $reply instanceof \IPS\nexus\Support\Reply}}
+							{{try { $request = \IPS\nexus\Support\Request::loadAndCheckPerms( $reply->request ); } catch( \OutOfRangeException $e ) { $request = NULL; } }}
+							<strong>{{if $reply->type == $reply::REPLY_HIDDEN}}{lang="request_added_note_u"}{{else}}{lang="request_replied_u"}{{endif}}</strong> 
+							{lang="support_history_to_req" sprintf="$reply->request"}
+						{{else}}
+							{{$request = $reply->request;}}
+							{{if $reply->action === 'status'}}
+								<strong>{lang="support_history_status_1"}</strong> {lang="support_history_status_2" sprintf="$reply->request->id"} {template="status" group="support" params="$reply->new"}
+							{{elseif $reply->action === 'department'}}
+								<strong>{lang="support_history_department_1"}</strong> {lang="support_history_department_2" sprintf="$reply->request->id, $reply->new ? $reply->new->_title : '?'"}
+							{{elseif $reply->action === 'severity'}}
+								<strong>{lang="support_history_severity_1"}</strong> {lang="support_history_severity_2" sprintf="$reply->request->id, $reply->new ? $reply->new->_title : '?'"}
+							{{elseif $reply->action === 'purchase'}}
+								{{if $reply->new}}
+									<strong>{lang="support_history_purchase_1"}</strong> {lang="support_history_purchase_2" sprintf="$reply->request->id, $reply->new->acpUrl(), $reply->new->name"}
+								{{else}}
+									<strong>{lang="support_history_no_purchase_1"}</strong> {lang="support_history_no_purchase_2" sprintf="$reply->request->id"}
+								{{endif}}
+							{{elseif $reply->action === 'staff'}}
+								{{if $reply->new}}
+									<strong>{lang="support_history_assigned_1"}</strong> {lang="support_history_assigned_2" sprintf="$reply->request->id, $reply->new->name"}
+								{{else}}
+									<strong>{lang="support_history_unassigned_1"}</strong> {lang="support_history_unassigned_2" sprintf="$reply->request->id"}
+								{{endif}}
+							{{elseif $reply->action === 'split_away'}}
+								<strong>{lang="support_history_split_away_1"}</strong> {lang="support_history_split_away_2" sprintf="$reply->request->id"}
+							{{elseif $reply->action === 'split_new'}}
+								<strong>{lang="support_history_split_new_1"}</strong> {lang="support_history_split_new_2" sprintf="$reply->request->id"}
+							{{endif}}
+						{{endif}}
+					</p>
+					{{if $request}}
+					<h3 class='ipsType_reset'>
+						{{if $request->unread()}}
+						<a href="{$request->acpUrl()->setQueryString( 'do', 'getNewComment' )}" title="{lang="support_go_to_unread"}" data-ipsTooltip>
+											<span class='ipsItemStatus'>
+												<i class="fa {{if array_key_exists( $request->id, $tracked )}}bookmark{{else}}fa-circle{{endif}}"></i>
+											</span>
+						</a>
+						{{else}}
+						{{if array_key_exists( $request->id, $tracked )}}
+											<span class='ipsItemStatus ipsItemStatus_read ipsItemStatus_posted'>
+												<i class="fa fa-bookmark"></i>
+											</span>
+						{{endif}}
+						{{endif}}
+						<a href="{$request->acpUrl()}" class='ipsType_blendLinks'>
+							{{if $request->unread()}}
+							<strong>{$request->title}</strong>
+							{{else}}
+							{$request->title}
+							{{endif}}
+						</a>
+					</h3>
+					{{if $reply instanceof \IPS\nexus\Support\Reply}}
+					<div class="ipsSpacer_bottom ipsSpacer_half">
+						{{if $request->severity and $request->severity->color != '000'}}
+						<span class='cNexusSupportBadge' style="background-color: #{$request->severity->color}">{$request->severity->_title}</span>
+						{{endif}}
+						<span class="ipsType_normal ipsType_reset">{lang="in_department" sprintf="$request->department->_title"}</span>
+						{{if $request->staff}}
+						<strong class="ipsType_success">
+							{lang="assigned_to_x" sprintf="$request->staff->name"}
+						</strong>
+						{{endif}}
+					</div>
+					{{endif}}
+					{{endif}}
+					{{if $reply instanceof \IPS\nexus\Support\Reply}}
+					<hr class='ipsHr'>
+					<div class='ipsType_richText ipsType_normal' data-ipsTruncate data-ipsTruncate-size='5 lines'>
+						{$reply->truncated()|raw}
+					</div>
+					{{if $reply->type === $reply::REPLY_STAFF and settings.nexus_support_satisfaction and \IPS\Member::loggedIn()->hasAcpRestriction( 'nexus', 'support', 'requests_ratings' and $reply->ratingData['rating_rating'])}}
+					<hr class='ipsHr'>
+					<div class="ipsType_medium">
+						<ul class='ipsList_inline ipsClearfix ipsRating'>
+							{{foreach range( 1, 5 ) as $i}}
+							<li class='{{if $reply->ratingData['rating_rating'] and $reply->ratingData['rating_rating'] >= $i}}ipsRating_on{{endif}}'><i class='fa fa-star'></i></li>
+			{{endforeach}}
+		</ul>
+		&nbsp;
+		{{if $reply->ratingData['rating_note'] and \IPS\Member::loggedIn()->hasAcpRestriction( 'nexus', 'support', 'requests_ratings_feedback' )}}
+		<a href="{url="app=nexus&module=support&controller=request&do=feedback&id={$reply->id}"}" data-ipsDialog>{lang="customer_rating_nc"}</a>
+		{{else}}
+		{lang="customer_rating_nc"}
+		{{endif}}
+	</div>
+	{{endif}}
+	{{endif}}
+</div>
+</li>
+{{endforeach}}
+</ul>
+{{if trim( $pagination ) !== ''}}
+<div class='ipsSpacer_top'>
+	{$pagination|raw}
+</div>
+{{endif}}
+{{else}}
+{lang="no_results"}
+{{endif}}
+</div>
+</div>

@@ -1,0 +1,7 @@
+<ips:template parameters="$method" />
+<div class="ipsType_richText ipsType_normal">
+	<p>{lang="acp_notification_nexus_config_error_paymethod_desc" sprintf="$method->_title"}</p>
+</div>
+<div class="ipsSpacer_top ipsSpacer_double">
+	<a href='{url="app=nexus&module=payments&controller=paymentsettings&tab=gateways&do=form&id={$method->_id}"}' class="ipsButton ipsButton_primary ipsButton_verySmall">{lang="help_me_fix_this"}</a>
+</div>

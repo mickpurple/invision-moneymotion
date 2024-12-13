@@ -1,0 +1,4 @@
+<ips:template parameters="$canSubmitImages, $currentCategory=NULL, $currentAlbum=NULL" />
+<li class='ipsToolList_primaryAction'>
+	<a class="ipsButton ipsButton_medium ipsButton_important ipsButton_fullWidth" data-ipsDialog data-ipsDialog-close='false' data-ipsDialog-size='medium' data-ipsDialog-extraClass='cGalleryDialog_outer' data-ipsDialog-destructOnClose='true' data-ipsDialog-remoteSubmit='true' {{if $currentAlbum}}href="{url="app=gallery&module=gallery&controller=submit&category={$currentCategory->id}&album={$currentAlbum->id}&_new=1" seoTemplate="gallery_submit"}" {{elseif $currentCategory}} href="{url="app=gallery&module=gallery&controller=submit&category={$currentCategory->id}&_new=1" seoTemplate="gallery_submit"}" {{else}} href="{url="app=gallery&module=gallery&controller=submit&_new=1" seoTemplate="gallery_submit"}" {{endif}}>{lang="add_gallery_image"}</a>
+</li>

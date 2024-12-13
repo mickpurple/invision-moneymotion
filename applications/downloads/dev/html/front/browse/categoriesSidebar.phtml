@@ -1,0 +1,67 @@
+<ips:template parameters="$currentCategory=NULL" />
+{{if !$currentCategory or !$currentCategory->club()}}
+	{{$categories = $currentCategory ? $currentCategory->children() : \IPS\downloads\Category::roots();}}
+	
+	{{$clubNodes = $currentCategory ? array() : ( \IPS\Settings::i()->club_nodes_in_apps ? \IPS\downloads\Category::clubNodes() : array() );}}
+	{{if !\IPS\downloads\Category::theOnlyNode() or $clubNodes}}
+	<div id='elDownloadsCategoriesBlock' class='ipsWidget ipsWidget_vertical ipsBox'>
+		<h3 class='ipsType_sectionTitle ipsType_reset'>{{if $currentCategory}}{lang="subcategories"}{{else}}{lang="categories"}{{endif}}</h3>
+		<div class='ipsPad_half'>
+			<div class='ipsSideMenu'>
+				<ul class='ipsSideMenu_list'>
+					{{foreach $categories as $category}}
+						{{if $category->open OR \IPS\Member::loggedIn()->isAdmin()}}
+							<li>
+								<a href="{$category->url()}" class='ipsSideMenu_item ipsTruncate ipsTruncate_line'><span class='ipsBadge ipsBadge_style1 ipsPos_right cDownloadsCategoryCount'>{number="\IPS\downloads\File::contentCount( $category )"}</span><strong class='ipsType_normal'>{$category->_title}</strong></a>
+								{{if $category->hasChildren()}}
+									<ul class="ipsSideMenu_list">
+										{{foreach $category->children() as $idx => $subcategory}}
+											{{if $subcategory->open OR \IPS\Member::loggedIn()->isAdmin()}}
+												<li>
+													{{if $idx >= 5}}
+														<a href='{$category->url()}' class='ipsSideMenu_item'><span class='ipsType_light ipsType_small'>{lang="and_x_more" pluralize="\count( $category->children() ) - 5"}</span></a>
+														{{break;}}
+													{{else}}
+														<a href="{$subcategory->url()}" class='ipsSideMenu_item ipsTruncate ipsTruncate_line'><strong class='ipsPos_right ipsType_small cDownloadsCategoryCount'>{number="\IPS\downloads\File::contentCount( $subcategory )"}</strong>{$subcategory->_title}</a>
+													{{endif}}
+												</li>
+											{{endif}}
+										{{endforeach}}
+									</ul>
+								{{endif}}
+							</li>
+						{{endif}}
+					{{endforeach}}
+					{{if $clubNodes}}
+						<li>
+							<a href="{url="app=downloads&module=downloads&controller=browse&id=clubs" seoTemplate="downloads_clubs"}" class='ipsSideMenu_item ipsTruncate ipsTruncate_line'><span class='ipsBadge ipsBadge_style1 ipsPos_right cDownloadsCategoryCount'>{number="\IPS\downloads\Category::filesInClubNodes()"}</span><strong class='ipsType_normal'>{lang="club_node_downloads"}</strong></a>
+							<ul class="ipsSideMenu_list">
+								{{$i = 0;}}
+								{{foreach $clubNodes as $idx => $subcategory}}
+									{{if $subcategory->open OR \IPS\Member::loggedIn()->isAdmin()}}
+										<li>
+											{{if $i >= 5}}
+												<a href='{url="app=downloads&module=downloads&controller=browse&id=clubs" seoTemplate="downloads_clubs"}' class='ipsSideMenu_item'><span class='ipsType_light ipsType_small'>{lang="and_x_more" pluralize="\count( $clubNodes ) - 5"}</span></a>
+												{{break;}}
+											{{else}}
+												<a href="{$subcategory->url()}" class='ipsSideMenu_item ipsTruncate ipsTruncate_line'>
+													<strong class='ipsPos_right ipsType_small cDownloadsCategoryCount'>{number="\IPS\downloads\File::contentCount( $subcategory )"}</strong>
+													{lang="club_node" sprintf="$subcategory->club()->name, $subcategory->_title"}
+												</a>
+											{{endif}}
+										</li>
+										{{$i++;}}
+									{{endif}}
+								{{endforeach}}
+							</ul>
+						</li>
+					{{endif}}
+				</ul>
+				<p class='ipsType_center'>
+					<a href='{url="app=downloads&module=downloads&controller=browse&do=categories" seoTemplate="downloads_categories"}' class=''>{lang="browse_categories_d"} &nbsp;<i class='fa fa-caret-right'></i></a>
+				</p>
+			</div>
+		</div>
+	</div>
+	{{endif}}
+{{endif}}

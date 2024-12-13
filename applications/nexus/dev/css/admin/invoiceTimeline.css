@@ -1,0 +1,29 @@
+	.cNexusInvoiceExplain {
+		margin-left: 250px;
+		border-left: 3px solid black;
+		list-style: none;
+		padding-top: 5px;
+		padding-left: 15px;
+	}
+	.cNexusInvoiceExplain li {
+		position: relative;
+		margin-bottom: 20px;
+	}
+	.cNexusInvoiceExplain li p {
+		margin: 0;
+	}
+	.cNexusInvoiceExplain li .time {
+		position: absolute;
+		left: -375px;
+		top: 0px;
+		text-align: right;
+		width: 340px;
+	}
+	.cNexusInvoiceExplain li:before {
+		position: absolute;
+		top: 0px;
+		left: -22px;
+		font-family: 'FontAwesome';
+		content: '\f111';
+		color: black;
+	}

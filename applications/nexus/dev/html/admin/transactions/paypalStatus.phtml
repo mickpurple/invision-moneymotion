@@ -1,0 +1,6 @@
+<ips:template parameters="$transaction" />
+{{if isset( $transaction->extra['verified'] )}}
+	<p class='ipsType_normal ipsType_reset'>
+		{lang="paypal_payer_status" sprintf="$transaction->extra['verified']"}
+	</p>
+{{endif}}

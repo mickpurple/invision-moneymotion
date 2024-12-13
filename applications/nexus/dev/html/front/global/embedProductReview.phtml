@@ -1,0 +1,52 @@
+<ips:template parameters="$comment, $item, $renewalTerm, $url" />
+
+{{$asNode = \IPS\nexus\Package::load( $item->id );}}
+<div data-embedInfo-maxSize='{{if settings.max_internalembed_width}}{setting="max_internalembed_width"}{{else}}100%{{endif}}' class='ipsRichEmbed cNexusEmbed'>
+	{template="embedHeader" group="embed" app="core" params="$comment, \IPS\Member::loggedIn()->language()->addToStack( 'x_reviewed_product', FALSE, array( 'sprintf' => array( $comment->author()->name ) ) ), $comment->mapped('date'), $url"}
+	<div class='ipsPadding'>
+		<div class='ipsRichEmbed_originalItem ipsAreaBackground_reset ipsSpacer_bottom ipsType_blendLinks'>
+			<div>
+				{{if $images = $item->images() and \count( $images )}}
+					{{foreach $images as $image}}
+						<div class='ipsRichEmbed_masthead ipsRichEmbed_mastheadBg cNexusEmbedImage ipsType_center'>
+							<a href='{$url}' title="{$item->mapped('title')}" style='background-image: url( "{expression="str_replace( array( '(', ')' ), array( '\(', '\)' ), $image )"}" )'>
+								<img src='{$image}' alt="{$item->mapped('title')}" class='ipsHide'>
+							</a>
+						</div>
+						{{break;}}	
+					{{endforeach}}
+				{{else}}
+					<div class='cNexusEmbedImage ipsNoThumb ipsNoThumb_product'>&nbsp;</div>
+				{{endif}}
+				<div class='ipsPadding'>
+					<h3 class='ipsRichEmbed_itemTitle ipsTruncate ipsTruncate_line ipsType_blendLinks'>
+						<a href='{$url}' title="{$item->mapped('title')}">{$item->mapped('title')}</a>
+					</h3>
+					<p class='ipsType_reset ipsTruncate ipsTruncate_line ipsSpacer_both ipsSpacer_half'>
+						{template="packageBlockPrice" app="nexus" group="store" params="$asNode->fullPriceInfo()"}
+					</p>
+					<div class='ipsType_richText ipsType_medium' data-truncate='1'>
+						{$item->truncated(TRUE)|raw}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{template="rating" app="core" params="'veryLarge', $comment->mapped('rating')" group="global"} 
+		{{if $comment->mapped('votes_total')}}
+			<p class='ipsType_reset ipsType_medium'>{$comment->helpfulLine()|raw}</p>
+		{{endif}}
+		<hr class='ipsHr'>
+		<div class='ipsType_richText ipsType_medium ipsSpacer_top ipsSpacer_half' data-truncate='3'>
+			{$comment->truncated(TRUE)|raw}
+		</div>
+
+		{{if settings.reputation_enabled and \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and \count( $comment->reactions() )}}
+			<ul class='ipsList_inline ipsSpacer_top ipsSpacer_half'>
+				<li>
+					{template="reactionOverview" app="core" group="global" params="$comment, TRUE, 'small'"}
+				</li>
+			</ul>
+		{{endif}}
+	</div>
+</div>

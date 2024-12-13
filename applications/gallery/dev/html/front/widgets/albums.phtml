@@ -1,0 +1,52 @@
+<ips:template parameters="$albums, $title, $orientation='vertical'" />
+{{if !empty( $albums ) }}
+	<h3 class='ipsType_reset ipsWidget_title'>{$title}</h3>
+		{{if $orientation == 'horizontal'}}
+			<div class='ipsWidget_inner ipsPad'>
+				<div class='ipsCarousel ipsClearfix' data-ipsCarousel data-ipsCarousel-showDots>
+					<div class='ipsCarousel_inner'>
+						<ul class='cGalleryCarousel ipsGrid ipsGrid_collapsePhone' data-role="carouselItems">
+		{{else}}
+			<div class='ipsWidget_inner'>
+				<div class='ipsPad_half'>
+					<ul class='ipsList_reset cGalleryWidgetList'>
+        {{endif}}
+
+		{{foreach $albums as $album}}
+			<li class='cGalleryWidget cGalleryWidget_album {{if $orientation == 'horizontal'}}ipsCarousel_item{{endif}}' data-ipsLazyLoad>
+				<a href='{$album->url()}' {{if $album->asNode()->coverPhoto('small')}}{{if settings.lazy_load_enabled}}data-background-src="{backgroundimage="$album->asNode()->coverPhoto('small')"}"{{else}}style='background-image: url({backgroundimage="$album->asNode()->coverPhoto('small')"})'{{endif}}{{endif}} class='ipsThumb ipsThumb_bg{{if $orientation == 'vertical'}} cGalleryWidget_verticalThumb{{else}} cGalleryAlbumThumb{{endif}} cGalleryTrimmedImage{{if !$album->asNode()->coverPhoto('small') AND $album->asNode()->lastImage() AND $album->asNode()->lastImage()->media}} ipsNoThumb ipsNoThumb_video cGalleryNoThumb_full ipsType_left{{endif}}'>
+					<h2 class='ipsType_sectionHead ipsTruncate ipsTruncate_line'>
+						{$album->name}
+					</h2>
+					{{if $album->asNode()->coverPhoto('small')}}<img {{if settings.lazy_load_enabled}}src="{expression="\IPS\Text\Parser::blankImage()"}" data-{{endif}}src='{$album->asNode()->coverPhoto('small')}' alt="{$album->name}">{{endif}}
+					<ul class='ipsList_inline ipsType_left cGalleryWidget_albumInfo'>
+						<li>
+							<span>{lang="byline" sprintf="$album->author()->name"}</span>
+							{datetime="$album->mapped('updated')"}
+						</li>
+						{{if $album->use_comments}}
+							<li class='ipsPos_right' data-ipsTooltip title='{lang="num_comments" pluralize="$album->comments"}'><i class='fa fa-comment'></i> {$album->comments}</li>
+						{{endif}}
+						{{if $album->allow_comments}}
+							<li class='ipsPos_right' data-ipsTooltip title='{lang="gallery_image_comments_s" pluralize="$album->count_comments"}'><i class='fa fa-comment'></i> {$album->count_comments}</li>
+						{{endif}}
+						<li class='ipsPos_right' data-ipsTooltip title='{lang="cat_img_count" pluralize="$album->count_imgs"}'><i class='fa fa-camera'></i> {$album->count_imgs}</li>
+					</ul>
+				</a>
+			</li>
+		{{endforeach}}
+
+		{{if $orientation == 'vertical'}}
+					</ul>
+				</div>
+		{{else}}
+						</ul>
+					</div>
+					<span class='ipsCarousel_shadow ipsCarousel_shadowLeft'></span>
+					<span class='ipsCarousel_shadow ipsCarousel_shadowRight'></span>
+					<a href='#' class='ipsCarousel_nav ipsHide' data-action='prev'><i class='fa fa-chevron-left'></i></a>
+					<a href='#' class='ipsCarousel_nav ipsHide' data-action='next'><i class='fa fa-chevron-right'></i></a>
+				</div>
+		{{endif}}
+			</div>
+{{endif}}

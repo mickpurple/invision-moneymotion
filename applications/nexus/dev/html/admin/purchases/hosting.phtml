@@ -1,0 +1,92 @@
+<ips:template parameters="$purchase, $account, $bandwidthAddons" />
+
+<div class='ipsAreaBackground_light ipsPad cNexusHosting ipsSpacer_bottom'>
+	<div class='ipsGrid'>
+		<div class='ipsGrid_span6'>
+			<div class='ipsBox ipsPad'>	
+				<h2 class='ipsType_sectionHead'>{lang="hosting_credentials"}</h2>
+				<br>
+				<br>
+
+				<h3 class='ipsType_sectionHead ipsType_normal ipsType_reset'><strong>{lang="account_server"}</strong></h3>	
+			 	<p class='ipsType_medium ipsType_reset ipsSpacer_bottom'>
+					{$account->server->hostname} <span class='ipsType_light'>(IP: {$account->server->ip})</span>
+				</p>
+
+				<h3 class='ipsType_sectionHead ipsType_normal ipsType_reset'><strong>{lang="account_username"}</strong></h3>	
+				<p class='ipsType_medium ipsType_reset ipsType_monospace ipsSpacer_bottom'>
+					{$account->username}
+				</p>
+
+				<h3 class='ipsType_sectionHead ipsType_normal ipsType_reset'><strong>{lang="account_password"}</strong></h3>	
+				<p class='ipsType_medium ipsType_reset'>
+					<span class='ipsType_monospace'>{$account->password}</span>
+				</p>
+
+				<hr class='ipsHr'>
+
+				<ul class='ipsGrid ipsSpacer_top'>
+					<li class='ipsGrid_span6'>
+						<a href="{$account->ftpLink()}" class='ipsButton ipsButton_primary ipsButton_verySmall ipsButton_fullWidth'>{lang="account_ftp"}</a>
+					</li>
+					<li class='ipsGrid_span6'>
+						<a href="{$account->controlPanelLink()}" class='ipsButton ipsButton_primary ipsButton_verySmall ipsButton_fullWidth' target="_blank" rel='noopener'>{lang="account_{$account->server->type}_control_panel"}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class='ipsGrid_span6'>
+			<div class='ipsBox ipsPad ipsSpacer_bottom'>
+				<h2 class='ipsType_sectionHead'>{lang="hosting_usage"}</h2>
+				<br>
+				<br>
+
+				<h3 class='ipsType_sectionHead ipsType_normal ipsType_reset'><strong>{lang="account_diskspace_use"}</strong></h3>
+				{{if $diskspaceAllowance = $account->diskspaceAllowance()}}	
+					<div class="ipsProgressBar ipsSpacer_top ipsSpacer_half {{if (100/$diskspaceAllowance*$account->diskspaceInUse()) >= 90}}ipsProgressBar_warning{{endif}}">
+						<div class="ipsProgressBar_progress" style="width: {expression="100/$diskspaceAllowance*$account->diskspaceInUse()"}%"><span>{filesize="$account->diskspaceInUse()"} / {filesize="$diskspaceAllowance"}</span></div>
+					</div>
+				{{else}}
+					<p class='ipsType_reset'>
+						{filesize="$account->diskspaceInUse()"} / {lang="unlimited"}
+					</p>
+				{{endif}}
+				<br>
+
+				<h3 class='ipsType_sectionHead ipsType_normal ipsType_reset'><strong>{lang="account_bandwidth_use"}</strong></h3>
+				{{if $monthlyBandwidthAllowance = $account->monthlyBandwidthAllowance()}}	
+					<div class="ipsProgressBar ipsSpacer_top ipsSpacer_half {{if (100/$monthlyBandwidthAllowance*$account->bandwidthUsedThisMonth()) >= 90}}ipsProgressBar_warning{{endif}}">
+						<div class="ipsProgressBar_progress" style="width: {expression="100/$monthlyBandwidthAllowance*$account->bandwidthUsedThisMonth()"}%"><span>{filesize="$account->bandwidthUsedThisMonth()"} / {filesize="$monthlyBandwidthAllowance"}</span></div>
+					</div>
+					{{if \count( $bandwidthAddons )}}
+						<ul class='ipsType_reset ipsSpacer_both ipsSpacer_half'>
+							{{foreach $bandwidthAddons as $addon}}
+								<li>
+									{{if member.hasAcpRestriction( 'nexus', 'payments', 'invoices_manage' )}}
+										<a href="{$addon->original_invoice->acpUrl()}">{lang="extra_bandwidth_purchased" sprintf="\IPS\Output\Plugin\Filesize::humanReadableFilesize( $addon->extra['bwAmount'] * 1000000, TRUE )"} {datetime="$addon->start"}</a>. {lang="ps_expire"}: {datetime="$addon->expire"}
+									{{else}}
+										{lang="extra_bandwidth_purchased" sprintf="\IPS\Output\Plugin\Filesize::humanReadableFilesize( $addon->extra['bwAmount'] * 1000000, TRUE )"} {datetime="$addon->start"}.
+									{{endif}}
+
+									{{if member.hasAcpRestriction( 'nexus', 'customers', 'purchases_delete' )}}
+										<a href="{$addon->acpUrl()->setQueryString( array( 'do' => 'delete', 'r' => 'p' ) )}" data-confirm>{lang="cancel_type_cancel"}</a>
+									{{endif}}								
+								</li>
+							{{endforeach}}
+						</ul>
+					{{endif}}
+					<p class='ipsType_reset ipsSpacer_top ipsSpacer_half'>
+						<a href="{$purchase->acpUrl()->setQueryString( array( 'do' => 'extra', 'act' => 'bandwidth' ) )}" data-ipsDialog data-ipsDialog-title="Generate Bandwidth Purchase Invoice" class='ipsButton ipsButton_light ipsButton_verySmall'>{lang="generate_bandwidth_invoice"}</a>
+					</p>
+				{{else}}
+					<p class='ipsType_reset'>
+						{filesize="$account->bandwidthUsedThisMonth()"} / {lang="unlimited"}
+					</p>
+				{{endif}}
+			</div>
+		</div>
+		<p class='ipsType_center ipsType_normal'>
+			<strong><a href="{expression="\IPS\Http\Url::external( 'http://' . $account->domain )"}" target="_blank" rel='noreferrer'>{$account->domain}</a> <i class='fa fa-external-link'></i></strong>
+		</p>
+	</div>
+</div>

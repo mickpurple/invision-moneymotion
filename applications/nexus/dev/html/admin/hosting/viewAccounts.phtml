@@ -1,0 +1,115 @@
+<ips:template parameters="$server, $notPresentOnServer, $notPresentInDb, $domainsDontMatch, $diskSpaceAllocated, $diskSpaceInUse, $expiredButnotSuspended, $suspendedButNotExpired, $doesNotResolveCorrectly, $accounts, $warnings=array()" />
+{{if empty( $notPresentOnServer ) and empty( $notPresentInDb ) and empty( $domainsDontMatch ) and empty( $expiredButnotSuspended ) and empty( $suspendedButNotExpired ) and empty( $doesNotResolveCorrectly )}}
+	<div class="ipsMessage ipsMessage_success">{lang="hserv_audit_ok"}</div>
+{{else}}
+	{{if !empty( $notPresentOnServer )}}
+		<div class="ipsMessage ipsMessage_error">
+			{lang="hserv_audit_notonserver"}
+			<ul class="ipsList_reset">
+				{{foreach $notPresentOnServer as $a}}
+					{{$warnings[] = $a['account_username'];}}
+					<li><a href='{url="app=nexus&module=customers&controller=purchases&do=view&id={$a['ps_id']}"}'>{$a['account_username']}</a> ({$a['account_domain']})</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	{{endif}}
+	
+	{{if !empty( $notPresentInDb )}}
+		<div class="ipsMessage ipsMessage_error">
+			{lang="hserv_audit_notindb"}
+			<ul class="ipsList_reset">
+				{{foreach $notPresentInDb as $username => $a}}
+					{{$warnings[] = $username;}}
+					<li>{$username} ({$a['domain']})</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	{{endif}}
+	
+	{{if !empty( $domainsDontMatch )}}
+		<div class="ipsMessage ipsMessage_error">
+			{lang="hserv_audit_domain"}
+			<ul class="ipsList_reset">
+				{{foreach $domainsDontMatch as $a}}
+					{{$warnings[] = $a['account_username'];}}
+					<li><a href='{url="app=nexus&module=customers&controller=purchases&do=view&id={$a['ps_id']}"}'>{$a['account_username']}</a> {lang="hserv_audit_domain_details" sprintf="$a['account_domain'], $a['domain']"}</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	{{endif}}
+	
+	{{if !empty( $expiredButnotSuspended )}}
+		<div class="ipsMessage ipsMessage_error">
+			{lang="hserv_audit_not_suspended"}
+			<ul class="ipsList_reset">
+				{{foreach $expiredButnotSuspended as $a}}
+					{{$warnings[] = $a['account_username'];}}
+					<li><a href='{url="app=nexus&module=customers&controller=purchases&do=view&id={$a['ps_id']}"}'>{$a['account_username']}</a> ({$a['account_domain']})</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	{{endif}}
+	
+	{{if !empty( $suspendedButNotExpired )}}
+		<div class="ipsMessage ipsMessage_error">
+			{lang="hserv_audit_suspended"}
+			<ul class="ipsList_reset">
+				{{foreach $suspendedButNotExpired as $a}}
+					{{$warnings[] = $a['account_username'];}}
+					<li><a href='{url="app=nexus&module=customers&controller=purchases&do=view&id={$a['ps_id']}"}'>{$a['account_username']}</a> ({$a['account_domain']})</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	{{endif}}
+	
+	{{if !empty( $doesNotResolveCorrectly )}}
+		<div class="ipsMessage ipsMessage_error">
+			{lang="hserv_audit_resolve"}
+			<ul class="ipsList_reset">
+				{{foreach $doesNotResolveCorrectly as $a}}
+					{{$warnings[] = $a['account_username'];}}
+					<li><a href='{url="app=nexus&module=customers&controller=purchases&do=view&id={$a['ps_id']}"}'>{$a['account_username']}</a> ({$a['account_domain']})</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	{{endif}}
+	
+{{endif}}
+
+<table class="ipsTable ipsTable_zebra">
+	<thead>
+		<tr>
+			<th></th>
+			<th>{lang="account_username"}</th>
+			<th>{lang="account_domain"}</th>
+			<th>{lang="hserv_audit_quota"}</th>
+			<th>{lang="hserv_audit_diskuse"}</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{foreach $accounts as $data}}
+			<tr>
+				<td>
+					{{if \in_array( $data['account_username'], $warnings )}}
+						<i class="fa fa-exclamation-triangle ipsType_warning" title="{lang="hserv_audit_account_warn"}" data-ipsTooltip></i>
+					{{elseif $data['active']}}
+						<i class="fa fa-circle ipsType_success" title="{lang="hserv_audit_account_ok"}" data-ipsTooltip></i>
+					{{else}}
+						<i class="fa fa-circle-o" title="{lang="hserv_audit_account_inactive"}" data-ipsTooltip></i>
+					{{endif}}
+				</td>
+				<td><a href='{url="app=nexus&module=customers&controller=purchases&do=view&id={$data['ps_id']}"}'>{$data['account_username']}</a></td>
+				<td><a href="{expression="\IPS\Http\Url::external( 'http://' . $data['account_domain'] )"}" target="_blank" rel='noreferrer'>{$data['account_domain']}</a></td>
+				<td>{filesize="$data['disklimit']" decimal="true"}</td>
+				<td>{filesize="$data['diskused']" decimal="true"}</td>
+			</tr>
+		{{endforeach}}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3"></td>
+			<td><strong>{{if $diskSpaceAllocated == -1}}{lang="unlimited"}{{else}}{filesize="$diskSpaceAllocated" decimal="true"}{{endif}}</strong></td>
+			<td><strong>{filesize="$diskSpaceInUse" decimal="true"}</strong></td>
+		</tr>
+	</tfoot>
+</table>

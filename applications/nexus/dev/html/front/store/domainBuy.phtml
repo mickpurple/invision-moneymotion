@@ -1,0 +1,2 @@
+<ips:template parameters="$field, $prices" />
+http:// <input type="text" name="{$field->name}[sld]" value="{$field->value['sld']}"> . <select name="{$field->name}[tld]">{{foreach $prices as $tld => $price}}<option value="{$tld}" {{if $tld == $field->value['tld']}}selected{{endif}}>{$tld} ({$price})</option>{{endforeach}}</select>

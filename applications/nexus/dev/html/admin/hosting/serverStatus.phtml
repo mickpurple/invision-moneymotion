@@ -1,0 +1,12 @@
+<ips:template parameters="$data" />
+<div class="ipsType_large ipsType_center">
+	{{if !$data['server_monitor']}}
+		<i class="fa fa-question-circle" title="{lang="server_monitoring_disabled"}" data-ipsTooltip></i>
+	{{elseif $data['server_monitor_version'] and $data['server_monitor_version'] != 1000}}
+		<i class="fa fa-exclamation-triangle ipsType_warning" title="{lang="server_monitoring_outofdate"}" data-ipsTooltip></i>
+	{{elseif $data['server_monitor_fails']}}
+		<i class="fa fa-exclamation-circle ipsType_warning" title="{lang="server_monitoring_fails" pluralize="$data['server_monitor_fails']"}" data-ipsTooltip></i>
+	{{else}}
+		<i class="fa fa-check-circle ipsType_success" title="{lang="server_monitoring_ok"}" data-ipsTooltip></i>
+	{{endif}}
+</div>

@@ -1,0 +1,6 @@
+<ips:template parameters="$average, $count" />
+{{if $count}}
+	{expression="round( $average, 1 )"} <span class="ipsType_light">({lang="from_x_ratings" pluralize="$count"})</span>
+{{else}}
+	<em class="ipsType_light">{lang="no_ratings"}</em>
+{{endif}}

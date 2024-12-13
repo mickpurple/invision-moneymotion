@@ -1,0 +1,7 @@
+<ips:template parameters="$notification, $details, $email" />
+{$email->language->addToStack( 'hosting_error_email_intro', FALSE )}
+{$details['server']->hostname}: {{if $email->language->checkKeyExists( 'hosting_ex_' . $details['message'] )}}{$email->language->addToStack( 'hosting_ex_' . $details['message'], FALSE )}{{else}}{$details['message']}{{endif}}
+
+{$email->language->addToStack( 'menu__nexus_hosting_errors', FALSE )}: {url="app=nexus&module=hosting&controller=errors" base="admin" plain="true"}
+
+-- {setting="board_name"}

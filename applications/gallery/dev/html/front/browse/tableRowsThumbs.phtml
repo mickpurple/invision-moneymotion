@@ -1,0 +1,39 @@
+<ips:template parameters="$table, $headers, $images" />
+{{foreach $images as $image}}
+	<div class='ipsGrid_span4 {{if $image->hidden()}}ipsModerated{{else}}ipsAreaBackground_light{{endif}} cGalleryImageItem' data-role='patchworkImage' data-json='{$image->json()|raw}' data-imageId="{$image->id}">
+		<div data-grid-ratio='65'>
+			<a data-imageLightbox href='{$image->url()}' title='{lang="view_this_image" sprintf="$image->caption"}' {{if $image->small_file_name}}{{if settings.lazy_load_enabled}}data-background-src="{backgroundimage="\IPS\File::get( 'gallery_Images', $image->small_file_name )->url"}"{{else}}style='background-image: url({backgroundimage="\IPS\File::get( 'gallery_Images', $image->small_file_name )->url"})'{{endif}}{{endif}} class='cGalleryImageItem_image cGalleryTrimmedImage{{if !$image->small_file_name}} ipsNoThumb ipsNoThumb_video{{endif}}'>
+				<img {{if settings.lazy_load_enabled}}src="{expression="\IPS\Text\Parser::blankImage()"}" data-{{endif}}src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}" class='cGalleryThumb'>&nbsp;
+			</a>
+			{{if $table->canModerate()}}
+				<input type='checkbox' data-role='moderation' name="moderate[{$image->id}]" data-actions="{{if $image->mapped('featured')}}unfeature{{else}}feature{{endif}} {{if $image->mapped('pinned')}}unpin{{else}}pin{{endif}} {{if $image->hidden() === -1}}unhide{{elseif $image->hidden() === 1}}approve{{else}}hide{{endif}} {{if $image->mapped('locked')}}unlock{{else}}lock{{endif}} move delete" data-state='{{if $image->tableStates()}}{$image->tableStates()}{{endif}}'>
+			{{endif}}
+		</div>
+		<ul class='ipsList_inline ipsType_medium ipsClearfix'>
+			{{if $image->unread()}}
+				<li class='ipsPos_left'>
+					<span class='ipsItemStatus ipsItemStatus_small' data-ipsTooltip title='{{if $image->unread() === -1}}{lang="new"}{{else}}{lang="updated"}{{endif}}'><i class="fa fa-circle"></i></span>
+				</li>
+			{{endif}}
+			{{if $image->mapped('pinned') || $image->mapped('featured') || $image->hidden() === -1 || $image->hidden() === 1}}
+				<li class='ipsPos_left'>
+					{{if $image->hidden() === -1}}
+						<span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{$image->hiddenBlurb()}'><i class='fa fa-eye-slash'></i></span>
+					{{elseif $image->hidden() === 1}}
+						<span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa fa-warning'></i></span>
+					{{endif}}							
+					{{if $image->mapped('pinned')}}
+						<span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa fa-thumb-tack'></i></span>
+					{{endif}}
+					{{if $image->mapped('featured')}}
+						<span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="featured"}'><i class='fa fa-star'></i></span>
+					{{endif}}
+				</li>
+			{{endif}}
+			
+			{{if $image->directContainer()->allow_comments}}
+				<li class='ipsPos_right {{if $image->comments == 0}}ipsFaded{{endif}}' data-ipsTooltip title='{lang="num_comments" pluralize="$image->comments"}'><i class='fa fa-comment'></i> {$image->comments}</li>
+			{{endif}}
+		</ul>
+	</div>
+{{endforeach}}

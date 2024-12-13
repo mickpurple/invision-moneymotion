@@ -1,0 +1,77 @@
+<ips:template parameters="$reviews, $orientation='vertical'" />
+<h3 class='ipsType_reset ipsWidget_title'>{lang="block_recentCommerceReviews"}</h3>
+<div class='ipsWidget_inner'>
+	{{if $orientation == 'vertical'}}
+		<div class='ipsPad_half'>
+			{{if !empty( $reviews ) }}
+				<ul class='ipsDataList ipsDataList_reducedSpacing'>
+					{{foreach $reviews as $review}}
+						{{$package =  \IPS\nexus\Package::load( $review->item()->id );}}
+						<li class='ipsDataItem cNexusWidgetProduct ipsClearfix'>
+							<div class='ipsPhotoPanel ipsPhotoPanel_mini'>
+								<a href='{$package->url()}' class='ipsPos_left cNexusProduct_image ipsThumb ipsThumb_tiny ipsThumb_bg' {{if $package->image}}style='background-image: url({backgroundimage="$package->image"})'{{endif}}>
+									{{if $package->image}}
+										<img src="{$package->image}" class='ipsImage' alt="{$package->_title}">
+									{{else}}
+										<div class='ipsNoThumb ipsThumb_tiny ipsNoThumb_product'>&nbsp;</div>
+									{{endif}}
+								</a>
+								<div>
+									<div class='ipsType_break ipsContained'>
+										<div class='ipsSpacer_bottom ipsSpacer_half'>
+											<a href="{$review->item()->url()}" title='{lang="view_this_product" sprintf="$review->item()->title"}' class='ipsType_normal ipsType_blendLinks'>{$review->item()->title}</a><br>
+											<span class='cNexusWidgetPrice'>{$package->price()}</span>
+										</div>
+
+										{template="rating" group="global" location="front" app="core" params="'small', $review->rating, \IPS\Settings::i()->reviews_rating_out_of"} <span class='ipsType_small ipsType_light'>({$package->item()->reviews})</span>
+										<div class='ipsType_richText ipsType_medium ipsSpacer_both ipsSpacer_half' data-ipsTruncate data-ipsTruncate-size='2 lines' data-ipsTruncate-type='remove'>
+											{$review->truncated(TRUE, 100)|raw}
+										</div>
+										<span class='ipsType_light ipsType_medium'>{lang="byline" htmlsprintf="$review->author()->link()"} {datetime="$review->mapped('date')"}</span>
+									</div>
+								</div>
+							</div>
+						</li>
+					{{endforeach}}
+				</ul>
+			{{else}}
+				<div class='ipsType_light ipsPad_half ipsType_center'>{lang="no_recent_reviews"}</div>
+			{{endif}}
+		</div>
+	{{else}}
+		{{if !empty( $reviews ) }}
+			<ul class='ipsDataList ipsPad ipsDataList_reducedSpacing'>
+				{{foreach $reviews as $review}}
+					{{$package =  \IPS\nexus\Package::load( $review->item()->id );}}
+					<li class='ipsDataItem cNexusWidgetProduct ipsClearfix'>
+						<div class='ipsPhotoPanel ipsPhotoPanel_large'>
+							<a href='{$package->url()}' class='ipsPos_left cNexusProduct_image ipsThumb ipsThumb_small ipsThumb_bg' {{if $package->image}}style='background-image: url({backgroundimage="$package->image"})'{{endif}}>
+								{{if $package->image}}
+									<img src="{$package->image}" class='ipsImage' alt="{$package->_title}">
+								{{else}}
+									<div class='ipsNoThumb ipsThumb_small ipsNoThumb_product'>&nbsp;</div>
+								{{endif}}
+							</a>
+							<div>
+								<div class='ipsType_break ipsContained'>
+									<div class='ipsSpacer_bottom ipsSpacer_half'>
+										<a href="{$review->item()->url()}" title='{lang="view_this_product" sprintf="$review->item()->title"}' class='ipsType_normal ipsType_blendLinks'>{$review->item()->title}</a><br>
+										<span class='cNexusWidgetPrice'>{$package->price()}</span>
+									</div>
+
+									{template="rating" group="global" location="front" app="core" params="'small', $review->rating, \IPS\Settings::i()->reviews_rating_out_of"} <span class='ipsType_small ipsType_light'>({$package->item()->reviews})</span>
+									<div class='ipsType_richText ipsType_medium ipsSpacer_both ipsSpacer_half' data-ipsTruncate data-ipsTruncate-size='2 lines' data-ipsTruncate-type='remove'>
+										{$review->truncated(TRUE, 500)|raw}
+									</div>
+									<span class='ipsType_light ipsType_medium'>{lang="byline" htmlsprintf="$review->author()->link()"} {datetime="$review->mapped('date')"}</span>
+								</div>
+							</div>
+						</div>
+					</li>
+				{{endforeach}}
+			</ul>
+		{{else}}
+			<div class='ipsType_light ipsPad_half ipsType_center'>{lang="no_recent_reviews"}</div>
+		{{endif}}
+	{{endif}}
+</div>

@@ -1,0 +1,7 @@
+<ips:template parameters="$whois" />
+<h2 class='acpBlock_title acpBlock_titleDark acpBlock_titleSmall'>{lang="domain_whois"}</h2>
+<div class="ipsAreaBackground_light ipsPad">
+	{{foreach $whois as $record}}
+		<pre>{$record}</pre>
+	{{endforeach}}
+</div>

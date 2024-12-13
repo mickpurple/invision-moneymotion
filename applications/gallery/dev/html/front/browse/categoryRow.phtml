@@ -1,0 +1,49 @@
+<ips:template parameters="$table, $headers, $categories" />
+{{foreach $categories as $category}}
+	{{if $category->can('view')}}
+	<li class="ipsDataItem ipsDataItem_responsivePhoto ipsClearfix">
+		<div class='ipsDataItem_generic ipsDataItem_size3'>
+			{template="thumbImage" group="global" app="core" params="$category->coverPhoto( 'small' ), $category->_title, 'medium', '', 'view_this', $category->url(), 'gallery_Images'"}
+		</div>
+		<div class="ipsDataItem_main">
+			<h4 class="ipsDataItem_title">
+				{{if \IPS\gallery\Image::containerUnread( $category )}}
+					<span class='ipsItemStatus' data-ipsTooltip title="{lang="unread_cat_images"}"><i class="fa fa-circle"></i></span>
+				{{endif}}
+				<a href="{$category->url()}">{$category->_title}</a>
+			</h4>
+			<p class="ipsDataItem_meta">{$category->description|raw}</p>
+			{{if $category->hasChildren()}}
+				<ul class="ipsDataItem_subList ipsList_inline">
+					{{foreach $category->children() as $subcategory}}
+						<li class="{{if \IPS\gallery\Image::containerUnread( $subcategory )}}ipsDataItem_unread{{endif}}">
+							<a href="{$subcategory->url()}">{$subcategory->_title}</a>
+						</li>
+					{{endforeach}}
+				</ul>
+			{{endif}}
+		</div>
+		<dl class="ipsDataItem_stats ipsDataItem_statsLarge">
+			{{$count = \IPS\gallery\Image::contentCount( $category );}}
+			<dt class="ipsDataItem_stats_number">{number="$count"}</dt>
+			<dd class="ipsDataItem_stats_type ipsType_light">{lang="images_no_number" pluralize="$count"}</dd>
+		</dl>
+		<ul class="ipsDataItem_lastPoster ipsDataItem_withPhoto">
+			{{if $lastPost = $category->lastImage()}}
+				<li>{template="userPhoto" app="core" group="global" params="$lastPost->author(), 'tiny'"}</li>
+				<li><a href="{$lastPost->url()}" class='ipsType_break ipsContained'>{$lastPost->caption}</a></li>
+				<li>{lang="byline_nodate" htmlsprintf="$lastPost->author()->link()"}</li>
+				<li data-short="1 dy" class="ipsType_light">{datetime="$lastPost->date"}</li>
+			{{endif}}
+		</ul>
+		{{if $table AND $table->canModerate()}}
+			<div class='ipsDataItem_modCheck'>
+				<span class='ipsCustomInput'>
+					<input type='checkbox' data-role='moderation' name="moderate[{$category->_id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $category ) )"}" data-state=''>
+					<span></span>
+				</span>
+			</div>
+		{{endif}}
+	</li>
+	{{endif}}
+{{endforeach}}

@@ -1,0 +1,19 @@
+<ips:template parameters="$server, $encoded, $by, $email" />
+
+{expression="$email->language->addToStack( 'monitor_email_intro', FALSE, array( 'sprintf' => \IPS\Settings::i()->board_name ) )"}
+<br />
+<br />
+
+<table width='100%' cellpadding='15' cellspacing='0' border='0' style='color: #5e707d;'>
+	<tr>
+		<td dir='{dir}'>
+			<strong>{expression="$email->language->addToStack( 'monitor_email_acknowledged', FALSE, array( 'sprintf' => array( $server->hostname, $by ) ) )"}</strong>
+		</td>
+	</tr>
+</table>
+<br />
+
+<a href='{setting="base_url"}applications/nexus/interface/monitoring/respond.php?a=r&server={$server->id}&by={$encoded}' style="color: #ffffff; font-family: 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 12px; background: {setting="email_color"}; line-height: 32px; padding: 0 10px; display: inline-block; border-radius: 3px;">{expression="$email->language->addToStack('monitor_email_reset', FALSE, array( 'sprintf' => \IPS\Settings::i()->board_name ) )"}</a>
+
+<br /><br />
+<em style='color: #8c8c8c'>&mdash; {setting="board_name"}</em>

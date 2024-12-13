@@ -1,0 +1,18 @@
+<ips:template parameters="$form, $stream, $results, $pagination, $groupByDepartment, $sortBy, $sortDir, $tracked, $participatedIn, $honorSeverities=TRUE" />
+
+<div data-controller='nexus.admin.support.list' class='ipsBox ipsClearfix'>
+	<noscript>
+		<p class="ipsType_reset ipsType_normal ipsSpacer_bottom" data-role="filterBlurb">{$stream->title} <a href="{url="app=nexus&module=support&controller=requests&do=filters"}" data-action="showFilterForm" class="ipsType_small">({lang="change"})</a></p>
+	</noscript>
+	<div class="ipsJS_show" data-role="filterForm">
+		{$form|raw}
+	</div>
+	<div data-role='mainTable' class='ipsPad' id='elRequestsTabContent'>
+		{{if $stream->temporary}}
+			<a class='ipsResponsive_showPhone ipsResponsive_block ipsButton ipsButton_veryVerySmall ipsButton_light ipsSpacer_half ipsButton_fullWidth ipsSpacer_bottom' href="{url="app=nexus&module=support&controller=requests&do=saveStream&id={$stream->id}"}" data-ipsMenu id="elSaveStream">{lang="save_this_stream"}</a>
+		{{elseif \is_int( $stream->id )}}
+			<a class='ipsResponsive_showPhone ipsResponsive_block ipsButton ipsButton_veryVerySmall ipsButton_light ipsSpacer_half ipsButton_fullWidth ipsSpacer_bottom' href="{url="app=nexus&module=support&controller=requests&do=editStream&id={$stream->id}"}" data-action="editStream">{lang="edit_this_stream"} <i class='fa fa-angle-down'></i></a>
+		{{endif}}
+		{template="requestsTable" group="support" params="$results, $pagination, $groupByDepartment, $sortBy, $sortDir, $tracked, $participatedIn, $honorSeverities"}
+	</div>
+</div>

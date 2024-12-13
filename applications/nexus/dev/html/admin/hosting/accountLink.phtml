@@ -1,0 +1,6 @@
+<ips:template parameters="$accountOrUsername" />
+{{if $accountOrUsername instanceof \IPS\nexus\Hosting\Account}}
+	<a href="{$accountOrUsername->acpUrl()}">{$accountOrUsername->domain}</a>
+{{else}}
+	<a href="{url="app=nexus&module=customers&controller=purchases&do=findHostingAccount&username=$accountOrUsername"}">{$accountOrUsername}</a>
+{{endif}}

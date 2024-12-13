@@ -1,0 +1,17 @@
+<ips:template parameters="$data" />
+{{if empty( $data )}}
+	<p class="ipsMessage ipsMessage_success">{lang="hserv_audit_all_ok"}</p>
+{{else}}
+	<div class="ipsMessage ipsMessage_warning">
+		{lang="hserv_audit_all_err"}
+		<ul>
+			{{foreach $data as $id => $hostname}}
+				<li>
+					<a href="{url="app=nexus&module=hosting&controller=servers&do=view&id={$id}"}">
+						{$hostname}
+					</a>
+				</li>
+			{{endforeach}}
+		</ul>
+	</div>
+{{endif}}

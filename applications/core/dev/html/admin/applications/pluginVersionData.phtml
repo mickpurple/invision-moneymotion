@@ -1,0 +1,12 @@
+<ips:template parameters="$plugin" />
+<span class='ipsType_small ipsType_unbold ipsType_light'>{$plugin->version_human}</span>
+<div class="ipsPos_right ipsTree_row_cells">
+	<span class="ipsTree_row_cell">
+		{{if $plugin->marketplace_id}}
+			<a href="{url="app=core&module=marketplace&controller=marketplace&do=viewFile&id={$plugin->marketplace_id}"}" class="ipsType_neutral"><i class="fa fa-shopping-basket"></i> {lang="menutab__marketplace"}</a>
+		{{else}}
+			<span class="ipsType_issue"><i class="fa fa-exclamation-triangle"></i> {lang="custom"}</span>
+		{{endif}}
+	</span>
+	&nbsp;
+</div>

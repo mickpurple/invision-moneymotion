@@ -1,0 +1,20 @@
+.cDownloadsWidget_statsNumber {
+	padding-top: 20px;
+}
+
+.cWidgetPrice {
+	color: rgb( var(--theme-price) );
+	text-transform: uppercase;
+	font-weight: 500;
+	line-height: 1.1 !important;
+	margin-top: 4px;
+	font-size: {fontsize="x_small"};
+}
+
+	.cWidgetPrice .cNexusPrice_from {
+		font-size: {fontsize="9"};
+	}
+
+.cRatingWrapper {
+	display: inline;
+}

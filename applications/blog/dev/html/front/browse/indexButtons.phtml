@@ -1,0 +1,73 @@
+<ips:template parameters="$blogs=array(), $viewMode, $forMobile=FALSE, $category=NULL" />
+{{if \count( $blogs ) || \IPS\blog\Blog::canCreate() || \IPS\Settings::i()->blog_allow_grid}}
+		{{if \count( $blogs ) AND \IPS\blog\Blog::canOnAny( 'add' )}}
+			<li class='ipsToolList_primaryAction {{if !$forMobile}}ipsResponsive_hidePhone{{endif}}'>
+				{{if \count( $blogs ) > 1}}
+					<a class="ipsButton ipsButton_medium ipsButton_important ipsButton_fullWidth" href="#elCreateEntry_menu" data-ipsMenu id='elCreateEntry'>
+						{lang="add_entry"} &nbsp;<i class='fa fa-caret-down'></i>
+					</a>
+					<ul class='ipsMenu ipsMenu_normal ipsHide' id='elCreateEntry_menu'>
+						<li class='ipsMenu_title'>{lang="add_entry_to"}</li>
+						{{foreach $blogs as $blog}}
+							{{if $blog->disabled != 1}}
+								<li class='ipsMenu_item'>
+									<a href='{url="app=blog&module=blogs&controller=submit&id={$blog->id}" seoTemplate="blog_submit"}' class='ipsTruncate ipsTruncate_line'>{$blog->_title}</a>
+								</li>
+							{{endif}}
+						{{endforeach}}
+					</ul>
+				{{else}}
+					{{foreach $blogs as $blog}}
+						{{if $blog->disabled != 1}}
+							<a class="ipsButton ipsButton_medium ipsButton_important ipsButton_fullWidth" href="{url="app=blog&module=blogs&controller=submit&id={$blog->id}" seoTemplate="blog_submit"}">
+								{lang="add_entry"}
+							</a>
+						{{endif}}
+					{{endforeach}}
+				{{endif}}
+			</li>
+        {{endif}}
+        {{if \IPS\Settings::i()->blog_allow_grid AND !$forMobile}}
+			<li class='ipsType_center ipsMargin_bottom:none'>
+				<ul class='ipsButton_split'>
+					<li class='ipsType_center'>
+						{{if $category}}
+							<a href='{$category->url()->csrf()->setQueryString( array( 'id' => $category->_id, 'view' => 'list' ) ) }'  class='ipsButton {{if $viewMode != 'grid'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}} ipsButton_narrow ipsButton_medium' data-ipsTooltip data-ipsTooltip-safe title='{lang="view_blogs_as_list"}' rel="nofollow"><i class='fa fa-th-list'></i></a>
+						{{else}}
+							<a href='{url="app=blog&module=blogs&controller=browse&view=list" seoTemplate="blogs" csrf="true"}'  class='ipsButton {{if $viewMode != 'grid'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}} ipsButton_narrow ipsButton_medium' data-ipsTooltip data-ipsTooltip-safe title='{lang="view_blogs_as_list"}' rel="nofollow"><i class='fa fa-th-list'></i></a>
+						{{endif}}
+					</li>
+					<li class='ipsType_center'>
+						{{if $category}}
+							<a href='{$category->url()->csrf()->setQueryString( array( 'id' => $category->_id, 'view' => 'grid' ) ) }'  class='ipsButton {{if $viewMode == 'grid'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}} ipsButton_narrow ipsButton_medium' data-ipsTooltip data-ipsTooltip-safe title='{lang="view_blogs_as_grid"}' rel="nofollow"><i class='fa fa-th-large'></i></a>
+						{{else}}
+							<a href='{url="app=blog&module=blogs&controller=browse&view=grid" seoTemplate="blogs" csrf="true"}' class='ipsButton {{if $viewMode == 'grid'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}} ipsButton_narrow ipsButton_medium' data-ipsTooltip data-ipsTooltip-safe title='{lang="view_blogs_as_grid"}' rel="nofollow"><i class='fa fa-th-large'></i></a>
+						{{endif}}
+					</li>
+				</ul>
+			</li>
+        {{endif}}
+        {{if \count( $blogs )}}
+			{{if \count( $blogs ) > 1}}
+				<li class='ipsType_center {{if !$forMobile}}ipsResponsive_hidePhone{{endif}}'>
+					<a href='{url="app=blog&module=blogs&controller=browse&page=1&filter=my_blogs&sortby=blog_last_edate" seoTemplate="blogs"}' data-ipsMenu id='elMyBlogs' class='ipsButton ipsButton_medium ipsButton_fullWidth ipsButton_link'>{lang="my_blogs"} <i class='fa fa-caret-down'></i></a>
+					<ul class='ipsMenu ipsMenu_normal ipsHide' id='elMyBlogs_menu'>
+						{{foreach $blogs as $blog}}
+							<li class='ipsMenu_item'>
+								<a href='{$blog->url()}' class='ipsTruncate ipsTruncate_line'>{$blog->_title}</a>
+							</li>
+						{{endforeach}}
+					</ul>
+				</li>
+			{{endif}}
+			{{if \IPS\blog\Blog::canCreate()}}
+				<li class='ipsType_center {{if !$forMobile}}ipsResponsive_hidePhone{{endif}}'>
+					<a href='{url="app=blog&module=blogs&controller=create" seoTemplate="blog_create"}' data-ipsDialog data-ipsDialog-title='{lang="create_blog"}' class='ipsButton ipsButton_medium ipsButton_fullWidth ipsButton_link'>{lang="create_new_blog"}</a>
+				</li>
+			{{endif}}
+		{{elseif \IPS\blog\Blog::canCreate()}}
+			<li class='ipsToolList_primaryAction {{if !$forMobile}}ipsResponsive_hidePhone{{endif}}'>
+				<a class="ipsButton ipsButton_large ipsButton_important ipsButton_fullWidth" href="{url="app=blog&module=blogs&controller=create" seoTemplate="blog_create"}">{lang="create_blog"}</a>
+			</li>
+		{{endif}}
+{{endif}}

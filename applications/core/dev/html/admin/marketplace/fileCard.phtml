@@ -1,0 +1,31 @@
+<ips:template parameters="$file, $carousel=FALSE" />
+{{if $carousel}}
+<li class='ipsCarousel_item'>
+{{endif}}
+<a class='ipsBox cFileCard cFileCard_large' data-file="{$file['id']}" href="{url="app=core&module=marketplace&controller=marketplace&do=viewFile&id={$file['id']}"}">
+	<span class="ipsThumb_bg ipsPosition:relative" {{if $file['primaryScreenshotThumb']}}data-background-src="{backgroundimage="$file['primaryScreenshotThumb']['url']"}"{{endif}}>
+		<span class="cFileCard_cost">
+        {{if $file['isPaid']}}
+            &dollar;{number="$file['prices']['USD']" decimals="2"}
+		{{else}}
+		    {lang="marketplace_free"}
+		{{endif}}
+		</span>
+	</span>
+
+	<div class="ipsPadding:half">
+		<h2 class="cFileCard_title ipsTruncate ipsTruncate_line">{$file['title']}</h2>
+		<span class="cFileCard_byLine">By {$file['author']['name']}</span>
+
+        <div class="ipsMargin_top">
+			<div class="cFileCard_rating">
+				{template="rating" app="core" params="'medium', $file['rating'], 5" group="global" location="front"}
+				<span>({number="$file['reviews']" format="short"})</span>
+			</div>
+		</div>
+	</div>
+</a>
+
+{{if $carousel}}
+</li>
+{{endif}}

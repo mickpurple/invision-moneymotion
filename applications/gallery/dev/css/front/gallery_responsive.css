@@ -1,0 +1,150 @@
+/* PHONES */
+@media screen and (max-width: 767px) {
+	.cGalleryUpdated {
+		margin-left: 6px;
+	}
+
+	/* IMAGE VIEW */
+	#elGalleryImage {
+		padding: 2px;
+	}
+
+	body[data-pageapp="gallery"][data-pagecontroller="view"] .cWidgetContainer:not( .ipsHide ) + div .elGalleryHeader {
+		margin-top: 10px;
+	}
+
+	.ipsStreamItem_condensed.ipsStreamItem.ipsStreamItem_contentBlock.cGalleryAlbumSearchResult {
+		padding-bottom: 40px;
+	}
+
+	.cGalleryRowsList .ipsThumb.ipsThumb_medium.ipsThumb_bg {
+		max-width: 100%;
+		width: 100%;
+		margin-bottom: 7px;
+	}
+
+	html[dir="ltr"] .cGalleryRowsList .ipsDataItem_main {
+		padding-left: 0;
+	}
+	html[dir="rtl"] .cGalleryRowsList .ipsDataItem_main {
+		padding-right: 0;
+	}
+
+	html[dir="ltr"] .cGalleryRowsList .ipsDataItem_modCheck {
+		right: 10px;
+		left: auto;
+		top: 150px;
+	}
+	html[dir="rtl"] .cGalleryRowsList .ipsDataItem_modCheck {
+		left: 10px;
+		right: auto;
+		top: 150px;
+	}
+
+	ul.cGallerySearchAlbumThumbs.ipsList_inline,
+	ul.cGalleryManagedAlbumThumbs.ipsList_inline{
+		width: calc(100% - 30px);
+	}
+	
+	html[dir="ltr"] ul.cGallerySearchAlbumThumbs.ipsList_inline {
+		margin-left: 0px;
+	}
+	html[dir="rtl"] ul.cGallerySearchAlbumThumbs.ipsList_inline {
+		margin-right: 0px;
+	}
+
+	.cGalleryImageTopBar,
+	.cGalleryImageBottomBar {
+		flex-wrap: wrap;
+		justify-content: normal;
+	}
+
+		.cGalleryImageTopBar > .ipsList_inline,
+		.cGalleryImageBottomBar > .ipsList_inline {
+			margin-top: 10px;
+		}
+
+	html[dir="ltr"] .elGalleryImage .ipsButton.ipsButton_link,
+	html[dir="ltr"] .elGalleryImage .ipsButton.ipsButton_primary {
+		margin-left: 0px;
+	}
+	html[dir="rtl"] .elGalleryImage .ipsButton.ipsButton_link,
+	html[dir="rtl"] .elGalleryImage .ipsButton.ipsButton_primary {
+		margin-right: 0px;
+	}
+
+	/* Follow and promote buttons */
+	.cGalleryControls .ipsFollow .ipsCommentCount{
+		position: relative;
+		transform: none;
+		top: auto;
+	}
+		[dir='ltr'] .cGalleryControls .ipsFollow .ipsCommentCount{
+			margin-right: 0 !important;
+		}
+		[dir='rtl'] .cGalleryControls .ipsFollow .ipsCommentCount{
+			margin-left: 0 !important;
+		}
+
+	.cGalleryControls .ipsPromote.ipsButton_verySmall,
+	.cGalleryControls .ipsFollow.ipsButton_verySmall > :first-child{
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+
+	/* Lightbox */
+	#cLightbox {
+		overflow: auto;
+	}
+
+	.cGalleryLightbox .elGalleryImage {
+		position: relative;
+		top: auto;
+		left: auto;
+		right: auto;
+		bottom: auto;
+		width: 100%;
+	}
+
+	.cGalleryLightbox {
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: block;
+	}
+
+	.cGalleryLightbox_inner {
+		position: relative;
+		display: block;
+	}
+
+	.cGalleryLightbox_info {
+		width: 100%;
+		min-width: 0;
+		overflow: visible;
+	}
+
+	.cGalleryImageTitle {
+		top: 11px;
+		width: 100%;
+	}
+	html[dir="ltr"] .cGalleryImageTitle {
+		left: 15px;
+	}
+	html[dir="rtl"] .cGalleryImageTitle {
+		right: 15px;
+	}
+
+	html[dir="ltr"] .elGalleryImage .elGalleryImageNav_prev,
+	html[dir="rtl"] .elGalleryImage .elGalleryImageNav_next,
+	html[dir="rtl"] .elGalleryImage .elGalleryImageNav_prev,
+	html[dir="ltr"] .elGalleryImage .elGalleryImageNav_next {
+		transform: translateX(0);
+	}
+
+	.cGalleryLightbox_info a.ipsReact_reaction:after {
+		width: 60px;
+		height: 60px;
+	}
+}

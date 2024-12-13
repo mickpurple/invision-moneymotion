@@ -1,0 +1,12 @@
+<ips:template parameters="$file, $options" />
+<div class="ipsPad">
+	<h2 class='ipsType_sectionHead'>{lang="file_notify_heading"}</h2>
+	<br><br>
+	{{if $options}}
+		{lang="file_notify_current" sprintf="$options"}
+	{{else}}
+		{lang="file_notify_none"}
+	{{endif}}
+	<br>
+	<a href="{url='app=core&module=system&controller=notifications&do=options&type=new_file_version'}">Change how the notification is sent</a>
+</div>

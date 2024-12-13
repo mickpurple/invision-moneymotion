@@ -1,0 +1,77 @@
+<ips:template parameters="$values, $nameservers=NULL, $cname=NULL, $aname=NULL" />
+<form action="{expression="\IPS\Request::i()->url()->setQueryString( 'additionalPageCheck', 1 )"}" method="post">
+	<input type="hidden" name="nameservers_set" value="1">
+	{{foreach $values as $k => $v}}
+		{{if \is_array( $v )}}
+			{{foreach $v as $_k => $_v}}
+				<input type="hidden" name="{$_k}" value="{$_v}">
+			{{endforeach}}
+		{{else}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endif}}
+	{{endforeach}}
+	<div class="{{if request.isAjax()}}ipsPad{{else}}ipsSpacer_bottom{{endif}}">
+		{{if $nameservers}}
+			<p class="ipsType_normal">
+				{lang="own_domain_ns_1"}
+			</p>
+			<div class="{{if request.isAjax()}}ipsType_center{{endif}}">
+				<span class="ipsType_normal">{lang="own_domain_ns_2"}</span>
+				<ul class="ipsList_inline ipsType_bold ipsType_large">
+					{{foreach $nameservers as $nameserver}}
+						<li>{$nameserver}</li>
+					{{endforeach}}
+				</ul>
+			</div>
+		{{else}}
+			<p class="ipsType_normal">
+				{{if $aname and $cname}}
+					{lang="own_domain_aname_or_cname"}
+				{{elseif $cname}}
+					{lang="own_domain_cname_1"}
+				{{else}}
+					{lang="own_domain_aname_1"}
+				{{endif}}
+			</p>
+			{{if $aname and $cname}}
+				<div class="ipsGrid">
+					<div class="ipsGrid_span6">
+			{{endif}}
+			{{if $cname}}
+				<div class="{{if request.isAjax()}}ipsType_center{{endif}}">
+					<span class="ipsType_normal">{lang="own_domain_cname_2"}</span>
+					<div class="ipsType_bold ipsType_large">
+						{$cname}
+					</div>
+					<span class="ipsType_light">{lang="own_domain_cname_3"}</span>
+				</div>
+			{{endif}}
+			{{if $aname and $cname}}
+					</div>
+					<div class="ipsGrid_span6">
+			{{endif}}
+			{{if $aname}}
+				<div class="{{if request.isAjax()}}ipsType_center{{endif}}">
+					<span class="ipsType_normal">{lang="own_domain_aname_2"}</span>
+					<div class="ipsType_bold ipsType_large">
+						{$aname}
+					</div>
+				</div>
+			{{endif}}
+			{{if $aname and $cname}}
+					</div>
+				</div>
+			{{endif}}
+		{{endif}}
+		{{if request.nameservers_set}}
+			<p class="{{if request.isAjax()}}ipsType_center{{endif}} ipsType_warning">{lang="own_domain_error"}</p>
+		{{endif}}
+	</div>
+	{{if request.isAjax()}}
+		<div class="ipsAreaBackground ipsType_right ipsPad">
+			<input type="submit" class="ipsButton ipsButton_primary" value="{lang="continue"}">
+		</div>
+	{{else}}
+		<input type="submit" class="ipsButton ipsButton_primary" value="{lang="continue"}">
+	{{endif}}
+</form>

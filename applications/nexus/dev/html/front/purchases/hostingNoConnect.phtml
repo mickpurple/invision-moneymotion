@@ -1,0 +1,52 @@
+<ips:template parameters="$purchase, $account" />
+
+{{if $account}}
+	<h2 class='ipsType_sectionTitle ipsType_reset'>{lang="hosting_account_info"}</h2>
+
+	{{if !$account->exists}}
+		<div class='ipsAreaBackground_light ipsPad cNexusHosting'>
+			<div class="ipsMessage ipsMessage_warning">{lang="hosting_account_terminated"}</div>
+			<div class='ipsGrid ipsSpacer_top'>
+				<div class='ipsGrid_span6'>
+					<div class='ipsBox ipsPad'>	
+						<h2 class='ipsType_sectionHead'>{lang="hosting_credentials"}</h2>
+						<br>
+						<br>
+
+						<h3 class='ipsType_sectionHead ipsType_normal ipsType_reset'><strong>{lang="account_server"}</strong></h3>	
+					 	<p class='ipsType_medium ipsType_reset ipsSpacer_bottom'>
+							{$account->server->hostname} <span class='ipsType_light'>{lang="hosting_ipprefix" sprintf="$account->server->ip"}</span>
+						</p>
+
+						<h3 class='ipsType_sectionHead ipsType_normal ipsType_reset'><strong>{lang="account_username"}</strong></h3>	
+						<p class='ipsType_medium ipsType_reset ipsType_monospace ipsSpacer_bottom'>
+							{$account->username}
+						</p>
+
+						<h3 class='ipsType_sectionHead ipsType_normal ipsType_reset'><strong>{lang="account_password"}</strong></h3>	
+						<p class='ipsType_medium ipsType_reset'>
+							<span class='ipsType_monospace'>{$account->password}</span>
+						</p>
+
+						<hr class='ipsHr'>
+
+						<ul class='ipsGrid ipsSpacer_top'>
+							<li class='ipsGrid_span6'>
+								<a href="{$account->ftpLink()}" class='ipsButton ipsButton_primary ipsButton_verySmall ipsButton_fullWidth'>{lang="account_ftp"}</a>
+							</li>
+							<li class='ipsGrid_span6'>
+								<a href="{$account->controlPanelLink()}" class='ipsButton ipsButton_primary ipsButton_verySmall ipsButton_fullWidth' target="_blank" rel='noopener'>{lang="account_{$account->server->type}_control_panel"}</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<p class='ipsType_center ipsType_normal'>
+					<strong><a href="http://{$account->domain}" target="_blank" rel='noopener'>{$account->domain}</a> <i class='fa fa-external-link'></i></strong>
+				</p>
+			</div>
+		</div>
+	{{else}}
+		<p class='ipsType_normal'>{lang="hosting_fetch_error"}</p>
+	{{endif}}
+{{endif}}

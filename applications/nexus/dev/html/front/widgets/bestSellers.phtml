@@ -1,0 +1,33 @@
+<ips:template parameters="$packages, $orientation='vertical'" />
+{{if !empty( $packages ) }}
+	<h3 class='ipsType_reset ipsWidget_title'>{lang="block_bestSellers"}</h3>
+        {{if $orientation == 'horizontal'}}
+            <div class='ipsWidget_inner ipsPad'>
+        {{else}}
+            <div class='ipsWidget_inner'>
+        {{endif}}
+		{{if $orientation == 'vertical'}}
+			<div class='ipsPad_half' data-ipsLazyLoad>
+				<ul class='ipsDataList ipsList_reset ipsClearfix'>
+					{{foreach $packages as $package}}
+						{template="packageBlockWidget" app="nexus" group="store" params="$package, $orientation, TRUE"}
+					{{endforeach}}
+				</ul>
+			</div>
+		{{else}}
+	        <div class='ipsCarousel ipsClearfix' data-ipsCarousel data-ipsCarousel-showDots data-ipsLazyLoad>
+	        	<div class='ipsCarousel_inner'>
+					<ul class='cNexusCarousel cNexusCategory_grid ipsClearfix' data-role="carouselItems">
+						{{foreach $packages as $package}}
+							{template="packageBlockWidget" app="nexus" group="store" params="$package, $orientation, TRUE"}
+						{{endforeach}}
+					</ul>
+				</div>
+	            <span class='ipsCarousel_shadow ipsCarousel_shadowLeft'></span>
+	            <span class='ipsCarousel_shadow ipsCarousel_shadowRight'></span>
+	            <a href='#' class='ipsCarousel_nav ipsHide' data-action='prev'><i class='fa fa-chevron-left'></i></a>
+	            <a href='#' class='ipsCarousel_nav ipsHide' data-action='next'><i class='fa fa-chevron-right'></i></a>
+	        </div>
+		{{endif}}
+	</div>
+{{endif}}

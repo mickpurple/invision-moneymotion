@@ -1,0 +1,7 @@
+<ips:template parameters="$table, $headers, $entries" />
+
+{{foreach $entries as $idx => $entry}}
+	<li class='ipsPad ipsDataItem {{if $entry->hidden()}}ipsModerated{{endif}}'>
+		{template="blogViewMedium" group="view" app="blog" params="$entry, $table, FALSE"}
+	</li>
+{{endforeach}}

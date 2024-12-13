@@ -1,0 +1,37 @@
+<ips:template parameters="$request" />
+
+<div id='acpPageHeader'>
+	{template="breadcrumb" app="core" location="admin" group="global"}
+
+	<h1 class='ipsType_pageTitle cNexusSupportRequest_title'>
+		{$request->title} 
+		<span class="ipsType_normal ipsType_light">#{$request->id}</span> <a href='{$request->acpUrl()->setQueryString( 'do', 'editTitle' )}' class='ipsType_normal ipsFaded ipsFaded_more' data-ipsDialog data-ipsDialog-title="{lang="edit_support_request_title"}">({lang="edit"})</a>
+	</h1>
+
+	<hr class='ipsHr'>
+
+	<div class='acpPageHeader_flex'>
+		<ul class='ipsList_inline ipsType_reset ipsType_medium'>
+			<li {{if !$request->severity or $request->severity->color == '000'}}class="ipsHide"{{endif}} data-role="requestSeverityBadge">
+				{{if $request->severity and $request->severity->color != '000'}}
+					{template="severity" group="support" params="$request->severity"}
+				{{endif}}
+			</li>
+			<li data-role="requestStatusBadge">{template="status" group="support" params="$request->status"}</li>
+			<li class='ipsType_light'><i class='fa fa-clock-o'></i> {lang="request_created_ago" sprintf="\IPS\DateTime::formatInterval( \IPS\DateTime::ts( $request->mapped('date') )->diff( new \IPS\DateTime ), 2 )"}</li>
+			<li {{if !$request->staff}}class="ipsHide"{{endif}} data-role="requestAssignedToBadge">
+				<strong class='ipsType_success' data-role="requestAssignedToText">
+					{{if $request->staff}}
+						{lang="assigned_to_x" sprintf="( $request->staff->member_id === \IPS\Member::loggedIn()->member_id ) ? \IPS\Member::loggedIn()->language()->addToStack('you') : $request->staff->name"}
+					{{endif}}
+				</strong>
+			</li>
+		</ul>
+
+		{{if isset(\IPS\Output::i()->sidebar['actions'])}}
+			<div class='acpToolbar ipsPos_right ipsClearfix'>
+				{template="pageButtons" app="core" group="global" location="admin" params="\IPS\Output::i()->sidebar['actions']"}
+			</div>
+		{{endif}}
+	</div>
+</div>

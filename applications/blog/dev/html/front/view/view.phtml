@@ -1,0 +1,93 @@
+<ips:template parameters="$blog, $table, $category=NULL" />
+
+{{if $club = $blog->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $blog"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+{template="blogHeader" group="view" app="blog" params="$blog, (!$club OR !\IPS\Settings::i()->clubs OR \IPS\Settings::i()->clubs_header != 'full')"}
+
+{{if $blog->description}}
+	<section class='ipsPad ipsBox ipsSpacer_top ipsSpacer_half'>
+		<h3 class='ipsType_minorHeading'>{lang="about_this_blog"}</h3>
+		{{$truncateAttributes = array('data-ipsTruncate', 'data-ipsTruncate-size="4 lines"', 'data-ipsTruncate-type="hide"');}}
+		{template="richText" group="global" app="core" location="global" params="$blog->description, array('ipsType_normal'), array(), $truncateAttributes"}
+	</section>
+{{endif}}
+
+{{if \IPS\blog\Entry::canCreate( \IPS\Member::loggedIn(), $blog ) or $blog->canDelete() or ( $blog->canEdit() AND !$blog->groupblog_ids ) or ( $blog->pinned and \IPS\Member::loggedIn()->modPermission('can_unpin_content') ) || ( !$blog->pinned and \IPS\Member::loggedIn()->modPermission('can_pin_content') ) or \count( \IPS\blog\Entry\Category::roots( NULL, NULL, array( 'entry_category_blog_id=?', $blog->id ) ) )}}
+	<ul class="ipsToolList ipsToolList_horizontal ipsClearfix ipsSpacer_both">
+        {{if \IPS\blog\Entry::canCreate( \IPS\Member::loggedIn(), $blog )}}
+		<li class='ipsToolList_primaryAction'>
+			{{if $category}}
+				<a class="ipsButton ipsButton_medium ipsButton_important ipsButton_fullWidth" href="{url="app=blog&module=blogs&controller=submit&id={$blog->id}&cat={$category->_id}" seoTemplate="blog_submit"}">{lang="add_blog_entry"}</a>
+			{{else}}
+				<a class="ipsButton ipsButton_medium ipsButton_important ipsButton_fullWidth" href="{url="app=blog&module=blogs&controller=submit&id={$blog->id}" seoTemplate="blog_submit"}">{lang="add_blog_entry"}</a>
+			{{endif}}
+		</li>
+        {{endif}}		
+		{{if \count( \IPS\blog\Entry\Category::roots( NULL, NULL, array( 'entry_category_blog_id=?', $blog->id ) ) )}}
+			<li>
+				<a href='#elBlogCategory_menu' id='elBlogCategory' data-ipsMenu class='ipsButton ipsButton_link ipsButton_medium ipsButton_fullWidth'>
+					{{if $category}}{lang="blog_category_viewing" sprintf="$category->name"}{{else}}{lang="blog_category_select"}{{endif}} <i class='fa fa-caret-down'></i>
+				</a>
+				<ul id='elBlogCategory_menu' class='ipsMenu ipsMenu_normal ipsMenu_selectable ipsHide'>
+					<li class="ipsMenu_title">
+						{lang="categories"}{{if $category}} (<a href="{$blog->url()}">{lang="blog_categories_all"}</a>){{endif}}
+						{{foreach \IPS\blog\Entry\Category::roots( NULL, NULL, array( 'entry_category_blog_id=?', $blog->id ) ) as $cat}}
+							<li class='ipsMenu_item {{if $category and $category->id == $cat->id}}ipsMenu_itemChecked{{endif}}'>{$cat->link()|raw}</li>
+						{{endforeach}}
+					</li>
+				</ul>
+			</li>
+		{{endif}}
+        
+		{{if !$blog->club_id and ( $blog->canDelete() or ( $blog->canEdit() AND !$blog->groupblog_ids ) or ( $blog->pinned and \IPS\Member::loggedIn()->modPermission('can_unpin_content') ) || ( !$blog->pinned and \IPS\Member::loggedIn()->modPermission('can_pin_content') ) )}}
+			<li>
+				<a href='#elBlogManage_menu' id='elBlogManage' data-ipsMenu class='ipsButton ipsButton_link ipsButton_medium ipsButton_fullWidth'>{lang="manage_blog"} <i class='fa fa-caret-down'></i></a>
+				<ul id='elBlogManage_menu' class='ipsMenu ipsMenu_normal ipsHide'>
+				
+					{{if $blog->canEdit() AND !$blog->groupblog_ids}}
+						<li class='ipsMenu_item'>
+							<a href='{$blog->url()->setQueryString( array( 'do' => 'editBlog', 'csrfKey' => \IPS\Session::i()->csrfKey ) )}' title="{lang="edit_blog"}" data-ipsDialog data-ipsDialog-title="{lang="edit_blog"}">{lang="edit_blog"}</a>
+						</li>
+					{{endif}}
+					{{if $blog->canEdit() AND \IPS\Settings::i()->blog_allow_rssimport }}
+						<li class='ipsMenu_item'>
+							<a href='{$blog->url()->setQueryString( array( 'do' => 'rssImport', 'csrfKey' => \IPS\Session::i()->csrfKey ) )}' title="{lang="blog_rss_import"}" data-ipsDialog data-ipsDialog-title="{lang="blog_rss_import"}">{lang="blog_rss_import"}</a>
+						</li>
+					{{endif}}
+
+					{{if $blog->pinned and \IPS\Member::loggedIn()->modPermission('can_unpin_content')}}
+						<li class='ipsMenu_item'>
+							<a href='{$blog->url()->setQueryString( array( 'do' => 'changePin', 'csrfKey' => \IPS\Session::i()->csrfKey ) )}'>{lang="unpin_blog"}</a>
+						</li>
+					{{endif}}
+					{{if !$blog->pinned and \IPS\Member::loggedIn()->modPermission('can_pin_content')}}
+						<li class='ipsMenu_item'>
+							<a href='{$blog->url()->setQueryString( array( 'do' => 'changePin', 'csrfKey' => \IPS\Session::i()->csrfKey ) )}'>{lang="pin_blog"}</a>
+						</li>
+					{{endif}}
+					
+					{{if $blog->canDelete() }}
+						<li class='ipsMenu_item'>
+							<a href='{$blog->url()->setQueryString( array( 'do' => 'deleteBlog', 'csrfKey' => \IPS\Session::i()->csrfKey ) )}' data-confirm title="{lang="delete_blog"}" data-confirmMessage="{lang="delete_blog_confirm"}" >{lang="delete_blog"}</a>
+						</li>
+					{{endif}}
+				</ul>
+			</li>
+		{{endif}}
+	</ul>
+{{endif}}
+
+{$table|raw}
+
+<div class='ipsBox ipsPadding ipsResponsive_pull ipsResponsive_showPhone ipsMargin_vertical'>
+	{template="follow" app="core" group="global" params="'blog', 'blog', $blog->_id, \IPS\blog\Entry::containerFollowerCount( $blog )"}
+</div>
+
+{{if $blog->club()}}
+	</div>
+{{endif}}

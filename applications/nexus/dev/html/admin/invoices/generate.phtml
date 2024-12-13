@@ -1,0 +1,121 @@
+<ips:template parameters="$summary, $itemTypes, $url" />
+<div class="ipsPad">
+	<ul class="ipsToolList ipsToolList_horizontal ipsClearfix">
+		<li>
+			<a href="#el_addItem_menu" class="ipsButton ipsButton_alternate ipsButton_small ipsButton_fullWidth" data-ipsMenu id='el_addItem'><i class="fa fa-plus"></i> {lang="invoice_add_item"} <i class="fa fa-caret-down"></i></a>
+			<div id='el_addItem_menu' class='ipsMenu ipsMenu_narrow ipsHide'>
+				<ul>
+					{{foreach $itemTypes as $k => $class}}
+						{{if method_exists( $class, 'form' )}}
+							<li class="ipsMenu_item"><a href="{$url->setQueryString('add', $k )}" data-ipsDialog  data-ipsDialog-title="{lang="$class::$title"}"><i class="fa fa-{$class::$icon}"></i> &nbsp;&nbsp; {lang="$class::$title"}</a></li>
+						{{endif}}
+					{{endforeach}}
+					<li class="ipsMenu_item"><a href="{$url->setQueryString('addRenewal', 1 )}" data-ipsDialog data-ipsDialog-title="{lang="renewal"}"><i class="fa fa-refresh"></i> &nbsp;&nbsp; {lang="renewal"}</a></li>
+				</ul>
+			</div>
+		</li>
+	</ul>
+	<table class="ipsTable ipsTable_zebra">
+		<thead>
+			<tr>
+				<th>{lang="invoice_item"}</th>
+				<th>{lang="invoice_unit_price"}</th>
+				<th>{lang="invoice_quantity"}</th>
+				<th>{lang="invoice_line_price"}</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{{foreach $summary['items'] as $itemId => $item}}
+				<tr>
+					<td>
+						<span title="{lang="$item::$title"}" data-ipsTooltip><i class="fa fa-{$item::$icon}"></i></span> &nbsp; 
+						{{if $itemUrl = $item->acpUrl()}}
+							<a href="{$itemUrl}">{$item->name}</a>
+						{{else}}
+							{$item->name}
+						{{endif}}
+						{{if \count( $item->details )}}
+							<br>
+							<span class="ipsType_light">
+								{{foreach $item->details as $k => $v}}
+									{lang="nexus_pfield_{$k}"}: {expression="\IPS\nexus\Package\CustomField::load( $k )->displayValue( $v, TRUE )" raw="true"}<br>
+								{{endforeach}}
+							</span>
+						{{endif}}
+					</td>
+					<td>
+						{$item->price}
+						{{if isset( $item->renewalTerm ) and $item->renewalTerm}}
+							<br>
+							<span class="ipsType_light">
+								{lang="and_renewal" sprintf="$item->renewalTerm"}
+							</span>
+						{{endif}}
+					</td>
+					<td>{$item->quantity}</td>
+					<td>
+						{$item->linePrice()}
+						{{if isset( $item->renewalTerm ) and $item->renewalTerm}}
+							<br>
+							<span class="ipsType_light">
+								{lang="and_renewal" sprintf="$item->renewalTerm->times( $item->quantity )"}
+							</span>
+						{{endif}}
+					</td>
+					<td>
+						<ul class="ipsControlStrip ipsType_noBreak ipsList_reset" data-ipscontrolstrip="">
+							<li class="ipsControlStrip_button ">
+								<a href="{$url->setQueryString('remove', $itemId)}" data-ipsTooltip title="{lang="delete"}" data-confirm data-confirmSubMessage="{lang="invoice_remove_item_warn"}"> <!-- @todo [Future] It would be nice if it could recalculate prices automatically rather than show that warning -->
+									<i class="ipsControlStrip_icon fa fa-times-circle"></i>
+									<span class="ipsControlStrip_item">{lang="delete"}</span>
+								</a>
+							</li>
+						</ul>
+					</td>
+				</tr>
+			{{endforeach}}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3"><strong>{lang="subtotal"}</strong></td>
+				<td><strong>{$summary['subtotal']}</strong></td>
+				<td></td>
+			</tr>
+			{{foreach $summary['shipping'] as $shipId => $shipping}}
+				<tr>
+					<td colspan="3">{$shipping->name}</td>
+					<td>{$shipping->linePrice()}</td>
+					<td>
+						<ul class="ipsControlStrip ipsType_noBreak ipsList_reset" data-ipscontrolstrip="">
+							<li class="ipsControlStrip_button ">
+								<a href="{$url->setQueryString('remove', $shipId)}" data-ipsTooltip title="{lang="delete"}">
+									<i class="ipsControlStrip_icon fa fa-times-circle"></i>
+									<span class="ipsControlStrip_item">{lang="delete"}</span>
+								</a>
+							</li>
+						</ul>
+					</td>
+				</tr>
+			{{endforeach}}
+			{{foreach $summary['tax'] as $taxId => $tax}}
+				<tr>
+					<td colspan="3">{lang="nexus_tax_{$taxId}"} ({expression="$tax['rate']*100"}%)</td>
+					<td>{$tax['amount']}</td>
+					<td></td>
+				</tr>
+			{{endforeach}}
+			<tr>
+				<td colspan="3"><strong class="ipsType_large">{lang="total"}</strong></td>
+				<td><strong class="ipsType_large">{$summary['total']}</strong></td>
+				<td></td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+<div class="ipsAreaBackground_light ipsClearfix ipsPad ipsType_center">			
+	<form action="{$url}" method="post">
+		<input type="hidden" name="continue" value="1">
+		<button type="submit" class="ipsButton ipsButton_primary">{lang="save"}</button>
+	</form>
+</div>

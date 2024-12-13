@@ -1,0 +1,27 @@
+<ips:template parameters="$latestImage, $orientation='vertical'" />
+<div id='elGalleryStatsLatest' class='ipsClearfix cGalleryWidget' data-ipsLazyLoad>
+	<strong class='ipsType_minorHeading'>{lang="latest_image"}</strong><br>
+	{{if $latestImage->small_file_name}}
+		<a href='{$latestImage->url()}' title='{lang="view_this_image" sprintf="$latestImage->caption"}' class='ipsThumb ipsThumb_bg{{if $orientation == 'vertical'}} cGalleryWidget_verticalThumb{{endif}}' {{if settings.lazy_load_enabled}}data-background-src="{backgroundimage="\IPS\File::get( 'gallery_Images', $latestImage->small_file_name )->url"}"{{else}}style='background-image: url({backgroundimage="\IPS\File::get( 'gallery_Images', $latestImage->small_file_name )->url"})'{{endif}}>
+			<img {{if settings.lazy_load_enabled}}src="{expression="\IPS\Text\Parser::blankImage()"}" data-{{endif}}src='{file="$latestImage->small_file_name" extension="gallery_Images"}' alt="{$latestImage->caption}">
+		</a>
+	{{else}}
+		<a href='{$latestImage->url()}' title='{lang="view_this_video" sprintf="$latestImage->caption"}' class='ipsNoThumb ipsNoThumb_video ipsThumb_bg{{if $orientation == 'vertical'}} cGalleryWidget_verticalThumb{{endif}}'></a>
+	{{endif}}
+	{{if $latestImage->directContainer()->allow_comments}}
+		<div class="cGalleryWidget_comments {{if $latestImage->comments === 0}}ipsFaded{{endif}}" data-ipsTooltip title='{lang="num_comments" pluralize="$latestImage->comments"}'>
+			<i class='fa fa-comment'></i> {$latestImage->comments}
+		</div>
+	{{endif}}
+	<div class='ipsSpacer_top ipsSpacer_half cGalleryWidgetInfo'>
+		<div class='ipsTruncate ipsTruncate_line'>
+			<a href="{$latestImage->url()}" title='{lang="view_this_image" sprintf="$latestImage->caption"}' class='cGalleryWidget_title ipsType_medium'>
+				{$latestImage->caption}
+			</a>
+		</div>
+		<span class='ipsType_medium ipsType_blendLinks'>
+			{lang="byline" htmlsprintf="$latestImage->author()->link()"}
+			{datetime="$latestImage->mapped('date')"}
+		</span>
+	</div>
+</div>

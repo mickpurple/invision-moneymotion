@@ -1,0 +1,44 @@
+<ips:template parameters="$purchase, $advertisement" />
+{{if $advertisement->active == -1}}
+	<p class="ipsMessage ipsMessage_info">{lang="advertisement_pending_approval"}</p>
+{{elseif $advertisement->active == 1}}
+	<p class="ipsMessage ipsMessage_success">{lang="advertisement_active"}</p>
+{{else}}
+	<p class="ipsMessage ipsMessage_info">{lang="advertisement_expired"}</p>
+{{endif}}
+
+
+<ul class="ipsDataList ipsDataList_reducedSpacing cProfileFields">
+
+    <li class="ipsDataItem">
+        <span class="ipsDataItem_generic ipsDataItem_size3 ipsType_break"><strong>{lang="advertisement_url"}</strong></span>
+        <span class="ipsDataItem_main">{$advertisement->link}</span>
+    </li>
+    <li class="ipsDataItem">
+        <span class="ipsDataItem_generic ipsDataItem_size3 ipsType_break"><strong>{lang="ads_ad_impressions"}</strong></span>
+        <span class="ipsDataItem_main">{$advertisement->impressions}{{if $advertisement->maximum_unit == 'i' and $advertisement->maximum_value != -1}} / {$advertisement->maximum_value}{{endif}}</span>
+    </li>
+    <li class="ipsDataItem">
+        <span class="ipsDataItem_generic ipsDataItem_size3 ipsType_break"><strong>{lang="ads_ad_clicks"}</strong></span>
+        <span class="ipsDataItem_main">{$advertisement->clicks}{{if $advertisement->maximum_unit == 'c' and $advertisement->maximum_value != -1}} / {$advertisement->maximum_value}{{endif}}</span>
+    </li>
+
+
+
+</ul>
+
+<div class="ips{expression="mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"}">
+	<ul class="ipsType_center ipsList_reset">
+		{{foreach json_decode( $advertisement->images, TRUE ) as $k => $image}}
+			{{if $image}}
+				<li>
+					<div class='ips{expression="mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"}_{$k} ipsAreaBackground_light ipsPad_half'>
+						<div class='ipsAreaBackground_reset ipsPad_half'>
+							 <a href="{file="$image" extension="core_Advertisements"}" data-ipsLightbox data-ipsLightbox-group="ads" data-ipsLightbox-meta="{lang="$k"}"><img src="{file="$image" extension="core_Advertisements"}" class='ipsImage ipsThumb_{$k} ' ></a>
+                        </div>
+					</div>
+				</li>
+			{{endif}}
+		{{endforeach}}
+	</ul>
+</div>

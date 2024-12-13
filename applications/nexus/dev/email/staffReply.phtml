@@ -1,0 +1,23 @@
+<ips:template parameters="$message, $email" />
+{$email->language->addToStack( $message->item()->replies == 1 ? "staffcreate_header" : "staffreply_header", FALSE, array( 'sprintf' => array( $message->author()->name ) ) )}<br />
+<br />
+
+<table width='100%' cellpadding='15' cellspacing='0' border='0' style='background: #f5f5f5'>
+	<tr>
+		<td dir='{dir}'>
+			<h2 style='margin: 0; font-size: 19px; font-weight: 500'>{{if $message->item()->replies > 1}}Re: {{endif}}{$message->item()->title}</h2>
+			{$email->parseTextForEmail( $message->content(), $email->language )|raw}
+		</td>
+	</tr>
+</table>
+<br />
+
+{{if $message->item()->member}}
+	<a href='{$message->item()->url()}' style="color: #ffffff; font-family: 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 12px; background: #417ba3; line-height: 32px; padding: 0 10px; display: inline-block; border-radius: 3px;">{$email->language->addToStack("view_support_request", FALSE)}</a>
+	<br />
+{{endif}}
+<br />
+<br />
+<em style='color: #8c8c8c'>&mdash; {setting="board_name"}</em>
+<br />
+<div style="font-size: 0px; line-height: 0px; color:#ffffff !important;">{$email->language->addToStack("support_reply_email_id", FALSE, array( 'sprintf' => array( '[SR' . $message->item()->id . '.' . $message->item()->email_key . ']' ) ) )}</div>

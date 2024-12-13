@@ -1,0 +1,10 @@
+<ips:template parameters="$functions" />
+<div class="ipsType_richText ipsType_normal">
+	<p>{lang="disable_functions_desc_1"}</p>
+	<p class="ipsType_richText ipsType_normal">{lang="disable_functions_desc_2"}</p>
+</div>
+<div class="ipsSpacer_top">
+	{{foreach $functions as $function}}
+		<span class="ipsType_code">{$function}</span>
+	{{endforeach}}
+</div>

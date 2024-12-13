@@ -1,0 +1,23 @@
+<ips:template parameters="$notification, $details, $email" />
+{expression="$email->language->addToStack( 'hosting_error_email_intro', FALSE )"}
+<br />
+<br />
+
+<table width='100%' cellpadding='15' cellspacing='0' border='0' style='background: #b52b38; color: #fff;'>
+	<tr>
+		<td dir='{dir}'>
+			<strong>{$details['server']->hostname}</strong>
+		</td>
+	</tr>
+	<tr>
+		<td dir='{dir}'>
+			{{if $email->language->checkKeyExists( 'hosting_ex_' . $details['message'] )}}{$email->language->addToStack( 'hosting_ex_' . $details['message'], FALSE )}{{else}}{$details['message']}{{endif}}
+		</td>
+	</tr>
+</table>
+<br />
+
+<a href='{url="app=nexus&module=hosting&controller=errors" base="admin"}' style="color: #ffffff; font-family: 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 12px; background: {setting="email_color"}; line-height: 32px; padding: 0 10px; display: inline-block; border-radius: 3px;">{expression="$email->language->addToStack( 'menu__nexus_hosting_errors', FALSE )"}</a>
+
+<br /><br />
+<em style='color: #8c8c8c'>&mdash; {setting="board_name"}</em>

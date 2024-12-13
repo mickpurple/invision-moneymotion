@@ -1,0 +1,23 @@
+<ips:template parameters="$comments, $title, $orientation='vertical'" />
+{{if !empty( $comments ) }}
+	<h3 class='ipsType_reset ipsWidget_title'>{$title}</h3>
+	<div class='ipsPad_half ipsWidget_inner'>
+		<ul class='ipsDataList ipsDataList_reducedSpacing'>
+			{{foreach $comments as $comment}}
+				<li class='ipsDataItem'>
+					<div class='ipsDataItem_generic ipsDataItem_size1'>
+						{template="thumbImage" group="global" app="core" params="$comment->item()->small_file_name, $comment->item()->caption, 'tiny', '', 'view_this', '', 'gallery_Images'"}
+					</div>
+					<div class='ipsDataItem_main'>
+						<div class='ipsContained ipsType_break'><a href="{$comment->url()}" title='{lang="view_this_image" sprintf="$comment->item()->caption"}' class='ipsType_medium ipsTruncate ipsTruncate_line'>{$comment->item()->caption}</a></div>
+						<p class='ipsType_reset ipsType_light ipsType_medium ipsType_blendLinks'>{lang="byline_nodate" htmlsprintf="$comment->author()->link()"}</p>
+						{template="rating" group="global" location="front" app="core" params="'small', $comment->rating, \IPS\Settings::i()->reviews_rating_out_of"}
+						<div class='ipsType_richText ipsType_medium ipsSpacer_top ipsSpacer_half' data-ipsTruncate data-ipsTruncate-type="remove" data-ipsTruncate-size="2 lines">
+							{$comment->truncated()|raw}
+						</div>
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+	</div>
+{{endif}}

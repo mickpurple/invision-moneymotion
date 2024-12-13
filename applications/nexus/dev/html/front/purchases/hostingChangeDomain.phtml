@@ -1,0 +1,15 @@
+<ips:template parameters="$purchase, $output, $activeDomainPurchase" />
+<h1 class='ipsType_pageTitle'>{lang="change_domain_title" sprintf="$purchase->name"}</h1>
+{{if $output instanceof \IPS\Helpers\Form}}
+	<p class="ipsType_normalipsType_normalipsType_normal">{lang="change_domain_blurb"}</p>
+	{{if $activeDomainPurchase}}
+		<p class="ipsMessage ipsMessage_warning">
+			{{if $activeDomainPurchase->canCancel()}}
+				<a href="{url="app=nexus&module=clients&controller=purchases&do=cancel&id={$purchase->id}" base="front" csrf="true" seoTemplate="clientspurchasecancel" seoTitle="\IPS\Http\Url\Friendly::seoTitle( $purchase->name )"}" data-confirm data-confirmSubMessage="{lang="purchase_cancel_renewal_confirm"}">{lang="active_domain_cancel"}</a>
+			{{else}}
+				{lang="active_domain_no_cancel"}
+			{{endif}}
+		</p>
+	{{endif}}
+{{endif}}
+{$output|raw}

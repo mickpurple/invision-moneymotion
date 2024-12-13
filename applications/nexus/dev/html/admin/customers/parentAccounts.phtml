@@ -1,0 +1,12 @@
+<ips:template parameters="$parents" />
+<div class='ipsSpacer_bottom'>
+	{{foreach $parents as $parent}}
+		<div class='ipsPhotoPanel ipsPhotoPanel_mini ipsPad_half ipsClearfix' data-role='result'>
+			<a href='{$parent->acpUrl()}' class='ipsPos_left'>{template="userPhoto" app="core" group="global" params="$parent, 'mini'"}</a>
+			<div>
+				<h2 class='ipsType_large ipsType_reset'>{lang="alt_contact_for"} <a href='{$parent->acpUrl()}'>{$parent->cm_name}</a></h2>
+				<p class='ipsType_reset ipsType_normal'>{$parent->email}</p>
+			</div>
+		</div>
+	{{endforeach}}
+</div>

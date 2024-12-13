@@ -1,0 +1,186 @@
+<ips:template parameters="$image" />
+
+<div id='elGalleryImageLightbox' class='elGalleryImage' data-role="imageFrame" data-setHeight {{if $image->data}}data-imageSizes='{$image->data}'{{endif}}>
+	{{if $image->media }}
+		<div class='cGallery_videoContainer'>
+			<video data-controller="core.global.core.embeddedvideo" id="elGalleryVideo" data-role="video" data-imageID='{$image->id}' {{if $image->canEdit()}}data-editable{{endif}} class="ipsPos_center" controls preload="auto" width="100%" height="100%"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{endif}}>
+				<source src="{file="$image->original_file_name" extension="gallery_Images"}" type='{$image->file_type}' />
+				<embed wmode="opaque" autoplay="true" showcontrols="true" showstatusbar="true" showtracker="true" src="{file="$image->original_file_name" extension="gallery_Images"}" width="480" height="360" type='{$image->file_type}' />
+			</video>
+		</div>
+	{{else}}
+		<div class='cGalleryViewImage' data-role='notesWrapper' data-controller='gallery.front.view.notes' data-imageID='{$image->id}' {{if $image->canEdit()}}data-editable{{endif}} data-notesData='{$image->_notes_json}'>
+			<div>
+				<img src='{file="$image->masked_file_name" extension="gallery_Images"}' alt="{$image->caption}" title='{$image->caption}' data-role='theImage' class='ipsHide'>
+			</div>
+			{{if \count( $image->_notes )}}
+				<noscript>
+					{{foreach $image->_notes as $note}}
+						<div class='cGalleryNote' style='left: {$note['LEFT']}%; top: {$note['TOP']}%; width: {$note['WIDTH']}%; height: {$note['HEIGHT']}%'>
+							<div class='cGalleryNote_border'></div>
+							<div class='cGalleryNote_note'><div>{$note['NOTE']}</div></div>
+						</div>
+					{{endforeach}}
+				</noscript>
+			{{endif}}
+		</div>
+	{{endif}}
+
+		<div class='cGalleryImageFade'>
+			<div class='cGalleryImageTopBar'>
+				<div class='cGalleryImageTitle'>
+					<h1 class='ipsType_pageTitle ipsContained_container'>
+						{{if $image->prefix() OR ( $image->canEdit() AND $image::canTag( NULL, $image->container() ) AND $image::canPrefix( NULL, $image->container() ) )}}
+							<span {{if !$image->prefix()}}class='ipsHide'{{endif}} {{if ( $image->canEdit() AND $image::canTag( NULL, $image->container() ) AND $image::canPrefix( NULL, $image->container() ) )}}data-editablePrefix{{endif}}>
+								{template="prefix" group="global" app="core" params="$image->prefix( TRUE ), $image->prefix()"}
+							</span>
+						{{endif}}
+						{{if $image->hidden() === 1}}
+							<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa fa-warning'></i></span></span>
+						{{elseif $image->hidden() === -1}}
+							<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{$image->hiddenBlurb()}'><i class='fa fa-eye-slash'></i></span></span>
+						{{elseif $image->hidden() === -2}}
+							<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{$image->deletedBlurb()}'><i class='fa fa-trash'></i></span></span>
+						{{endif}}
+						{{if $image->mapped('pinned')}}
+							<span><span class="ipsBadge ipsBadge_icon ipsBadge_positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa fa-thumb-tack'></i></span></span>
+						{{endif}}
+						{{if $image->mapped('featured')}}
+							<span><span class="ipsBadge ipsBadge_icon ipsBadge_positive" data-ipsTooltip title='{lang="featured"}'><i class='fa fa-star'></i></span></span>
+						{{endif}}
+						{{if $image->canEdit()}}
+							<span class='ipsContained ipsType_break' data-controller="core.front.core.moderation">{{if $image->locked()}}<i class='fa fa-lock'></i> {{endif}}
+								<a href='{$image->url()}' data-role="editableTitle" title='{lang="click_hold_edit"}'>{$image->caption}</a>
+							</span>
+						{{else}}
+							<span class='ipsContained ipsType_break'>{{if $image->locked()}}<i class='fa fa-lock'></i> {{endif}}{$image->caption}</span>
+						{{endif}}
+					</h1>
+					{{if $image->album_id}}
+						<div class='ipsType_desc ipsTruncate ipsTruncate_line'>
+							<strong class='ipsType_minorHeading'>{lang="from_the_album"}</strong> <em><a href='{$image->directContainer()->url()}'>{$image->directContainer()->name}</a></em>
+							({lang="num_images" pluralize="$image->directContainer()->count_imgs"})
+						</div>
+					{{endif}}
+				</div>
+
+				<ul class='cGalleryControls ipsList_inline'>
+					<li>
+						{template="promote" app="core" group="global" params="$image"}
+					</li>
+					<li>
+						{template="follow" app="core" group="global" params="'gallery', 'image', $image->id, $image->followersCount()"}
+					</li>
+					{{if !$image->media }}
+						<li>
+							<a href='{file="$image->masked_file_name" extension="gallery_Images"}' title='{lang="view_fullsize_image"}' class='ipsButton ipsButton_narrow ipsButton_link ipsButton_verySmall ipsButton_veryLight' data-ipsTooltip target='_blank' rel='noopener' data-role="toggleFullscreen"></a>
+						</li>
+					{{endif}}
+				</ul>
+			</div>
+
+			<div class='cGalleryImageBottomBar'>
+				<div class='cGalleryCreditInfo ipsType_normal'>
+					{{if $image->copyright}}
+						<div>
+							&copy; {$image->copyright}
+						</div>
+					{{endif}}
+
+					{{if $image->credit_info}}
+						<div>
+							<strong>{lang="image_credit_info"}</strong> {$image->credit_info}
+						</div>
+					{{endif}}
+				</div>
+
+				{{if \count( $image->shareLinks() ) OR $image->canEdit() OR $image->canDownloadOriginal() OR \IPS\Member::loggedIn()->member_id}}
+					<ul class='ipsList_inline'>
+						{{if $image->canEdit() OR $image->canDownloadOriginal() OR \IPS\Member::loggedIn()->member_id}}
+							<li>
+								<a href='#' data-ipsMenu data-ipsMenu-above='true' data-ipsMenu-appendTo='.elGalleryHeader' id='elImageToolsLightbox' class='ipsButton ipsButton_link ipsButton_verySmall ipsJS_show cGalleryViewImage_controls'>{lang="image_tools"} <i class='fa fa-caret-down'></i></a>
+								<ul class='ipsMenu ipsMenu_auto ipsHide' id='elImageToolsLightbox_menu'>
+									{{if $image->canEdit()}}
+										<li class='ipsMenu_item ipsResponsive_hidePhone'><a href='#' title='{lang="add_image_note"}' data-action='addNote'>
+											<i class='fa fa-fw fa-pencil-square-o'></i> {lang="add_image_note"}</a>
+										</li>
+										{{if !$image->media}}
+											<li class='ipsMenu_item ipsMenu_subItems'>
+												<a href='#' title='{lang="rotate_image"}' id='elImageLightbox_rotate' data-ipsMenu>
+													<i class='fa fa-fw fa-rotate-right'></i> {lang="rotate_image"}
+												</a>
+												<ul class='ipsMenu ipsMenu_auto ipsHide' id='elImageLightbox_rotate_menu'>
+													<li class='ipsMenu_item'>
+														<a href='{$image->url( 'rotate' )->csrf()->setQueryString( 'direction', 'right' )}' title='{lang="rotate_right"}' data-action="rotateImage">
+															<i class='fa fa-fw fa-rotate-right'></i> &nbsp;{lang="rotate_right"}
+														</a>
+													</li>
+													<li class='ipsMenu_item'>
+														<a href='{$image->url( 'rotate' )->csrf()->setQueryString( 'direction', 'left' )}' title="{lang="rotate_left"}" data-action="rotateImage">
+															<i class='fa fa-fw fa-rotate-left'></i> &nbsp;{lang="rotate_left"}
+														</a>
+													</li>
+												</ul>
+											</li>
+										{{endif}}
+									{{endif}}
+		                            {{if \IPS\Member::loggedIn()->member_id}}
+										<li class='ipsMenu_item{{if $image->canSetAsAlbumCover() OR $image->canSetAsCategoryCover()}} ipsMenu_subItems{{endif}}'>
+											{{if $image->canSetAsAlbumCover() OR $image->canSetAsCategoryCover()}}
+												<a href='#' title='{lang="set_image_as"}' id='elImageLightboxSetAs' data-ipsMenu>
+													<i class='fa fa-fw fa-object-group'></i> {lang="set_image_as"}
+												</a>
+												<ul class='ipsMenu ipsMenu_auto ipsHide' id='elImageLightboxSetAs_menu'>
+													{{if $image->canSetAsAlbumCover() AND $image->canSetAsCategoryCover()}}
+														<li class='ipsMenu_item'><a data-action='setAsCover' href='{$image->url()->setQueryString( 'do', 'cover' )->setQueryString( 'set', 'category')->csrf()}'>{lang="cover_category_only"}</a></li>
+														<li class='ipsMenu_item'><a data-action='setAsCover' href='{$image->url()->setQueryString( 'do', 'cover' )->setQueryString( 'set', 'album')->csrf()}'>{lang="cover_album_only"}</a></li>
+														<li class='ipsMenu_item'><a data-action='setAsCover' href='{$image->url()->setQueryString( 'do', 'cover' )->setQueryString( 'set', 'both')->csrf()}'>{lang="cover_both"}</a></li>
+													{{elseif $image->canSetAsCategoryCover()}}
+														<li class='ipsMenu_item'><a data-action='setAsCover' href='{$image->url()->setQueryString( 'do', 'cover' )->setQueryString( 'set', 'category')->csrf()}'>{lang="cover_category"}</a></li>
+													{{elseif $image->canSetAsAlbumCover()}}
+														<li class='ipsMenu_item'><a data-action='setAsCover' href='{$image->url()->setQueryString( 'do', 'cover' )->setQueryString( 'set', 'album')->csrf()}'>{lang="cover_album"}</a></li>
+													{{endif}}
+													{{if \IPS\Member::loggedIn()->member_id}}
+														<li class='ipsMenu_sep'><hr></li>
+														<li class='ipsMenu_item'>
+															<a href='{$image->url('setAsPhoto')->csrf()}' data-action='setAsProfile' title="{lang="set_gallery_image_photo"}">{lang="set_gallery_image_photo"}</a>
+														</li>
+													{{endif}}
+												</ul>
+											{{elseif \IPS\Member::loggedIn()->member_id}}
+												<a href='{$image->url('setAsPhoto')->csrf()}' title='{lang="set_gallery_image_photo"}' data-action="setAsProfile">
+													{lang="set_gallery_image_photo"}
+												</a>
+											{{endif}}
+										</li>
+									{{endif}}
+									{{if $image->canDownloadOriginal()}}
+										<li class='ipsMenu_item'>
+											<a href='{$image->url('download')}' title='{lang="download"}'><i class='fa fa-fw fa-download'></i> {lang="download"}</a>
+										</li>
+									{{endif}}
+								</ul>
+							</li>
+						{{endif}}
+						{{if \count( $image->shareLinks() )}}
+							<li>
+								<a href='#' data-ipsMenu data-ipsMenu-above='true' id='elImageLightboxShare' class='ipsButton ipsButton_link ipsButton_verySmall ipsJS_show'><i class='fa fa-share-alt'></i> &nbsp;{lang="image_share"} <i class='fa fa-caret-down'></i></a>
+								<div id='elImageLightboxShare_menu' class='ipsMenu ipsMenu_auto ipsPad ipsHide'>
+									{template="sharelinks" app="core" group="global" params="$image"}
+								</div>
+							</li>
+						{{endif}}
+					</ul>
+				{{endif}}
+			</div>
+		</div>
+
+	<span class='elGalleryImageNav'>
+		{{if $prev = $image->prevItem( \IPS\Request::i()->context )}}
+			<a href='{$prev->url()->setQueryString( array( 'browse' => 1, 'lightbox' => 1, 'context' => \IPS\Request::i()->context ) )}' class='elGalleryImageNav_prev' data-action='prevImage' data-imageID='{$prev->id}' title='{$prev->caption}'><i class='fa fa-angle-left'></i></a>
+		{{endif}}
+		{{if $next = $image->nextItem( \IPS\Request::i()->context )}}
+			<a href='{$next->url()->setQueryString( array( 'browse' => 1, 'lightbox' => 1, 'context' => \IPS\Request::i()->context ) )}' class='elGalleryImageNav_next' data-action='nextImage' data-imageID='{$next->id}' title='{$next->caption}'><i class='fa fa-angle-right'></i></a>
+		{{endif}}
+	</span>
+</div>

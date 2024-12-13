@@ -1,0 +1,108 @@
+<ips:template parameters="$transaction, $log, $response=NULL, $error=NULL" />
+
+<li class='ipsClearfix cTransaction_intermediate'>
+	<div class='cTransaction_icon ipsPos_left'>
+		{{if isset( $response['status'] ) and \in_array( $response['status'], array( 'warning_needs_response', 'warning_under_review', 'warning_closed', 'charge_refunded' ) )}}
+			<i class='fa fa-exclamation-triangle'></i>
+		{{else}}
+			<i class='fa fa-undo'></i>
+		{{endif}}
+	</div>
+	<div class='cTransaction_info ipsType_normal'>
+		<h3 class="ipsType_sectionHead">
+			{{if isset( $response['status'] ) and \in_array( $response['status'], array( 'warning_needs_response', 'warning_under_review', 'warning_closed', 'charge_refunded' ) )}}
+				<strong>
+					{lang="tstatus_dspd_inquiry_set"}
+				</strong>
+			{{else}}
+				<strong>
+					{lang="tstatus_dspd_set"}
+				</strong>
+			{{endif}}
+		</h3>
+		<br>
+		
+		{{if isset( $log['on'] ) and $log['on']}}
+			{expression="\IPS\DateTime::ts( $log['on'] )"}
+			{{if isset( $log['by'] ) and $log['by']}}
+				<br>
+				<span class='ipsType_medium ipsType_light'>
+					{lang="byline_nodate" sprintf="\IPS\Member::load( $log['by'] )->name"}
+				</span>
+			{{endif}}
+		{{endif}}
+
+		{{if isset( $response['reason'] )}}
+		<p class='ipsType_normal ipsType_reset'>
+			{lang="stripe_dispute_reason_{$response['reason']}"}
+		</p>
+		{{endif}}
+		
+		{{if isset( $response['status'] ) and \in_array( $response['status'], array( 'needs_response', 'under_review', 'warning_needs_response', 'warning_under_review' ) )}}
+			<p class='ipsType_bold ipsType_reset ipsType_warning ipsSpacer_top'>
+				{lang="stripe_dispute_status_{$response['status']}"}
+			</p>
+		{{endif}}
+		{{if $error}}
+			<p class='ipsMessage ipsMessage_error'>
+				{lang="stripe_dispute_error"}
+			</p>
+		{{endif}}
+		{{if isset( $response['status'] ) and $response['status'] == 'won'}}
+				</div>
+			</li>
+			<li class='ipsClearfix cTransaction_positive'>
+				<div class='cTransaction_icon ipsPos_left'>
+					<i class='fa fa-repeat'></i>
+				</div>
+				<div class='cTransaction_info ipsType_normal'>
+					<h3 class="ipsType_sectionHead">
+						<strong>
+							{lang="transaction_dispute_won"}
+						</strong>
+					</h3>
+					<p class='ipsType_normal ipsType_reset'>
+						{lang="transaction_dispute_won_desc"}
+					</p>
+					{{if $transaction->status === $transaction::STATUS_DISPUTED}}
+						<div class="ipsSpacer_top">
+							<a href="{$transaction->acpUrl()->setQueryString( array( 'do' => 'approve', 'r' => 'v' ) )}" class="ipsButton ipsButton_positive ipsButton_verySmall" data-confirm data-confirmSubMessage="{lang="transaction_approve_from_dispute"}">{lang="transaction_approve"}</a>
+							<a href="{$transaction->acpUrl()->setQueryString( array( 'do' => 'refund', 'r' => 'v' ) )}" class="ipsButton ipsButton_negative ipsButton_verySmall" data-ipsDialog data-ipsDialog-title="{lang="transaction_refund_credit_title" sprintf="$transaction->amount"}">{lang="transaction_refund_credit"}</a>
+						</div>
+					{{endif}}
+		{{elseif isset( $response['status'] ) and $response['status'] == 'warning_closed'}}
+				</div>
+			</li>
+			<li class='ipsClearfix cTransaction_positive'>
+				<div class='cTransaction_icon ipsPos_left'>
+					<i class='fa fa-check'></i>
+				</div>
+				<div class='cTransaction_info ipsType_normal'>
+					<h3 class="ipsType_sectionHead">
+						<strong>
+							{lang="transaction_dispute_warning_closed"}
+						</strong>
+					</h3>
+					<p class='ipsType_normal ipsType_reset'>
+						{lang="transaction_dispute_warning_closed_desc"}
+					</p>
+		{{elseif isset( $response['status'] ) and $response['status'] == 'lost'}}
+				</div>
+			</li>
+			<li class='ipsClearfix cTransaction_negative'>
+				<div class='cTransaction_icon ipsPos_left'>
+					<i class='fa fa-times'></i>
+				</div>
+				<div class='cTransaction_info ipsType_normal'>
+					<h3 class="ipsType_sectionHead">
+						<strong>
+							{lang="transaction_dispute_lost"}
+						</strong>
+					</h3>
+					<p class='ipsType_normal ipsType_reset'>
+						{lang="transaction_dispute_lost_desc"}
+					</p>
+		{{endif}}
+		
+	</div>
+</li>

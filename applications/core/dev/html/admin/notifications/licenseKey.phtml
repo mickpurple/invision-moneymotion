@@ -1,0 +1,21 @@
+<ips:template parameters="$id, $type" />
+<div class="ipsType_richText ipsType_normal">
+	{{if $type === 'expired' or $type === 'expireSoon'}}
+		<p>{lang="license_benefits_info"}</p>
+	{{else}}
+		<p>{lang="dashboard_url_invalid_desc"}</p>
+	{{endif}}
+</div>
+<ul class='ipsList_inline ipsMargin_top:half' {{if $type === 'expired' or $type === 'expireSoon'}}data-controller="core.global.core.licenseRenewal" data-surveyUrl="{url="renewal_survey" ips="true"}"{{endif}}>
+	{{if $type === 'expired' or $type === 'expireSoon'}}
+		<li>
+			<a href='{url="renew_my_license" ips="true"}' target="_blank" class='ipsButton ipsButton_verySmall ipsButton_veryLight'>{lang="license_renew_now"}</a>
+		</li>
+		<li>
+			<a href='{{if \IPS\Dispatcher::i()->controllerLocation === 'front'}}{url="app=core&module=system&controller=ajax&do=dismissAcpNotification&id={$id}" csrf="true"}{{else}}{url="app=core&module=overview&controller=notifications&do=dismiss&id={$id}" base="admin" csrf="true"}{{endif}}' data-action="notNow" class='ipsButton ipsButton_verySmall ipsButton_overlaid'>{lang="license_renewal_not_now"}</a>
+		</li>
+	{{endif}}
+	<li>
+		<a href='{url="app=core&module=settings&controller=licensekey&do=refresh" base="admin"}' class='ipsButton ipsButton_verySmall ipsButton_overlaid'>{lang="license_check_again"}</a>
+	</li>
+</ul>

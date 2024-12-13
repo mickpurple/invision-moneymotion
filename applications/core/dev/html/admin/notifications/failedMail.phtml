@@ -1,0 +1,15 @@
+<ips:template parameters="$count, $table" />
+<div class="ipsType_richText ipsType_normal">
+	<p>{lang="dashboard_email_broken_desc_1" sprintf="\IPS\Member::loggedIn()->language()->formatNumber( $count )"}</p>
+</div>
+{{if $table}}
+	<div class="ipsSpacer_top">	
+		{$table|raw}
+	</div>
+{{endif}}
+<div class="ipsType_richText ipsType_normal ipsSpacer_top ipsSpacer_double">
+	<p>{lang="dashboard_email_broken_desc_2"}</p>
+</div>
+<div class="ipsSpacer_top">
+	<a href="{url="app=core&module=settings&controller=email"}" class="ipsButton ipsButton_primary ipsButton_verySmall">{lang="email_settings"}</a>
+</div>

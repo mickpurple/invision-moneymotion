@@ -1,0 +1,188 @@
+<ips:template parameters="$package, $item, $purchaseForm, $inCart, $shippingMethods, $itemDataForShipping, $locationType, $renewalTerm, $initialTerm" />
+
+<div>
+	<div class='cNexusProduct_header ipsBox ipsResponsive_pull ipsColumns ipsColumns_collapsePhone' data-controller='nexus.front.store.packagePage' data-itemTitle="{$package->_title}">
+		<div class='ipsColumn ipsColumn_veryWide'>
+			<div class='ipsPadding:double sm:ipsPadding'>
+				<div class='ipsType_center ipsContained'>
+					{{if $images = $item->images() and \count( $images )}}
+						{{$donePrimary = false;}}
+						{{foreach $images as $image}}
+							{{if !$donePrimary}}
+								<a href='{$image}' class='cNexusProduct_primaryImage ipsContained' data-ipsLightbox data-ipsLightbox-group='product' data-ipsProductZoom><img src='{$image}' class="ipsImage ipsImage_thumb"></a>
+								{{$donePrimary = true;}}
+							{{endif}}
+						{{endforeach}}
+						<div class='cNexusProduct_images ipsSpacer_both'>
+							<ul class='ipsList_inline ipsList_noSpacing'>
+								{{foreach $images as $image}}
+									<li>
+										<a href='{$image}' data-action='toggleImage' class='ipsAreaBackground_light'><img src='{$image}' class="ipsImage ipsImage_thumb ipsThumb_tiny"></a>
+									</li>
+								{{endforeach}}
+							</ul>
+						</div>
+						<span class='ipsType_small ipsType_light'><i class='fa fa-search-plus'></i> {lang="product_zoom_desc"}</span>
+					{{else}}
+						<div class='ipsNoThumb ipsThumb_large ipsNoThumb_product'>&nbsp;</div>
+					{{endif}}
+				</div>
+			</div>
+		</div>
+		<div class='ipsColumn ipsColumn_fluid '>
+			<div class='ipsPadding:double sm:ipsPadding'>
+				<div class='ipsFlex ipsFlex-jc:between ipsFlex-ai:center ipsFlex-fw:wrap'>
+					<h1 class='ipsType_pageTitle ipsType_largeTitle ipsMargin_right'>{$item->mapped('title')}</h1>
+					{{if $package->reviewable}}
+						<div>
+							{template="rating" group="global" app="core" params="'large', $item->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of, $item->memberReviewRating()"} <span class='ipsType_medium'>({lang="num_reviews" pluralize="$item->reviews"})</span>
+						</div>
+					{{endif}}
+				</div>
+				
+				{{$priceDetails = $package->fullPriceInfo();}}
+				{{if $priceDetails === NULL}}
+					<div>
+						<em class='cNexusPrice_tax ipsType_light'>{lang="nexus_no_price_info_desc"}</em>
+					</div>
+				{{elseif $priceDetails['initialTerm']}}
+					<ul class='ipsList_reset ipsSpacer_both ipsFlex ipsFlex-ai:center ipsFlex-fw:wrap'>
+						<li class="ipsMargin_vertical:half ipsMargin_right:double">
+							<div>{lang="package_initial_term_title" sprintf="$priceDetails['initialTerm']"}</div>
+							<span class="cNexusPrice">
+								<span data-role="price">
+									{$priceDetails['primaryPrice']}
+									{{if $priceDetails['primaryPriceDiscountedFrom']}}
+										<s>{$priceDetails['primaryPriceDiscountedFrom']}</s>
+									{{endif}}
+								</span>
+							</span>
+							{{if !$priceDetails['primaryPriceIsZero'] and \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}<span class='cNexusPrice_tax ipsType_light'>{lang="nexus_tax_explain_val"}</span>{{endif}}
+						</li>
+						<li class="ipsMargin_vertical:half">
+							<div>{lang="package_subsequent_term_title"}</div>
+							<span class="cNexusPrice">
+								<span data-role="renewalTerm">
+									{$priceDetails['renewalPrice']}
+								</span>
+							</span>
+							{{if \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}<span class='cNexusPrice_tax ipsType_light'>{lang="nexus_tax_explain_val"}</span>{{endif}}
+						</li>
+					</ul>
+				{{else}}
+					<span class="cNexusPrice ipsMargin_top">
+						{{if $priceDetails['renewalPrice']}}
+							<span data-role="renewalTerm">
+								{$priceDetails['renewalPrice']}
+							</span>
+						{{else}}
+							<span data-role="price">
+								{$priceDetails['primaryPrice']}
+								{{if $priceDetails['primaryPriceDiscountedFrom']}}
+									<s>{$priceDetails['primaryPriceDiscountedFrom']}</s>
+								{{endif}}
+							</span>
+						{{endif}}
+					</span>
+					{{if \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}<span class='cNexusPrice_tax ipsType_light'>{lang="nexus_tax_explain_val"}</span>{{endif}}
+				{{endif}}
+				
+				{{if settings.nexus_show_stock and $package->stock != -1}}
+					<br><span data-role="stock">{{if $package->stock == -2}}{{else}}{lang="x_in_stock" pluralize="$package->stock - $inCart"}{{endif}}</span>
+				{{endif}}
+
+				<div class='ipsType_richText ipsType_medium ipsType_break ipsContained ipsSpacer_top' data-ipsTruncate data-ipsTruncate-size='2 lines' data-ipsTruncate-type='remove'>
+					{$item->truncated()|raw}
+				</div>
+				<hr class='ipsHr'>
+
+				<div class='ipsAreaBackground_light ipsPadding ipsSpacer_bottom'>
+					{$purchaseForm|raw}
+				</div>
+				{{if \count( $item->shareLinks() )}}
+					{template="shareButton" app="core" group="sharelinks" params="$item"}
+				{{endif}}
+			</div>
+		</div>
+	</div>
+
+	<section class='ipsBox ipsResponsive_pull ipsSpacer_top'>
+		<div class="ipsTabs ipsClearfix" id="elProductTabs" data-ipsTabBar data-ipsTabBar-contentArea="#elProductTabs_content">
+			<a href="#elProductTabs" data-action="expandTabs"><i class="fa fa-caret-down"></i></a>
+			<ul role="tablist">
+				<li>
+					<a href="{$item->url()->setQueryString('tab', 'info')}" id="elProductInfo" class="ipsTabs_item ipsType_center {{if !isset( \IPS\Request::i()->tab ) OR \IPS\Request::i()->tab == 'info'}}ipsTabs_activeItem{{endif}}" role="tab" aria-selected="{{if !isset( \IPS\Request::i()->tab ) OR \IPS\Request::i()->tab == 'info'}}true{{else}}false{{endif}}">{lang="product_information"}</a>
+				</li>
+				{{if $package->physical}}
+					<li>
+						<a href='{$item->url()->setQueryString('tab','shipping')}' id='elShipping' class='ipsTabs_item ipsType_center {{if \IPS\Request::i()->tab == 'shipping'}}ipsTabs_activeItem{{endif}}' role="tab" aria-selected="{{if \IPS\Request::i()->tab == 'shipping'}}true{{else}}false{{endif}}">{lang="shipping_information"}</a>
+					</li>
+				{{endif}}
+				{{if $package->reviewable}}
+					<li>
+						<a href="{$item->url()->setQueryString('tab', 'reviews')}" id="elReviews" class="ipsTabs_item ipsType_center {{if \IPS\Request::i()->tab == 'reviews'}}ipsTabs_activeItem{{endif}}" role="tab" aria-selected="{{if \IPS\Request::i()->tab == 'reviews'}}true{{else}}false{{endif}}">{lang="product_reviews_pl"}</a>
+					</li>
+				{{endif}}			
+			</ul>
+		</div>
+		<div id="elProductTabs_content" class="ipsTabs_panels">
+			<div id="ipsTabs_elProductTabs_elProductInfo_panel" class="ipsTabs_panel ipsAreaBackground_reset ipsPadding" aria-hidden="false">
+				<h2 class='ipsType_sectionHead ipsSpacer_top'>{lang="about_product" sprintf="$item->mapped('title')"}</h2>
+				{template="richText" group="global" app="core" location="global" params="$package->description, array('ipsType_normal', 'ipsType_break', 'ipsContained', 'ipsSpacer_top')"}
+			</div>
+			{{if $package->physical}}
+				<div id='ipsTabs_elProductTabs_elShipping_panel' class='ipsTabs_panel ipsAreaBackground_reset ipsPadding' aria-hidden='false'>
+					{{if \count( $shippingMethods )}}
+						<h2 class='ipsType_sectionHead ipsSpacer_top'>{lang="product_shipping_options"}</h2>
+						<p class='ipsType_reset ipsType_medium ipsType_light'>{lang="product_shipping_blurb"}</p>
+						{{if $locationType != 'none'}}
+							<p class='ipsType_reset ipsType_medium ipsType_light'>
+								{{if $locationType == 'address'}}
+									{lang="product_shipping_blurb_address"}
+								{{else}}
+									{lang="product_shipping_blurb_geo"}
+								{{endif}}
+							</p>
+						{{endif}}
+						{{if $itemDataForShipping}}
+							<ul class='ipsDataList ipsDataList_reducedSpacing ipsSpacer_top'>
+								{{foreach $shippingMethods as $rate}}
+									<li class='ipsDataItem'>
+										<div class='ipsDataItem_main'>
+											<strong>{{if $rate->getPrice( array( $itemDataForShipping ), $itemDataForShipping->price->currency )->amount->isZero()}}<span class='ipsType_success'>{lang="free_shipping"}</span>{{else}}{$rate->getPrice( array( $itemDataForShipping ), $itemDataForShipping->price->currency )}{{endif}}</strong> - {$rate->getName()}{{if $estimatedDeliveryTime = $rate->getEstimatedDelivery( array( $itemDataForShipping ) )}} <span class='ipsType_light'>({$estimatedDeliveryTime})</span>{{endif}}
+										</div>
+									</li>
+								{{endforeach}}
+							</ul>
+						{{endif}}
+						<br>
+					{{endif}}
+					<h2 class='ipsType_sectionHead'>{lang="shipping_sizing"}</h2>
+					<ul class='ipsDataList ipsDataList_reducedSpacing ipsSpacer_top'>
+						<li class='ipsDataItem'>
+							<div class='ipsDataItem_generic ipsDataItem_size3'>
+								<strong>{lang="size"}</strong>
+							</div>
+							<div class='ipsDataItem_main'>
+								{length="$package->length"} &times; {length="$package->width"} &times; {length="$package->height"}
+							</div>
+						</li>
+						<li class='ipsDataItem'>
+							<div class='ipsDataItem_generic ipsDataItem_size3'>
+								<strong>{lang="weight"}</strong>
+							</div>
+							<div class='ipsDataItem_main'>
+								{weight="$package->weight"}
+							</div>
+						</li>
+					</ul>
+				</div>
+			{{endif}}
+			{{if $package->reviewable}}
+				<div id="ipsTabs_elProductTabs_elReviews_panel" class="ipsTabs_panel ipsAreaBackground_reset ipsPadding" aria-hidden="false">
+					{template="reviews" group="store" app="nexus" params="$item"}
+				</div>
+			{{endif}}
+		</div>
+	</section>
+</div>

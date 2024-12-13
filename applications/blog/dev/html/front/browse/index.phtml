@@ -1,0 +1,22 @@
+<ips:template parameters="$table, $featured, $blogs=array(), $viewMode, $category=NULL" />
+<div class="ipsPageHeader ipsClearfix ipsMargin_bottom ipsHeaderButtons ipsFlex ipsFlex-ai:center ipsFlex-jc:between">
+	<h1 class="ipsType_pageTitle ipsFlex-flex:11 ipsType_break">{lang="blogs"}</h1>
+	{{if \count( $blogs ) || \IPS\blog\Blog::canCreate() || \IPS\Settings::i()->blog_allow_grid}}
+		<ul class='ipsToolList ipsToolList_horizontal ipsClearfix ipsPos_right '>
+			{template="indexButtons" group="browse" params="$blogs, $viewMode, FALSE, $category"}
+		</ul>
+	{{endif}}
+</div>
+{{if \count( $featured )}}
+	{template="featuredEntries" group="browse" params="$featured"}
+{{endif}}
+
+{{if \count( $blogs ) || \IPS\blog\Blog::canCreate() || \IPS\Settings::i()->blog_allow_grid}}
+	<ul class="ipsToolList ipsToolList_horizontal ipsResponsive_hideDesktop ipsResponsive_hideTablet ipsResponsive_block ipsClearfix">
+		{template="indexButtons" group="browse" params="$blogs, $viewMode, TRUE, $category"}
+	</ul>
+{{endif}}
+
+<div class='ipsBox'>
+	{$table|raw}
+</div>

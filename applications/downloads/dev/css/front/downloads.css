@@ -1,0 +1,122 @@
+#elDownloadsFeatured .ipsCarousel_item {
+	height: 205px;
+	position: relative;
+}
+
+	#elDownloadsFeatured .ipsCarousel_item .ipsType_richText {
+		max-height: 3em;
+		overflow: hidden;
+	}
+	
+#elDownloadsFeatured .ipsRating {
+	margin-top: 0;
+}
+
+#elDownloadsCategories .ipsBadge {
+	margin-top: 2px;
+}
+
+.cFilePrice {
+	color: rgb( var(--theme-price) );
+	text-transform: uppercase;
+	font-weight: 500;
+}
+
+.cDownloadsCarouselItem {
+	width: 170px;
+	min-height: 240px;
+}
+	
+	html[dir="ltr"] .cDownloadsCarouselItem {
+		margin-right: 6px !important;
+	}
+	html[dir="rtl"] .cDownloadsCarouselItem {
+		margin-left: 6px !important;
+	}
+
+	.cDownloadsCarouselItem .ipsThumb {
+		max-width: 100%;
+		max-height: 100%;
+		width: 155px;
+		height: 155px;
+	}
+
+	.cDownloadsCarouselItem .cFilePrice {
+		display: block;
+		padding: 5px 0 0;
+		margin: 5px 0 0 0;
+		border-top: 1px solid rgba( var(--theme-text_color), 0.1 );
+	}
+
+.cDownloadsCarouselItem_info {
+	line-height: 2;
+}
+
+#elDownloadsStats .ipsDataItem_main,
+#elDownloadsStats .ipsDataItem_stats {
+	padding: 5px 5px;
+}
+
+html[dir="ltr"] #elDownloadStatsLatest > .ipsWidget_latestItem {
+	margin-left: 85px;
+}
+html[dir="rtl"] #elDownloadStatsLatest > .ipsWidget_latestItem {
+	margin-right: 85px;
+}
+
+.cFileInfoData {
+	max-width: 155px;
+}
+
+/* Submission */
+#elDownloadsSubmit_progress > .ipsProgressBar {
+	margin: 15px 0 5px 0;
+	width: 100%;
+	height: 32px;
+}
+
+#elDownloadsSubmit_progress.ipsSticky {
+	background: rgb( var(--theme-area_background_reset) );
+	padding: 0px 15px 15px 15px;
+}
+
+#elDownloadsSubmit .ipsAttachment_dropZone {
+	background: rgb( var(--theme-area_background_reset) );
+	border: 3px dashed rgba( var(--theme-text_color), 0.15 );
+	margin-top: 7px;
+}
+
+.cDownloadsSubmit_step {
+	display: block;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	line-height: 40px;
+	font-size: 24px;
+	color: #fff;
+	border-radius: 40px;
+	background: rgb( var(--theme-brand_primary) );
+}
+
+#elURLFiles, #elImportFiles, #elURLScreenshots {
+	position: relative;
+}
+
+.cDownloadsLinkedScreenshotItem {
+	margin-bottom: 5px;
+}
+	.cDownloadsLinkedScreenshotItem_block {
+		display: inline-block;
+		width: 20px;
+		text-align: center;
+	}
+		html[dir="ltr"] .cDownloadsLinkedScreenshotItem_block {
+			margin-left: 5px;
+		}
+		html[dir="rtl"] .cDownloadsLinkedScreenshotItem_block {
+			margin-right: 5px;
+		}
+		.cDownloadsLinkedScreenshotItem_block i {
+			position: relative;
+			top: 1px;
+		}

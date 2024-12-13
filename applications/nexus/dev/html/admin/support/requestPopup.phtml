@@ -1,0 +1,32 @@
+<ips:template parameters="$request" />
+<div class="ipsPad">
+	<div class="ipsClearfix">
+		<ul class="ipsList ipsList_inline ipsPos_left">
+			<li>
+				<a href="{$request->acpUrl()}" class="ipsButton ipsButton_verySmall ipsButton_normal"><i class="fa fa-search"></i> {lang="view"}</a>
+			</li>
+			{{if \IPS\Member::loggedIn()->hasAcpRestriction( 'nexus', 'support', 'requests_merge' )}}
+				<li>
+					<a href="{$request->acpUrl()->setQueryString( array( 'do' => 'merge', 'merge' => \IPS\Request::i()->popup ) )->csrf()}" class="ipsButton ipsButton_verySmall ipsButton_normal"><i class="fa fa-level-up"></i> {lang="merge"}</a>
+				</li>
+			{{endif}}
+		</ul>
+		<ul class="ipsList ipsList_inline ipsPos_right ipsPad_half">
+			<li><i class="fa fa-tag"></i> {$request->status->_title}</li>
+			{{if \count( \IPS\nexus\Support\Severity::roots() ) > 1}}
+				<li><i class="fa fa-exclamation"></i> {$request->severity->_title}</li>
+			{{endif}}
+			<li><i class="fa fa-folder"></i> {$request->department->_title}</li>
+			<li><i class="fa fa-user"></i> {{if $staff = $request->staff}}{$staff->name}{{else}}{lang="unassigned"}{{endif}}</li>
+		</ul>
+	</div>
+	<br>
+	<div>
+		{{foreach $request->comments() as $comment}}
+			{$comment->html()|raw}
+		{{endforeach}}
+		{{if $request->commentPageCount() > 1}}
+			<a href="{$request->acpUrl()}">{lang="x_more_messages" pluralize="( $request->mapped('num_comments') - $request::getCommentsPerPage() )"}</a>
+		{{endif}}
+	</div>
+</div>

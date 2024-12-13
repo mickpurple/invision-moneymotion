@@ -1,0 +1,29 @@
+<ips:template parameters="$blog" />
+{{if ( $blog->owner() instanceof \IPS\Member ) && \IPS\Request::i()->module == 'view'}}
+	<div class='ipsPhotoPanel ipsPhotoPanel_mini'>
+		{template="userPhoto" group="global" app="core" params="$blog->owner(), 'mini'"}
+		<div>
+{{endif}}
+
+	<h1 class='ipsType_pageTitle ipsType_break ipsContained_container'>
+		{{if $blog->pinned}}
+			<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa fa-thumb-tack'></i></span></span>
+		{{endif}}
+		<span class='{{if \IPS\Request::i()->controller == 'view' || \IPS\Request::i()->controller == 'entry'}}ipsPageHead_barText{{else}}ipsPageHead_barText_small{{endif}} ipsType_break ipsContained'>
+			<a href='{$blog->url()}' title='{lang="go_to_blog" sprintf="$blog->_title"}' class='ipsType_blendLinks'>{$blog->_title}</a>
+		</span>
+	</h1>
+
+	<p class='ipsType_normal ipsType_reset ipsType_blendLinks ipsPageHead_barText_small'>
+		{{if $blog->owner() instanceof \IPS\Member}}
+			{lang="blog_by" htmlsprintf="$blog->owner()->link(), $blog->category()->link()"}
+		{{elseif $club = $blog->club()}}
+			<i class='fa fa-users'></i> {lang="club_blog_for" sprintf="$club->name"}
+		{{else}}
+			<i class='fa fa-users'></i> {lang="group_blog_by" htmlsprintf="\IPS\Member::loggedIn()->language()->addToStack( 'blogs_groupblog_name_' . $blog->id ), $blog->category()->link()"}
+		{{endif}}
+	</p>
+{{if ( $blog->owner() instanceof \IPS\Member ) && \IPS\Request::i()->module == 'view'}}
+		</div>
+	</div>
+{{endif}}

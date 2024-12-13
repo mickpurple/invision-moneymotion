@@ -1,0 +1,44 @@
+<ips:template parameters="$title, $authenticatedMember, $authenticationUrl, $authenticationError, $file=NULL, $categoryIds=NULL" />
+{{if !$file}}<div data-controller="core.admin.marketplace.search" data-category="{{if $categoryIds}}{expression="implode( ',', $categoryIds )"}{{endif}}" data-compatible="1">{{endif}}
+<div id='acpPageHeader'>
+	<div class='ipsFlex ipsFlex-ai:center ipsFlex-fw:wrap'>
+		
+		<div class='ipsFlex-flex:11'>
+			<h1 class="ipsType_pageTitle ipsType_break">
+				{$title}
+			</h1>
+			{{if $file}}
+				<span class="ipsType_light">
+					{lang="marketplace_version_short" sprintf="$file['version']"}
+					{lang="marketplace_byline" sprintf="$file['author']['profileUrl'], $file['author']['name'], ( new \IPS\DateTime( $file['updated'] ) )->relative()"}
+				</span>
+			{{endif}}
+		</div>
+		
+		<div class="ipsFlex ipsFlex-ai:center ipsGap_row:2 sm:ipsFlex-ai:stretch sm:ipsFlex-fd:column ipsFlex-fw:wrap sm:ipsFlex-flex:11">
+			{{if \IPS\Http\Url::internal('')->data['host'] != 'localhost' AND !\IPS\DEMO_MODE}}
+				{{if $authenticatedMember}}
+					<div class='sm:ipsMargin_top:half' >
+						{lang="marketplace_signedin_as" sprintf="$authenticatedMember"} (<a href="{url="app=core&module=marketplace&controller=marketplace&do=signout" csrf="true"}">{lang="marketplace_signout"}</a>)
+					</div>
+				{{else}}
+					<div  class='sm:ipsMargin_top:half' data-controller="core.admin.marketplace.launcher" data-url="{$authenticationUrl}" data-error="{$authenticationError}" data-height="800">
+						<button class="ipsButton ipsButton_primary" {{if $authenticationError}}data-action="showError"{{else}}data-action="signIn"{{endif}}>{lang="marketplace_signin"}</button>
+					</div>
+				{{endif}}
+			{{elseif \IPS\DEMO_MODE}}
+                <button class="ipsButton ipsButton_primary ipsButton_disabled ipsResponsive_showDesktop" data-ipsTooltip title="{lang="marketplace_demo_mode"}">{lang="marketplace_signin"}</button>
+                <div class="ipsResponsive_hideDesktop sm:ipsMargin_top:half">{lang="marketplace_demo_mode"}</div>
+            {{else}}
+                <button class="ipsButton ipsButton_primary ipsButton_disabled ipsResponsive_showDesktop" data-ipsTooltip title="{lang="marketplace_localhost_mode"}">{lang="marketplace_signin"}</button>
+                <div class="ipsResponsive_hideDesktop sm:ipsMargin_top:half">{lang="marketplace_localhost_mode"}</div>
+            {{endif}}
+			{{if !$file}}
+				<div data-controller="core.admin.marketplace.launcher">
+					<input type="search" placeholder="{lang="marketplace_search_placeholder" sprintf="$title"}" data-role="searchBox" size="35">
+				</div>
+			{{endif}}
+		</div>
+		
+	</div>
+</div>

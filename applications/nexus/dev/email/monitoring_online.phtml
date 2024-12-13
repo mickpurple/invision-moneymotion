@@ -1,0 +1,16 @@
+<ips:template parameters="$server, $encoded, $email" />
+
+{expression="$email->language->addToStack( 'monitor_email_intro', FALSE, array( 'sprintf' => \IPS\Settings::i()->board_name ) )"}
+<br />
+<br />
+
+<table width='100%' cellpadding='15' cellspacing='0' border='0' style='color: #556b45;'>
+	<tr>
+		<td dir='{dir}'>
+			<strong>{expression="$email->language->addToStack( 'monitor_email_online', FALSE, array( 'sprintf' => $server->hostname ) )"}</strong>
+		</td>
+	</tr>
+</table>
+
+<br /><br />
+<em style='color: #8c8c8c'>&mdash; {setting="board_name"}</em>

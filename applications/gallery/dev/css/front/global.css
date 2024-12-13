@@ -1,0 +1,160 @@
+.cGalleryAlbums_recent > ul {
+	height: 204px;
+	position: relative;
+	overflow: hidden;
+}
+html[dir="ltr"] .cGalleryAlbums_recent > ul {
+	padding-left: 208px;
+}
+html[dir="rtl"] .cGalleryAlbums_recent > ul {
+	padding-right: 208px;
+}
+
+.cGalleryAlbums_recent > ul > li {
+	width: 100px;
+	height: 100px;
+	float: left;
+	position: relative;
+	margin: 0 0 4px 4px;
+}
+html[dir="rtl"] .cGalleryAlbums_recent > ul > li {
+	float: right;
+	margin: 0 4px 4px 0;
+}
+	
+	.cGalleryAlbums_recent > ul > li a {
+		display: block;
+		width: 100px;
+		height: 100px;
+	}
+
+	.cGalleryAlbums_recent > ul > li span {
+		padding-right: 7px;
+		text-align: right;
+		font-size: {fontsize="x_small"};
+		font-weight: bold;
+		color: #fff;
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		line-height: 26px;
+		text-shadow: 1px 1px 0px rgba(0,0,0,0.8);
+		background-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.6) 100%);
+	}
+	html[dir="rtl"] .cGalleryAlbums_recent > ul > li span {
+		text-align: left;
+	}
+
+	.cGalleryAlbums_recent > ul > li img {
+		display: none;
+	}
+
+	.cGalleryAlbums_recent > ul > li:first-child {
+		width: 204px;
+		height: 204px;
+		overflow: hidden;
+		position: absolute;
+	}
+	html[dir="ltr"] .cGalleryAlbums_recent > ul > li:first-child {
+		left: 0;
+	}
+	html[dir="rtl"] .cGalleryAlbums_recent > ul > li:first-child {
+		right: 0;
+	}
+
+		.cGalleryAlbums_recent > ul > li:first-child a {
+			width: 204px;
+			height: 204px;
+		}
+
+/* Restyle the above for the sidebar */
+.ipsWidget_vertical .cGalleryAlbums_recent > ul{
+	padding: 0 !important;
+	display: flex;
+	flex-wrap: wrap;
+	height: auto;
+}
+
+	.ipsWidget_vertical .cGalleryAlbums_recent > ul > li:first-child,
+	.ipsWidget_vertical .cGalleryAlbums_recent > ul > li:first-child a,
+	.ipsWidget_vertical .cGalleryAlbums_recent > ul > li,
+	.ipsWidget_vertical .cGalleryAlbums_recent > ul > li a{
+		width: auto;
+		height: auto;
+		position: static;
+	}
+
+	.ipsWidget_vertical .cGalleryAlbums_recent > ul > li{
+		flex: 0 0 calc(33.3% - 4px);
+		max-width: 120px; /* Used if a widget stretches to 100% of the viewport one it wraps */
+	}
+
+		/* Since results are unlimited, display a maximum of 12 using css */
+		.ipsWidget_vertical .cGalleryAlbums_recent > ul > li:nth-child(12) ~ li{
+			display: none;
+		}
+
+
+	.ipsWidget_vertical .cGalleryAlbums_recent > ul > li a::before{
+		content: '';
+		display: block;
+		padding-top: 100%;
+	}
+
+/* General style which creates the square thumb container */
+.cGalleryTrimmedImage {
+	background-color: #333;
+	background-size: cover;
+	background-position: 50%;
+	background-repeat: no-repeat;
+	overflow: hidden;
+	border: .5px solid #333;
+}
+
+	.cGalleryTrimmedImage img {
+		display: none;
+	}
+
+.cGalleryThumb {
+	max-width: 170px;
+	max-height: 170px;
+}
+
+.cGalleryAlbumThumb {
+	width: 280px;
+	height: 235px;
+}
+
+@media screen and (max-width: 767px) {
+	.ipsApp .cGalleryAlbums_recent {
+		padding: 0;
+		margin-bottom: 3px;
+	}
+
+	.cGalleryAlbums_recent > ul {
+		height: 134px;
+	}
+	html[dir="ltr"] .cGalleryAlbums_recent > ul {
+		padding-left: 138px;
+	}
+	html[dir="rtl"] .cGalleryAlbums_recent > ul {
+		padding-right: 138px;
+	}
+
+	.cGalleryAlbums_recent > ul > li:first-child,
+	.cGalleryAlbums_recent > ul > li:first-child a {
+		width: 134px;
+		height: 134px;
+	}
+
+	.cGalleryAlbums_recent > ul > li,
+	.cGalleryAlbums_recent > ul > li a {
+		width: 65px;
+		height: 65px;
+	}
+
+	.cGalleryAlbums_recent + ul.ipsList_inline {
+		padding-left: 4px;
+	}
+}

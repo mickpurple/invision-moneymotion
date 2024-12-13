@@ -1,0 +1,23 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar, $form=NULL" />
+<div class="ipsAreaBackground ipsPad">
+	<form accept-charset='utf-8' action="{$action}" method="post" {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm>
+		<input type="hidden" name="{$id}_submitted" value="1">
+		{{foreach $hiddenValues as $k => $v}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endforeach}}
+		<div class="ipsGrid">
+			<div class="ipsGrid ipsGrid_span4">
+				{$elements['']['departments']->html()|raw}
+			</div>
+			<div class="ipsGrid ipsGrid_span4">
+				{$elements['']['statuses']->html()|raw}
+			</div>
+			<div class="ipsGrid ipsGrid_span2">
+				<button type="submit" class="ipsButton ipsButton_primary ipsButton_fullWidth ipsButton_medium">{lang="update"}</button>
+			</div>
+			<div class="ipsGrid ipsGrid_span2">
+				<a href="{url="app=nexus&module=support&controller=requests&do=resetMyDepartments"}" class="ipsButton ipsButton_alternate ipsButton_fullWidth ipsButton_medium">{lang="reset"}</a>
+			</div>
+		</div>
+	</form>
+</div>

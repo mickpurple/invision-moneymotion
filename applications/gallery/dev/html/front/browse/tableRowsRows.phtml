@@ -1,0 +1,85 @@
+<ips:template parameters="$table, $headers, $images" />
+{{if \count( $images )}}
+	{{foreach $images as $image}}
+		<div class='ipsDataItem cGalleryImageItem {{if $image->unread()}}ipsDataItem_unread{{endif}} {{if method_exists( $image, 'tableClass' ) && $image->tableClass()}}ipsDataItem_{$image->tableClass()}{{endif}} {{if $image->hidden()}}ipsModerated{{endif}}' data-imageId="{$image->id}" data-ipsLazyLoad>
+			<div class='ipsDataItem_generic ipsDataItem_size3'>
+				{{if $image->media }}
+					<a data-imageLightbox href='{$image->url()}' title='{lang="view_this_video" sprintf="$image->caption"}' class='ipsThumb ipsNoThumb ipsNoThumb_video ipsThumb_medium'>
+						<video data-role="video" class="ipsPos_center" preload="metadata" width="100%" height="100%"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{endif}}>
+							<source src="{file="$image->original_file_name" extension="gallery_Images"}" type='{$image->file_type}' />
+						</video>
+					</a>
+				{{else}}
+					<a data-imageLightbox href='{$image->url()}' title='{lang="view_this_image" sprintf="$image->caption"}' class='ipsThumb ipsThumb_medium ipsThumb_bg' {{if settings.lazy_load_enabled}}data-background-src="{backgroundimage="\IPS\File::get( 'gallery_Images', $image->small_file_name )->url"}"{{else}}style='background-image: url({backgroundimage="\IPS\File::get( 'gallery_Images', $image->small_file_name )->url"})'{{endif}}>
+						<img {{if settings.lazy_load_enabled}}src="{expression="\IPS\Text\Parser::blankImage()"}" data-{{endif}}src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}" class='ipsHide'>
+					</a>
+				{{endif}}
+			</div>
+			<div class='ipsDataItem_main'>
+				<h4 class='ipsDataItem_title ipsType_large ipsContained_container'>
+					{{if $image->unread()}}
+						<span>
+							<span class='ipsItemStatus' data-ipsTooltip title='{{if $image->unread() === -1}}{lang="new"}{{else}}{lang="updated"}{{endif}}'>
+								<i class="fa fa-circle"></i>
+							</span>
+						</span>
+					{{endif}}
+
+					{{if $image->hidden() === -1}}
+						<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{$image->hiddenBlurb()}'><i class='fa fa-eye-slash'></i></span></span>
+					{{elseif $image->hidden() === 1}}
+						<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa fa-warning'></i></span></span>
+					{{endif}}
+					{{if $image->mapped('pinned')}}
+						<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa fa-thumb-tack'></i></span></span>
+					{{endif}}
+					{{if $image->mapped('featured')}}
+						<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="featured"}'><i class='fa fa-star'></i></span></span>
+					{{endif}}
+
+					{{if $image->prefix()}}
+						<span>{template="prefix" group="global" app="core" params="$image->prefix( TRUE ), $image->prefix()"}</span>
+					{{endif}}
+
+					<span class='ipsContained ipsType_break'>
+						<a data-imageLightbox href='{$image->url()}' title='{lang="view_this_image" sprintf="$image->caption"} {{if $image->canEdit()}}{lang="click_hold_edit"}{{endif}}' {{if $image->canEdit()}}data-role="editableTitle"{{endif}}>
+							{$image->caption}
+						</a>
+					</span>
+				</h4>
+				<p class='ipsType_reset ipsType_light ipsType_blendLinks'>{lang="byline_nodate" htmlsprintf="$image->author()->link()"}</p>			
+				<div class='ipsType_medium ipsType_richText ipsType_break' data-ipsTruncate data-ipsTruncate-type="remove" data-ipsTruncate-size="2 lines">
+					{$image->truncated()|raw}
+				</div>
+
+				{{if \count( $image->tags() )}}
+					<ul class='ipsList_inline'>
+						<li>{template="tags" group="global" app="core" params="$image->tags()"}</li>
+					</ul>
+				{{endif}}
+			</div>
+			<div class='ipsDataItem_generic ipsDataItem_size8 ipsPos_top'>
+				{{if $image->directContainer()->allow_comments}}
+					<p class='ipsType_normal ipsType_reset'>
+						{{if $image->comments}}
+							<a data-imageLightbox href='{$image->url()->setFragment('replies')}'>
+						{{endif}}
+						{lang="num_comments" pluralize="$image->comments"}
+						{{if $image->comments}}
+							</a>
+						{{endif}}
+					</p>
+				{{endif}}
+				<p class='ipsType_medium ipsType_reset'><strong>{{if $image->updated == $image->date}}{lang="uploaded"}{{else}}{lang="updated"}{{endif}} {datetime="$image->updated"}</strong></p>
+			</div>
+			{{if $table->canModerate()}}
+				<div class='ipsDataItem_modCheck ipsPos_top'>
+					<span class='ipsCustomInput'>
+						<input type='checkbox' data-role='moderation' name="moderate[{$image->id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $image ) )"}" data-state='{{if $image->unread() === -1 or $image->unread() === 1}}unread{{else}}read{{endif}} {{if $image->hidden() === -1}}hidden{{elseif $image->hidden === 1}}unapproved{{endif}} {{if $image->mapped('pinned')}}pinned{{endif}} {{if $image->mapped('featured')}}featured{{endif}} {{if $image->mapped('locked')}}locked{{endif}}'>
+						<span></span>
+					</span>
+				</div>
+			{{endif}}
+		</div>
+	{{endforeach}}
+{{endif}}

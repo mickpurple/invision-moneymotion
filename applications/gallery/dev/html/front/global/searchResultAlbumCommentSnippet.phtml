@@ -1,0 +1,62 @@
+<ips:template parameters="$indexData, $itemData, $images, $url, $reviewRating, $condensed" />
+{{if $condensed}}
+	{{if \count( $images )}}
+		{{$firstImage = array_shift( $images );}}
+		<span data-ipsLazyLoad class='ipsThumb_bg ipsThumb_small ipsPos_left cGallerySearchAlbumThumb' {{if settings.lazy_load_enabled}}data-background-src="{backgroundimage="\IPS\File::get( 'gallery_Images', $firstImage->small_file_name )->url"}"{{else}}style='background-image: url({backgroundimage="\IPS\File::get( 'gallery_Images', $firstImage->small_file_name )->url"})'{{endif}}>
+			<img {{if settings.lazy_load_enabled}}src="{expression="\IPS\Text\Parser::blankImage()"}" data-{{endif}}src='{expression="\IPS\Text\Parser::blankImage()"}' data-src='{file="$firstImage->small_file_name" extension="gallery_Images"}' alt="{$firstImage->caption}">
+		</span>
+		<ul class='ipsList_inline cGallerySearchAlbumThumbs ipsType_noBreak' data-ipsLazyLoad>
+			{{foreach $images as $image }}
+				<li>
+					<a href='{$image->url()}'>
+						<span class='ipsThumb_bg ipsThumb_small ipsPos_left' {{if settings.lazy_load_enabled}}data-background-src="{backgroundimage="\IPS\File::get( 'gallery_Images', $image->small_file_name )->url"}"{{else}}style='background-image: url({backgroundimage="\IPS\File::get( 'gallery_Images', $image->small_file_name )->url"})'{{endif}}>
+							<img {{if settings.lazy_load_enabled}}src="{expression="\IPS\Text\Parser::blankImage()"}" data-{{endif}}src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}">
+						</span>
+					</a>
+				</li>
+			{{endforeach}}
+		</ul>
+	{{else}}
+		<span class='ipsNoThumb ipsThumb_small ipsPos_left'></span>
+	{{endif}}
+{{else}}
+	<div class='ipsColumns ipsColumns_collapsePhone ipsColumns_noSpacing' data-ipsLazyLoad>
+		<div class='ipsColumn ipsColumn_narrow ipsType_center'>
+			<a href='{$url}' title='{lang="view_this_album" sprintf="$itemData['album_name']"}'>
+				{{if \count( $images )}}
+					{{$firstImage = array_shift( $images );}}
+					{{if settings.lazy_load_enabled}}
+						<img src='{expression="\IPS\Text\Parser::blankImage()"}' data-src='{file="$firstImage->small_file_name" extension="gallery_Images"}' alt="{$firstImage->caption}" class="ipsImage ipsStream_thumbnail ipsStream_thumbnailSmall">
+					{{else}}
+						<img src='{file="$firstImage->small_file_name" extension="gallery_Images"}' alt="{$firstImage->caption}" class="ipsImage ipsStream_thumbnail ipsStream_thumbnailSmall">
+					{{endif}}
+				{{else}}
+					<div class='ipsThumb_small ipsNoThumb'></div>
+				{{endif}}
+			</a>
+		</div>
+		<div class='ipsColumn ipsColumn_fluid'>
+			<div class='ipsStream_comment ipsPad'>
+				{{if $reviewRating !== NULL}}
+					{template="rating" app="core" params="'medium', $reviewRating" group="global"}
+				{{endif}}
+				{{if trim( $indexData['index_content'] ) !== ''}}
+					<div class='ipsType_richText ipsType_break ipsType_medium' {{if !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'search' )}}data-ipsTruncate data-ipsTruncate-type='remove' data-ipsTruncate-size='3 lines' data-ipsTruncate-watch='false'{{else}}data-searchable data-findTerm{{endif}}>
+						{expression="\IPS\Content\Search\Result::preDisplay( $indexData['index_content'] )" raw="true"}
+					</div>
+				{{endif}}
+			</div>
+			<ul class='ipsList_inline cGallerySearchAlbumThumbs cGallerySearchExpanded ipsType_noBreak ipsSpacer_top'>
+				{{foreach $images as $image }}
+					<li>
+						<a href='{$image->url()}'>
+							<span class='ipsThumb_bg ipsThumb_small ipsPos_left' {{if settings.lazy_load_enabled}}data-background-src="{backgroundimage="\IPS\File::get( 'gallery_Images', $image->small_file_name )->url"}"{{else}}style='background-image: url({backgroundimage="\IPS\File::get( 'gallery_Images', $image->small_file_name )->url"})'{{endif}}>
+								<img {{if settings.lazy_load_enabled}}src="{expression="\IPS\Text\Parser::blankImage()"}" data-{{endif}}src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}">
+							</span>
+						</a>
+					</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	</div>
+{{endif}}

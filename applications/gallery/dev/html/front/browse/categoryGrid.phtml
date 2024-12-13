@@ -1,0 +1,32 @@
+<ips:template parameters="$categories" />
+
+{{if \count( $categories )}}
+	<div class='cGalleryCats ipsBox_alt ipsClear ipsClearfix'>
+		<ul class='ipsGrid' data-ipsGrid data-ipsGrid-minItemSize='250' data-ipsGrid-maxItemSize='500'>
+		{{foreach $categories as $category}}
+			<li class='ipsGrid_span4 cGalleryCat'>
+				<a href='{$category->url()}' style='background-image: url( "{backgroundimage="$category->coverPhoto('small')"}" );' class='cGalleryTrimmedImage' data-grid-ratio='80'>
+					<h2 class='ipsType_sectionHead ipsTruncate ipsTruncate_line'>
+						{{if settings.club_nodes_in_apps and $club = $category->club()}}
+							{lang="club_node" sprintf="$club->name, $category->_title"}
+						{{else}}
+							{$category->_title}
+						{{endif}}
+					</h2>
+					<img src='{$category->coverPhoto('small')}' alt="{$category->_title}">
+					<ul class='ipsList_inline ipsType_left cGalleryCat_info'>
+						<li>{{if $category->lastImage() !== NULL}}<i class='fa fa-clock-o'></i> {datetime="$category->lastImage()->date"}{{endif}}</li>
+						{{if $category->allow_comments}}
+							<li class='ipsPos_right' data-ipsTooltip title='{lang="cat_comment_count" pluralize="$category->_commentsForDisplay"}'><i class='fa fa-comment'></i> {$category->_commentsForDisplay}</li>
+						{{endif}}
+						{{if $category->allow_albums}}
+							<li class='ipsPos_right' data-ipsTooltip title='{lang="cat_album_count" pluralize="$category->public_albums"}'><i class='fa fa-th-large'></i> {$category->public_albums}</li>
+						{{endif}}
+						<li class='ipsPos_right' data-ipsTooltip title='{lang="cat_img_count" pluralize="\IPS\gallery\Image::contentCount( $category )"}'><i class='fa fa-camera'></i> {expression="\IPS\gallery\Image::contentCount( $category )"}</li>
+					</ul>
+				</a>
+			</li>
+		{{endforeach}}
+		</ul>
+	</div>
+{{endif}}

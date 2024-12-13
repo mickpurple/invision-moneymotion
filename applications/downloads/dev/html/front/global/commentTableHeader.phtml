@@ -1,0 +1,16 @@
+<ips:template parameters="$comment, $file" />
+
+<div class='ipsFlex ipsFlex-ai:center sm:ipsFlex-ai:start sm:ipsMargin_top:double'>
+	<div class='ipsFlex-flex:00 ipsMargin_right sm:ipsMargin_right:half'>
+		{template="thumbImage" group="global" app="core" params="$file->primary_screenshot, $file->name, 'small', '', 'view_this', $file->url( 'getPrefComment' )"}
+	</div>
+	<div>
+		<h3 class='ipsType_sectionHead'><a href='{$file->url( "getPrefComment" )}' title='{lang="view_this_file" sprintf="$file->name"}'>{$file->mapped('title')}</a></h3>
+		<p class='ipsType_normal ipsType_light ipsType_blendLinks ipsType_reset'>{lang="in"} <a href='{$file->container()->url()}'>{$file->container()->_title}</a></p>
+		{{if $file->container()->bitoptions['reviews']}}
+			{template="rating" group="global" location="front" app="core" params="'large', $file->rating, \IPS\Settings::i()->reviews_rating_out_of"} &nbsp;&nbsp;
+		{{endif}}
+
+		<span class='ipsType_reset'>{{if !$file->downloads}}<span class='ipsType_light'>{{endif}}<i class='fa fa-arrow-circle-down'></i> {number="$file->downloads"}{{if !$file->downloads}}</span>{{endif}} {{if $file->container()->bitoptions['comments']}}&nbsp;&nbsp;{{if !$file->comments}}<span class='ipsType_light'>{{endif}}<i class='fa fa-comment'></i> {$file->comments}{{endif}}{{if !$file->comments}}</span>{{endif}}</span>
+	</div>
+</div>

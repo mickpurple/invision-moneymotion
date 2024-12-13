@@ -1,0 +1,18 @@
+<ips:template parameters="$categoryId, $resultSet" />
+<div data-role="hideWhenSearching">
+    {{if !\count( $resultSet['results'] )}}
+        <p class="ipsType_normal ipsType_light ipsType_center">{lang="marketplace_error_no_resources"}</p>
+    {{else}}
+        <div class='ipsGrid ipsGrid_collapsePhone' data-ipsGrid data-ipsgrid-minitemsize="250" data-ipsGrid-maxitemsize="500" data-ipsGrid-equalheights="row" data-ipsLazyLoad>
+            {{foreach $resultSet['results'] as $file}}
+            {template="fileCard" group="marketplace" params="$file"}
+            {{endforeach}}
+        </div>
+        <br>
+        {{if $resultSet['totalPages'] > 1}}
+            {template="pagination" group="global" app="core" location="global" params="\IPS\Http\Url::internal('app=core&module=marketplace&controller=marketplace&do=viewCategory&id=' . $categoryId ), $resultSet['totalPages'], $resultSet['page'], $resultSet['perPage'], TRUE, 'page'"}
+        {{endif}}
+    {{endif}}
+</div>
+<div data-role="results"></div>
+</div>

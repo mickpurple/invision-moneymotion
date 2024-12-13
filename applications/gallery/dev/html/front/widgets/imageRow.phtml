@@ -1,0 +1,26 @@
+<ips:template parameters="$image, $orientation='vertical'" />
+<li class='cGalleryWidget {{if $orientation != 'vertical'}}ipsCarousel_item{{endif}}' data-ipsLazyLoad>
+	{{if $image->small_file_name}}
+		<a href='{$image->url()->setQueryString( 'context', 'widget' )}' title='{lang="view_this_image" sprintf="$image->caption"}' class='ipsThumb ipsThumb_bg{{if $orientation == 'vertical'}} cGalleryWidget_verticalThumb{{else}} ipsThumb_large{{endif}}' {{if settings.lazy_load_enabled}}data-background-src="{backgroundimage="\IPS\File::get( 'gallery_Images', $image->small_file_name )->url"}"{{else}}style='background-image: url({backgroundimage="\IPS\File::get( 'gallery_Images', $image->small_file_name )->url"})'{{endif}} data-imageLightbox>
+			<img {{if settings.lazy_load_enabled}}src="{expression="\IPS\Text\Parser::blankImage()"}" data-{{endif}}src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}">
+		</a>
+	{{else}}
+		<a href='{$image->url()->setQueryString( 'context', 'widget' )}' title='{lang="view_this_video" sprintf="$image->caption"}' class='ipsNoThumb ipsNoThumb_video ipsThumb_bg {{if $orientation == 'vertical'}} cGalleryWidget_verticalThumb{{else}} ipsThumb_large{{endif}}' data-imageLightbox></a>
+	{{endif}}
+	{{if $image->directContainer()->allow_comments}}
+		<div class="cGalleryWidget_comments {{if $image->comments === 0}}ipsFaded{{endif}}" data-ipsTooltip title='{lang="num_comments" pluralize="$image->comments"}'>
+			<i class='fa fa-comment'></i> {$image->comments}
+		</div>
+	{{endif}}
+	<div class='ipsSpacer_top ipsSpacer_half cGalleryWidgetInfo'>
+			<div class='ipsTruncate ipsTruncate_line'>
+				<a href="{$image->url()}" title='{lang="view_this_image" sprintf="$image->caption"}' class='cGalleryWidget_title ipsType_medium'>
+					{$image->caption}
+				</a>
+			</div>
+		<span class='ipsType_medium ipsType_blendLinks ipsTruncate ipsTruncate_line'>
+			{lang="byline" htmlsprintf="$image->author()->link()"}
+			{datetime="$image->mapped('date')"}
+		</span>
+	</div>
+</li>

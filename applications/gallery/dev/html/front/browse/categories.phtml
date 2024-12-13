@@ -1,0 +1,9 @@
+<ips:template parameters="" />
+{{if !\IPS\Request::i()->isAjax()}}
+	<div class="ipsPageHeader ipsPad_half ipsClearfix ipsSpacer_bottom" data-ipsSticky data-ipsSticky-disableIn='phone'>
+		<h1 class="ipsType_pageTitle">{lang="gallery_title"}</h1>
+	</div>
+{{endif}}
+<ol class="ipsDataList">
+	{template="categoryRow" group="browse" params="NULL, NULL, \IPS\gallery\Category::roots()"}
+</ol>

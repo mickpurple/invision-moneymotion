@@ -1,0 +1,192 @@
+/* PHONES */
+@media screen and (max-width: 767px) {
+
+	.cGalleryDialog_inner {
+		bottom: 0;
+	}
+
+	.cGalleryDialog .cGalleryDialog_titleAndUpload {
+		right: 0 !important;
+		padding-bottom: 30px;
+	}
+
+	#elGallerySubmit_imageUploader .ipsAttachment_dropZone {
+		width: 100% !important;
+		height: 150px !important;
+	}
+
+	#elGallerySubmit_imageUploader .ipsAttachment_dropZone:not( .ipsAttachment_dropZoneSmall ) > i:first-child {
+		font-size: 70px;
+	}
+
+	#elGallerySubmit_imageUploader .ipsAttachment_fileList {
+		padding-bottom: 80px;
+	}
+
+		#elGallerySubmit_imageUploader .ipsAttachment_fileList .ipsImageAttach {
+			margin-right: 0;
+			margin-bottom: 10px !important;
+			height: 260px;
+			width: 100%;
+		}
+
+			#elGallerySubmit_imageUploader .ipsAttachment_fileList .ipsImageAttach:first-child {
+				margin-left: 0;
+			}
+
+			#elGallerySubmit_imageUploader .ipsAttachment_fileList .ipsImageAttach:first-child {
+				margin-top: 160px;
+			}
+			
+			#elGallerySubmit_imageUploader .ipsAttachment_fileList .ipsImageAttach .ipsImageAttach_thumb {
+				height: 200px;
+			}
+
+	.cGallerySubmit_preview {
+		height: 120px
+	}
+
+	.cGalleryDialog_close {
+		width: 30px;
+		height: 30px;
+		line-height: 30px;
+		border-radius: 30px;
+		font-size: 22px;
+		top: 5px;
+		right: 5px;
+	}
+
+	.cGalleryDialog_content {
+		top: 65px;
+	}
+
+	.cGalleryDialog_imageForm [data-role="imageForm"] {
+		top: 105px;
+	}
+
+	/* Image details area on mobile is fixed */
+	.cGallerySubmit_imageDetails {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 10000;
+		padding: 15px;
+	}
+
+	/* Step 1: Choose album */
+	.cGallerySubmit_albumChoice {
+		margin-top: 0;
+	}
+
+		.cGallerySubmit_albumChoice > .ipsGrid_span6:first-child {
+			margin-bottom: 30px;
+		}
+
+		#elGallerySubmit_albumChooser {
+			min-height: none;
+		}
+
+	/* Step 2: Upload images */
+	.cGallerySubmit_bottomBar {
+		height: auto;
+	}
+
+		.cGallerySubmit_bottomBar button[type="submit"] {
+			width: 100%;
+		}
+
+	/* Info panel */
+	.cGallerySubmit_strip, .cGallerySubmit_infoForm, .cGallerySubmit_bottomBar, .cGallerySubmit_infoPanel {
+		position: absolute;
+	}
+
+	html[dir] .cGallerySubmit_strip {
+		top: 0;
+		left: 0;
+		right: 0;
+		width: auto;
+		height: 100px;
+		white-space: nowrap;
+		overflow-y: hidden;
+	}
+
+		.cGallerySubmit_strip ul {
+			white-space: nowrap;
+			overflow: visible;
+		}
+
+		.cGallerySubmit_strip li {
+			white-space: nowrap;
+			margin-bottom: 0;
+			margin-right: 15px;
+			display: inline-block;
+		}
+
+		.cGallerySubmit_strip .cGalleryTrimmedImage {
+			width: 70px;
+			height: 70px;
+			border-width: 3px;
+		}
+
+			.cGallerySubmit_strip .cGalleryTrimmedImage a {
+				width: 70px;
+				height: 70px;
+			}
+
+		.cGallerySubmit_strip .cGallerySubmit_current:after {
+			display: none;	
+		}
+	html[dir] .cGallerySubmit_infoForm {
+		position: absolute;
+		top: 100px;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	#elGallerySubmit_toolBar > ul {
+		display: block;
+	}
+
+		/* Reset all items so they're blocks */
+		#elGallerySubmit_toolBar > ul > li {
+			display: block;
+			margin: 0;
+		}
+
+		/* Make buttons a bit smaller */
+		#elGallerySubmit_toolBar > ul > li .ipsButton {
+			width: 100%;
+			line-height: 32px;
+			font-size: 12px;
+		}
+
+		/* Copyright/credit buttons - half-width so they share a line */
+		#elGallerySubmit_toolBar > ul > li {
+			width: 48%;
+		}
+
+		#elGallerySubmit_toolBar > ul > li:nth-child(odd) {
+			float: left; /* Copyright - move left */
+		}
+		#elGallerySubmit_toolBar > ul > li:nth-child(even) {
+			float: right; /* Credit - move right */
+		}
+
+		#elGallerySubmit_toolBar > ul > li:nth-child(3),
+		#elGallerySubmit_toolBar > ul > li:nth-child(4) {
+			margin-top: 7px; /* Tags and notify */
+		}
+
+			/* Notify option - make toggle a bit smaller (and the text) */
+			#elGallerySubmit_toolBar > ul > li:first-child + li + li .ipsToggle {
+				zoom: 0.8;
+			}
+			#elGallerySubmit_toolBar > ul > li:first-child + li + li label {
+				font-size: 12px;
+			}
+}

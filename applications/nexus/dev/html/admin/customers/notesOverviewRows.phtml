@@ -1,0 +1,10 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{foreach $rows as $row}}
+	<li>
+		<p class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+			{expression="strip_tags( str_replace( '>', '> ', str_replace( array( '</p>', '</h1>', '</h2>', '</h3>', '</h4>', '</h5>', '</h6>' ), ' ', \IPS\Text\Parser::removeElements( $row['note_text'], array( 'blockquote' ) ) ) ), '<br>' )"}
+		</p>
+		<span class='ipsType_medium ipsType_light ipsTruncate ipsTruncate_line'>{datetime="$row['note_date']"}, {member="name" id="$row['note_author']"}</span>
+	</li>
+{{endforeach}}

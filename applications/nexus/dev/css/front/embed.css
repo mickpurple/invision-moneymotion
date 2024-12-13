@@ -1,0 +1,28 @@
+.cNexusEmbedImage .ipsImage {
+	max-height: 200px;
+}
+
+	.cNexusEmbedImage.ipsRichEmbed_mastheadBg a {
+		height: 150px;
+	}
+
+.cNexusEmbed .cNexusPrice {
+	color: rgb( var(--theme-price) );
+	font-size: {fontsize="medium"};
+	font-weight: 450;
+}
+
+	.cNexusEmbed small {
+		font-size: {fontsize="small"};
+	}
+
+	.cNexusEmbed .cNexusPrice s {
+		font-size: {fontsize="medium"};
+		color: #9a9a9a;
+		font-weight: normal;
+	}
+
+.cNexusEmbedImage.ipsNoThumb {
+	width: 100%;
+	height: 100px;
+}

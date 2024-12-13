@@ -1,0 +1,18 @@
+<ips:template parameters="$table, $headers, $entries" />
+{{if \count( $entries ) > 0}}
+	<section class='ipsType_normal ipsSpacer_both cBlog_grid' data-controller='blog.front.browse.grid'>
+	{{$count = 1;}}
+	<div class='cBlog_grid_row'>
+		{{foreach $entries as $id => $entry}}
+			{template="indexGridEntry" app="blog" location="front" group="browse" params="$entry, false, $table"}
+			{{if $count % 3 == 0}}
+				</div>
+				<div class='cBlog_grid_row'>
+			{{endif}}
+			{{$count++;}}
+		{{endforeach}}
+	</div>
+</section>
+{{else}}
+	{template="noEntries" group="view" app="blog" params="$table->container()"}
+{{endif}}

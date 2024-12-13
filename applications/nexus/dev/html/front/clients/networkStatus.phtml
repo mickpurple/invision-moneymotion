@@ -1,0 +1,46 @@
+<ips:template parameters="$servers" />
+<div class="ipsPageHeader">
+	<header class="ipsSpacer_bottom">
+		<h1 class="ipsType_pageTitle">{lang="network_status"}</h1>
+	</header>
+</div>
+
+<div class="ipsType_richText ipsType_normal ipsSpacer_bottom ipsSpacer_double">
+	{lang="network_status_text_val"}
+</div>
+
+{{if \count( $servers )}}
+	<ol class='ipsList_reset'>
+		{{foreach $servers as $server}}
+			<li class='ipsPad_half ipsAreaBackground_light {{if $server->monitor_fails}}{{if $server->monitor_acknowledged}}ipsDataItem_error{{else}}ipsDataItem_warning{{endif}}{{endif}} ipsSpacer_bottom'>
+				<div class="ipsDataItem_icon ipsType_large">
+					{{if $server->monitor_fails}}
+						{{if $server->monitor_acknowledged}}
+							<span class='ipsBadge ipsBadge_icon ipsBadge_large ipsBadge_negative'><i class="fa fa-exclamation-circle"></i></span>
+						{{else}}
+							<span class='ipsBadge ipsBadge_icon ipsBadge_large ipsBadge_intermediary'><i class="fa fa-exclamation-triangle "></i></span>
+						{{endif}}
+					{{else}}
+						<span class='ipsBadge ipsBadge_icon ipsBadge_large ipsBadge_positive'><i class="fa fa-check-circle ipsType_success"></i></span>
+					{{endif}}
+				</div>
+				<div class="ipsDataItem_main">
+					<h4 class='ipsType_sectionHead'>{{if $server->monitor_fails}}<strong>{{endif}}{$server->hostname}{{if $server->monitor_fails}}</strong>{{endif}}</h4>
+					{{if $server->monitor_fails}}
+						{{if $server->monitor_acknowledged}}
+							<p class='ipsDataItem_meta'>{lang="network_status_known_issue"}</p>
+						{{else}}
+							<p class='ipsDataItem_meta'>{lang="network_status_potential_issue"}</p>
+						{{endif}}
+					{{else}}
+						<p class='ipsDataItem_meta'>{lang="network_status_normal"}</p>
+					{{endif}}
+				</div>
+			</li>				
+		{{endforeach}}
+	</ol>
+{{else}}
+	<div class='ipsPad_double ipsType_center ipsAreaBackground_positive'>
+		<h2 class='ipsType_pageTitle'><span><i class='fa fa-check-circle'></i></span> &nbsp;&nbsp;{lang="network_status_no_issues"}</h2>
+	</div>
+{{endif}}

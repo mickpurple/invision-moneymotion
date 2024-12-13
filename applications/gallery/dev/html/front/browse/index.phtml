@@ -1,0 +1,63 @@
+<ips:template parameters="$featured, $new" />
+<div class="ipsPageHeader ipsClearfix ipsMargin_bottom ipsHeaderButtons ipsFlex ipsFlex-ai:center ipsFlex-jc:between">
+	<h1 class="ipsType_pageTitle ipsFlex-flex:11 ipsType_break">{lang="gallery_title"}</h1>
+
+	{{if \IPS\gallery\Category::canOnAny('add')}}
+		<ul class="ipsToolList ipsToolList_horizontal ipsClearfix ipsPos_right ipsMargin_bottom:none ipsFlex-flex:00">
+			{template="categoryButtons" group="browse" params="\IPS\gallery\Category::canOnAny('add'), NULL, NULL"}
+		</ul>
+	{{endif}}
+</div>
+
+{{$clubNodes = settings.club_nodes_in_apps ? \IPS\gallery\Category::clubNodes() : array();}}
+{{if $rootCategories = \IPS\gallery\Category::roots()}}
+	<div class="ipsSpacer_bottom">
+		{{if $clubNodes}}<h2 class="ipsType_sectionHead ipsSpacer_bottom ipsSpacer_half">{lang="community_image_categories"}</h2>{{endif}}
+		{template="categoryGrid" group="browse" app="gallery" params="$rootCategories"}
+	</div>
+{{endif}}
+
+{{if settings.club_nodes_in_apps and $clubNodes = \IPS\gallery\Category::clubNodes()}}
+	<div class="ipsSpacer_bottom">
+		{{if $rootCategories}}<h2 class="ipsType_sectionHead ipsSpacer_bottom ipsSpacer_half">{lang="club_node_gallery"}</h2>{{endif}}
+		{template="categoryGrid" group="browse" app="gallery" params="$clubNodes"}
+	</div>
+{{endif}}
+
+{{if !empty( $featured )}}
+<div class='ipsBox ipsResponsive_pull ipsSpacer_bottom'>
+	<h2 class='ipsType_sectionTitle ipsType_reset'>{lang="featured_images"}</h2>
+	<div data-controller='gallery.front.browse.imageLightbox' data-ipsPhotoLayout data-ipsPhotoLayout-itemTemplate='gallery.patchwork.indexItem' data-ipsPhotoLayout-maxRows='3' class='ipsPad_half ipsClearfix cGalleryPatchwork_index'>
+		<ul class='ipsList_inline'>
+			{{foreach $featured as $image}}
+				{{$json=NULL;}}
+				{{try { $json = $image->json( array( 'context' => 'featured' ) ); } catch( \Exception $e ) {};}}
+          		{{if $json}}
+				<li data-role='patchworkImage' data-json='{$json|raw}'>
+					<a data-imageLightbox href='{$image->url()->setQueryString( 'context', 'featured' )}'><img {{if settings.lazy_load_enabled}}src="{expression="\IPS\Text\Parser::blankImage()"}" data-{{endif}}src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}" class='ipsJS_hide'></a>
+				</li>
+                {{endif}}
+			{{endforeach}}
+		</ul>
+	</div>
+</div>
+{{endif}}
+
+{{if !empty( $new )}}
+<div class='ipsBox ipsResponsive_pull'>
+	<h2 class='ipsType_sectionTitle ipsType_reset'>{lang="new_images"}</h2>
+	<div data-controller='gallery.front.browse.imageLightbox' data-ipsPhotoLayout data-ipsPhotoLayout-itemTemplate='gallery.patchwork.indexItem' data-ipsPhotoLayout-maxRows='3' class='ipsPad ipsClearfix cGalleryPatchwork_index'>
+		<ul class='ipsList_inline'>
+			{{foreach $new as $image}}
+				{{$json=NULL;}}
+				{{try { $json = $image->json( array( 'context' => 'new' ) ); } catch( \Exception $e ) {};}}
+          		{{if $json}}
+				<li data-role='patchworkImage' data-json='{$json|raw}'>
+					<a data-imageLightbox href='{$image->url()->setQueryString( 'context', 'new' )}'><img {{if settings.lazy_load_enabled}}src="{expression="\IPS\Text\Parser::blankImage()"}" data-{{endif}}src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}" class='ipsJS_hide'></a>
+				</li>
+                {{endif}}
+			{{endforeach}}
+		</ul>
+	</div>
+</div>
+{{endif}}

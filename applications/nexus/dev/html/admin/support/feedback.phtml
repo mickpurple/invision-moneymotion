@@ -1,0 +1,10 @@
+<ips:template parameters="$rating" />
+<div class="ipsPad">
+	<ul class='ipsList_inline ipsClearfix ipsRating ipsRating_veryLarge'>
+		{{foreach range( 1, 5 ) as $i}}
+			<li class='{{if $rating['rating_rating'] >= $i}}ipsRating_on{{endif}}'><i class='fa fa-star'></i></li>
+		{{endforeach}}
+	</ul>
+	<hr class="ipsHr">
+	{expression="nl2br( $rating['rating_note'] )"}
+</div>

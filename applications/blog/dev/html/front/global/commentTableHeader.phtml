@@ -1,0 +1,24 @@
+<ips:template parameters="$comment, $entry" />
+
+<div class='ipsFlex ipsFlex-ai:center sm:ipsFlex-ai:start sm:ipsMargin_top:double'>
+	<div class='ipsFlex-flex:00 ipsMargin_right sm:ipsMargin_right:half'>
+		{template="userPhoto" group="global" app="core" params="$entry->author()"}
+	</div>
+	<div>
+		<h3 class='ipsType_sectionHead'>
+			<a href='{$entry->url( "getPrefComment" )}' title='{lang="view_this_entry" sprintf="$entry->mapped('title')"}'>
+				{$entry->mapped('title')}
+			</a>
+		</h3>
+		<p class='ipsType_normal ipsType_blendLinks ipsType_reset'>{lang="in"} <a href='{$entry->container()->url()}'>{$entry->container()->_title}</a></p>
+		<p class='ipsType_normal ipsType_light ipsType_blendLinks ipsType_reset'>
+			{{if $entry->container()->owner() instanceof \IPS\Member}}
+				{lang="blog_by" htmlsprintf="$entry->container()->owner()->link(), $entry->container()->category()->link()"}
+			{{elseif $club = $entry->container()->club()}}
+				<i class='fa fa-users'></i> {lang="club_blog_for" sprintf="$club->name"}
+			{{else}}
+				<i class='fa fa-users'></i> {lang="group_blog_by" htmlsprintf="\IPS\Member::loggedIn()->language()->addToStack( 'blogs_groupblog_name_' . $entry->container()->id ), $entry->container()->category()->link()"}
+			{{endif}}
+		</p>
+	</div>
+</div>

@@ -1,0 +1,6 @@
+<ips:template parameters="$name, $amount=0, $unit='cm'" />
+<input type="number" name="{$name}[amount]" size="4" value="{expression="number_format( $amount, 2, '.', '' )"}" class="ipsField_short" step="0.01">
+<select name="{$name}[unit]">
+	<option value="cm" {{if $unit == 'cm'}}selected{{endif}}>{lang="cm"}</option>
+	<option value="in" {{if $unit == 'in'}}selected{{endif}}>{lang="inches"}</option>
+</select>

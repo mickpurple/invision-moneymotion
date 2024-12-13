@@ -1,0 +1,21 @@
+<ips:template parameters="$data" />
+<ul class="ipsDataList">
+	{{foreach $data as $k => $v}}
+		<li class="ipsDataItem">
+			<span class="ipsDataItem_generic ipsDataItem_size6">
+				<strong>{lang="$k"}</strong>
+			</span>
+			<span class="ipsDataItem_generic">
+				{{if $k === 'total_disk_spaceg'}}
+					{filesize="$v"}
+				{{elseif $k === 'largest_image'}}
+					<a href='{$v->url()}' target='_blank' rel='noopener'>{$v->caption}</a> <span class="ipsType_light">({filesize="$v->file_size"})</span>
+				{{elseif $k === 'most_viewed_image'}}
+					<a href='{$v->url()}' target='_blank' rel='noopener'>{$v->caption}</a> <span class="ipsType_light">({lang="num_views_with_number" pluralize="$v->views"})</span>
+				{{else}}
+					{$v}
+				{{endif}}
+			</span>
+		</li>
+	{{endforeach}}
+</ul>

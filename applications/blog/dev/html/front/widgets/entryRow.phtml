@@ -1,0 +1,19 @@
+<ips:template parameters="$entry, $orientation='vertical'" />
+<li class='ipsDataItem'>
+	<div class='ipsDataItem_icon ipsPos_top'>
+		{template="userPhoto" app="core" params="$entry->author(), 'tiny'" group="global"}
+	</div>
+	<div class='ipsDataItem_main'>
+		<div class='ipsContained ipsType_break'><a href="{$entry->url('getLastComment')}" title='{lang="view_this_entry" sprintf="$entry->_title"}' class='ipsType_medium ipsTruncate ipsTruncate_line'>{$entry->name}</a></div>
+		<span class='ipsType_blendLinks ipsType_light ipsType_medium ipsType_break ipsContained'>{lang="byline_nodate" htmlsprintf="$entry->author()->link()"} {lang="in"} <a href='{$entry->container()->url()}' class='ipsType_blendLinks ipsTruncate ipsTruncate_line'>{$entry->container()->_title}</a></span>
+		{{if \IPS\Settings::i()->blog_enable_rating}}
+			{template="rating" group="global" location="front" app="core" params="'small', $entry->averageRating(), 5, $entry->memberRating()"} &nbsp;&nbsp;
+		{{endif}}
+		<span class='ipsType_medium ipsType_reset'>{{if !$entry->num_comments}}<span class='ipsType_light'>{{endif}}<i class='fa fa-comment'></i> {number="$entry->num_comments"}{{if !$entry->num_comments}}</span>{{endif}}</span>
+		{{if $orientation == 'horizontal'}}
+			<div class='ipsType_medium ipsType_richText ipsType_break' data-ipsTruncate data-ipsTruncate-type='remove' data-ipsTruncate-size='2 lines'>
+				{$entry->truncated()|raw}
+			</div>
+		{{endif}}
+	</div>
+</li>

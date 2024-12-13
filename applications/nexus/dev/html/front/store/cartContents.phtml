@@ -1,0 +1,90 @@
+<ips:template parameters="$location, $currency" />
+{{$subtotal = new \IPS\Math\Number('0');}}
+{{if \count( $_SESSION['cart'] )}}
+	<div class='ipsClearfix' id='elNexusCart'>
+		<div class='ipsBox ipsPad_half'>
+			{{foreach $_SESSION['cart'] as $id => $item}}
+				{{if $item instanceof \IPS\nexus\extensions\nexus\Item\Package}}
+					{{try { $package = \IPS\nexus\Package::load( $item->id ); } catch( \OutOfRangeException $e ) { unset($_SESSION['cart'][$key]); continue; } }}
+				{{endif}}
+				<div id='elCartItem_{$id}' class="ipsClearfix">
+					<div class='ipsPos_left ipsPad_half'>
+						{{if $item instanceof \IPS\nexus\extensions\nexus\Item\Package and $package->image}}
+							<img src="{$package->image}" class='ipsThumb ipsThumb_small'>
+						{{else}}
+							<div class='ipsNoThumb ipsNoThumb_product ipsThumb_small'>&nbsp;</div>
+						{{endif}}
+					</div>
+					<div class='ipsPos_left ipsPad_half'>
+						<h2 class='ipsDataItem_title ipsType_sectionHead ipsType_break'>{{if !$package->subscription}}<span class='ipsType_light'>{$item->quantity} x</span> {{endif}}{$item->name}</h2>
+						{{foreach $item->details as $k => $v}}
+							<strong>{lang="nexus_pfield_{$k}"}: </strong> {expression="\IPS\nexus\Package\CustomField::load( $k )->displayValue( $v )" raw="true"}<br>
+						{{endforeach}}
+						<div class='ipsDataItem_meta ipsSpacer_top ipsSpacer_half'>
+							<ul class='ipsList_inline ipsType_small'>
+								<li><a href='{url="app=nexus&module=store&controller=cart&do=quantities&item[$id]=0" seoTemplate="store_cart" csrf="1"}' title='{lang="remove_from_cart_title"}' data-action='removeFromCart'>{lang="remove_from_cart"}</a></li>
+								{{if !$package->subscription}}<li><a href='#elItemRow{$id}_quantity_menu' data-ipsMenu data-ipsMenu-appendTo='#elCartItem_{$id}' data-ipsMenu-closeOnClick='false' id='elItemRow{$id}_quantity' title='{lang="change_quantity_title"}'>{lang="change_quantity"} <i class='fa fa-caret-down'></i></a></li>{{endif}}
+							</ul>
+							<div class='ipsPad ipsHide ipsMenu ipsMenu_veryNarrow ipsType_center' id='elItemRow{$id}_quantity_menu'>
+								<form action="{url="app=nexus&module=store&controller=cart&do=quantities" seoTemplate="store_cart" csrf="1"}" method="post" data-role='quantityForm'>
+									<input type='number' name="item[{$id}]" value='{$item->quantity}'>
+									<button type='submit' class='ipsButton ipsButton_primary ipsButton_verySmall ipsButton_fullWidth ipsSpacer_top'>{lang="update"}</button>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class='ipsPos_right ipsPad_half ipsType_right ipsPos_top'>
+						<span class='cNexusPrice ipsType_large'>
+							{{if settings.nexus_show_tax}}
+								{{$location = $location ?: \IPS\nexus\Customer::loggedIn()->estimatedLocation();}}
+								{{$itemPrice = $item->grossPrice( $location );}}
+								{{$linePrice = $item->grossLinePrice( $location );}}
+							{{else}}
+								{{$itemPrice = $item->price;}}
+								{{$linePrice = $item->linePrice();}}
+							{{endif}}
+							{$linePrice}
+							{{$subtotal = $subtotal->add( $linePrice->amount );}}
+						</span>
+						{{if $item->renewalTerm}}
+							<p class='ipsType_reset ipsType_small ipsType_light'>
+								{lang="and_renewal" sprintf="$item->renewalTerm->toDisplay( NULL, $item->quantity )"}
+							</p>
+						{{endif}}
+						{{if $item->quantity > 1}}
+							<p class='ipsType_reset ipsType_small ipsType_light'>
+								{{if $item->renewalTerm}}
+									{lang="each_short_with_renewal" sprintf="$itemPrice, $item->renewalTerm"}
+								{{else}}
+									{lang="each_short" sprintf="$itemPrice"}
+								{{endif}}
+							</p>
+						{{endif}}
+					</div>
+				</div>
+			{{endforeach}}
+			<hr class='ipsHr'>
+			<div class='cNexusCart_totals ipsType_right'>
+				{lang="cart_subtotal"}: <span class='cNexusPrice'>{money="$subtotal" currency="$currency"}</span>
+			</div>
+		</div>
+	</div>
+	<ul class="ipsToolList ipsToolList_horizontal ipsClearfix ipsSpacer_both">
+		<li class='ipsPos_left'>
+			<a class="ipsButton ipsButton_medium ipsButton_link ipsButton_narrow" href="{url="app=nexus&module=store&controller=cart&do=clear" seoTemplate="store_cart" csrf="true"}" title="" data-confirm><i class='fa fa-times'></i> {lang="empty_cart"}</a>
+		</li>
+		<li class="ipsToolList_primaryAction">
+			<a class="ipsButton ipsButton_large ipsButton_important ipsButton_fullWidth" href="{url="app=nexus&module=store&controller=cart&do=checkout" seoTemplate="store_cart" csrf="true"}" title="" data-action="checkout">{lang="checkout"} &nbsp;<i class='fa fa-chevron-right ipsPos_middle'></i></a>
+		</li>
+		<li class="ipsToolList_primaryAction">
+			<a class="ipsButton ipsButton_large ipsButton_light ipsButton_fullWidth" href="{url="app=nexus&module=store" seoTemplate="store"}" title=""><i class='fa fa-chevron-left ipsPos_middle'></i>&nbsp; {lang="continue_shopping"}</a>
+		</li>
+	</ul>
+	<br>
+{{else}}
+	<div class='ipsBox ipsPad ipsType_center ipsType_large ipsType_light'>
+		{lang="your_cart_empty"}
+		<br><br>
+		<a href='{url="app=nexus&module=store" seoTemplate="store"}' title='{lang="start_shopping"}' class='ipsButton ipsButton_primary ipsButton_medium'>{lang="start_shopping"}</a>
+	</div>
+{{endif}}

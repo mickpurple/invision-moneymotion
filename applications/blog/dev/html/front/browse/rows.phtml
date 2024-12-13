@@ -1,0 +1,108 @@
+<ips:template parameters="$table, $headers, $blogs" />
+{{if \count( $blogs )}}
+	{{foreach $blogs as $blog}}
+		<li class='ipsDataItem ipsAreaBackground_reset'>
+			<div class='ipsColumns ipsColumns_collapsePhone'>
+				<div class='ipsColumn ipsColumn_veryWide cBlogInfo'>
+					{$blog->coverPhoto()|raw}
+					<div class='ipsPad'>
+						<ul class='ipsGrid'>
+							<li class='ipsGrid_span4'><strong class='ipsType_normal'>{$blog->_items}</strong><br>{lang="blog_entries" pluralize="$blog->_items"}</li>
+							<li class='ipsGrid_span4'><strong class='ipsType_normal'>{$blog->_comments}</strong><br>{lang="blog_comments" pluralize="$blog->_comments"}</li>
+							<li class='ipsGrid_span4'><strong class='ipsType_normal'>{$blog->num_views}</strong><br>{lang="blog_views" pluralize="$blog->num_views"}</li>
+						</ul>
+						{{$recentEntries = iterator_to_array( $blog->_recentEntries );}}
+						{{if \count( $recentEntries )}}
+							<h4 class='ipsType_minorHeading'>{lang="recent_entries"}</h4>
+							<ul class='ipsDataList ipsDataList_reducedSpacing ipsType_medium ipsList_reset ipsType_light'>
+								{{foreach $recentEntries as $entry}}
+									<li class='ipsDataItem'>
+										<div class='ipsDataItem_main ipsType_break ipsContained'>
+											{{if $entry->unread()}}
+												<a href='{$entry->url()}' title='{lang="view_this_entry" sprintf="$entry->name"}' class=''>
+													<span class='ipsItemStatus ipsItemStatus_tiny'><i class='fa fa-circle'></i></span>
+												</a>
+											{{endif}}
+											<a href='{$entry->url( "getPrefComment" )}' title='{lang="view_this_entry" sprintf="$entry->name"}'>
+												{truncate="$entry->name" length="50"}
+											</a>
+										</div>
+									</li>
+								{{endforeach}}
+							</ul>
+						{{endif}}
+					</div>
+				</div>
+				<div class='ipsColumn ipsColumn_fluid ipsPad'>
+					{{if $table->canModerate()}}
+						<div class="ipsPos_right">
+							<input type='checkbox' data-role='moderation' name="moderate[{$blog->id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $blog ) )"}" data-state=''>
+						</div>
+					{{endif}}
+					{{if $blog->latestEntry()}}
+						<div class='ipsPhotoPanel ipsPhotoPanel_mini'>
+							{template="userPhoto" app="core" params="$blog->latestEntry()->author(), 'mini'" group="global"}
+							<div>
+								<strong class='ipsType_minorHeading'>{lang="latest_entry"}</strong><br>
+								<h3 class='ipsType_reset ipsType_sectionHead ipsType_blendLinks ipsContained_container'>
+									{{if $blog->latestEntry()->locked()}}<span><i class='fa fa-lock'></i></span> {{endif}}{$blog->latestEntry()->caption}
+										{{if $blog->latestEntry()->isFutureDate() || $blog->latestEntry()->mapped('pinned') || $blog->latestEntry()->mapped('featured') || $blog->latestEntry()->hidden() === -1 || $blog->latestEntry()->hidden() === 1 || $blog->latestEntry()->status === 'draft'}}
+										{{if $blog->latestEntry()->isFutureDate()}}
+											<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{$blog->latestEntry()->futureDateBlurb()}'><i class='fa fa-clock-o'></i></span></span>
+										{{elseif $blog->latestEntry()->hidden() === -1}}
+											<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{$blog->latestEntry()->hiddenBlurb()}'><i class='fa fa-eye-slash'></i></span></span>
+										{{elseif $blog->latestEntry()->hidden() === 1}}
+											<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa fa-warning'></i></span></span>
+										{{endif}}
+										{{if $blog->latestEntry()->status === 'draft'}}
+											<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{lang="unpublished"}'><i class='fa fa-pencil-square-o'></i></span></span>
+										{{endif}}
+										{{if $blog->latestEntry()->mapped('pinned')}}
+											<span><span class="ipsBadge ipsBadge_icon ipsBadge_positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa fa-thumb-tack'></i></span></span>
+										{{endif}}
+										{{if $blog->latestEntry()->mapped('featured')}}
+											<span><span class="ipsBadge ipsBadge_icon ipsBadge_positive" data-ipsTooltip title='{lang="featured"}'><i class='fa fa-star'></i></span></span>
+										{{endif}}
+									{{endif}}
+									
+									<span class='ipsType_break ipsContained'>
+										<a href='{$blog->latestEntry()->url( "getPrefComment" )}' title='{lang="view_this_entry" sprintf="$blog->latestEntry()->name"}' class='ipsTruncate ipsTruncate_line'>
+											{{if $blog->latestEntry()->unread()}}
+												<span class='ipsItemStatus' data-ipsTooltip title="{lang="unread_blog"}"><i class="fa fa-circle"></i></span>
+											{{endif}}
+											{$blog->latestEntry()->name}
+										</a>
+									</span>
+								</h3>
+								{{if !( $blog->owner() instanceof \IPS\Member )}}
+									<p class='ipsType_medium ipsType_reset ipsType_light'>{lang="byline" htmlsprintf="trim( $blog->latestEntry()->author()->link() )"} {datetime="$blog->latestEntry()->date"}</p>
+								{{endif}}
+							</div>
+						</div>
+						<div class='ipsType_medium ipsType_richText ipsSpacer_both cBlogInfo_content' data-controller="core.front.core.lightboxedImages">
+							{$blog->latestEntry()->content()|raw}
+						</div>
+						<ul class='ipsList_inline'>
+							<li>
+								<strong><a href='{$blog->latestEntry()->url( "getPrefComment" )}' title='{lang="read_more_entry"}'>{lang="read_more"}</a></strong>
+							</li>
+							{{if \IPS\Settings::i()->blog_enable_rating}}
+								<li>{template="rating" app="core" params="'small', $blog->latestEntry()->averageRating(), 5, $blog->latestEntry()->memberRating()" group="global"}</li>
+							{{endif}}
+							{{if !$blog->latestEntry()->num_comments}}
+								<li class='ipsType_light'>{lang="num_comments" pluralize="$blog->latestEntry()->num_comments"}</li>
+							{{else}}
+								<li><a href='{$blog->latestEntry()->url()}#comments' title='{lang="see_comments_on_entry"}'>{lang="num_comments" pluralize="$blog->latestEntry()->num_comments"}</a></li>
+							{{endif}}
+						</ul>
+					{{else}}
+						<p class='ipsEmpty ipsType_center'>{lang="no_entries_yet"}</p>
+					{{endif}}
+				</div>
+				
+			</div>
+		</li>
+	{{endforeach}}
+{{else}}
+	<li><p class="ipsPad">{lang="no_results"}</p></li>
+{{endif}}

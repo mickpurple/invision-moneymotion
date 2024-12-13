@@ -1,0 +1,14 @@
+<ips:template parameters="$file, $purchaseTerms, $confirmUrl" />
+<div class='ipsPad'>
+	<h1 class='ipsType_pageTitle'>{lang="download_purchase_terms"}</h1>
+	<strong>{lang="download_purchase_terms_desc"}</strong>
+
+	<hr class='ipsHr'>
+	{template="richText" group="global" app="core" location="global" params="$purchaseTerms, array('ipsType_medium')"}
+</div>
+<div class='ipsAreaBackground ipsType_right ipsPad'>
+	<ul class='ipsList_inline'>
+		<li><a href='{$file->url()}' class='ipsButton ipsButton_link ipsButton_medium' data-action='dialogClose' title='{lang="cancel"}'>{lang="cancel"}</a></li>
+		<li><a href='{$confirmUrl}' class='ipsButton ipsButton_primary ipsButton_medium' title='{lang="agree_and_purchase_full"}'>{lang="agree_and_purchase"}</a></li>
+	</ul>
+</div>

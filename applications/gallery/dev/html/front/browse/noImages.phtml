@@ -1,0 +1,8 @@
+<ips:template parameters="$container" />
+
+<div class='ipsType_center ipsPad'>
+	<p class='ipsType_large'>{{if $container instanceof \IPS\gallery\Album}}{lang="no_images_in_album"}{{else}}{lang="no_images_in_cat"}{{endif}}</p>
+	{{if $container->can('add')}}
+		<a href='{url="app=gallery&module=gallery&controller=submit&_new=1" seoTemplate="gallery_submit"}{{if $container instanceof \IPS\gallery\Album}}&category={$container->category_id}&album={$container->id}{{else}}&category={$container->id}{{endif}}' class='ipsButton ipsButton_primary ipsButton_medium' data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-extraClass='cGalleryDialog_outer' data-ipsDialog-close='false' data-ipsDialog-destructOnClose='true' data-ipsDialog-remoteSubmit='true'>{lang="submit_first_image"}</a>
+	{{endif}}
+</div>
