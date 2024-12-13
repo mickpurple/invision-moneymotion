@@ -1,4 +1,0 @@
-<ips:template parameters="$notification, $shipment, $email" />
-{$email->language->addToStack( "email_notify_shipment", FALSE )}
-
-{expression="sprintf( $email->language->get('shipment_number'), $shipment->id )" raw="true"}: {url="app=nexus&module=payments&controller=shipping" base="admin" plain="true"}

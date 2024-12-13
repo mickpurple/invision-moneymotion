@@ -1,2 +1,0 @@
-<ips:template parameters="$field" />
-http:// <input type="text" name="{$field->name}[subdomain]" value="{{if isset( $field->value['subdomain'] )}}{$field->value['subdomain']}{{endif}}"> . <select name="{$field->name}[domain]">{{foreach explode( ',', \IPS\Settings::i()->nexus_hosting_subdomains ) as $domain}}<option value="{$domain}" {{if isset( $field->value['domain'] ) AND $domain == $field->value['domain']}}selected{{endif}}>{$domain}</option>{{endforeach}}</select>

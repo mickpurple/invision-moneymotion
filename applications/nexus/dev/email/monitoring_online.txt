@@ -1,5 +1,0 @@
-<ips:template parameters="$server, $encoded, $email" />
-
-{expression="$email->language->addToStack( 'monitor_email_intro', FALSE, array( 'htmlsprintf' => \IPS\Settings::i()->board_name ) )" raw="true"}
-
-{expression="$email->language->addToStack( 'monitor_email_online', FALSE, array( 'htmlsprintf' => $server->hostname ) )" raw="true"}

@@ -1,6 +1,0 @@
-<ips:template parameters="$application" />
-{$application->_disabledMessage}
-
-{{if !\in_array( $application->directory, \IPS\Application::$ipsApps )  AND ( $application->author != '' OR $application->website != '' )}}
-{{if $application->author != '' }} {lang="byline_nodate" sprintf="$application->author"}{{endif}}{{if $application->website}} {template="basicUrl" group="global" app="core" location="global" params="$application->website(), TRUE, $application->website(), TRUE, TRUE, TRUE"}{{endif}}
-{{endif}}

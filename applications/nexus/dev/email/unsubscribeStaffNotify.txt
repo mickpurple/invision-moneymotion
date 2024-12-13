@@ -1,2 +1,0 @@
-<ips:template parameters="$member, $email" />
-{$email->language->addToStack("manage_notification_settings", FALSE)} {$email->language->addToStack( 'adjust_digest_prefs', FALSE )}: {url="app=nexus&module=support&controller=requests&do=notifications" base="admin" plain="true"}

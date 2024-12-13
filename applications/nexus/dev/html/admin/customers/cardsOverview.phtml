@@ -1,9 +1,0 @@
-<ips:template parameters="$table, $headers, $rows, $quickSearch" />
-
-{{if \count( $rows )}}
-	<ul class='ipsList_reset cCustomerOther_list'>
-		{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
-	</ul>
-{{else}}
-	<p class='ipsType_reset ipsType_normal cCustomerOther_list ipsType_light'>{lang="no_credit_cards"}</p>
-{{endif}}

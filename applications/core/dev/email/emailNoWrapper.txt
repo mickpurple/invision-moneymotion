@@ -1,2 +1,0 @@
-<ips:template parameters="$subject, $member, $content, $unsubscribe, $placeholderRecipient=FALSE, $introText='', $email, $ourPicks=NULL" />
-{$content|raw}

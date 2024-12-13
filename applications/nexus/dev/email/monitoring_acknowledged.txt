@@ -1,7 +1,0 @@
-<ips:template parameters="$server, $encoded, $by, $email" />
-
-{expression="$email->language->addToStack( 'monitor_email_intro', FALSE, array( 'htmlsprintf' => \IPS\Settings::i()->board_name ) )" raw="true"}
-
-{expression="$email->language->addToStack( 'monitor_email_acknowledged', FALSE, array( 'htmlsprintf' => array( $server->hostname, $by ) ) )" raw="true"}
-
-{$email->language->addToStack('monitor_email_reset', FALSE)}: {setting="base_url"}applications/nexus/interface/monitoring/respond.php?a=r&server={$server->id}&by={$encoded}
