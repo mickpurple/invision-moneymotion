@@ -1,2 +1,0 @@
-linkify.min.js
-linkify-jquery.min.js

@@ -1,7 +1,0 @@
-<ips:template parameters="$comment, $email" />
-
-{$email->language->addToStack("email_new_status_plain", FALSE, array( 'htmlsprintf' => array( $comment->author()->name ) ) )}
-
-{$email->language->addToStack("email_ignore_user_pm", FALSE, array( 'htmlsprintf' => array( $comment->author()->name ) ) )}
-
--- {setting="board_name"}

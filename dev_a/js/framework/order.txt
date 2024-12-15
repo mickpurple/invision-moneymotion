@@ -1,6 +1,0 @@
-templates
-common/ips.loader.js
-common/ui
-common/utils
-common
-controllers
