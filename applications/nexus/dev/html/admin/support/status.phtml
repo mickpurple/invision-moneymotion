@@ -1,0 +1,2 @@
+<ips:template parameters="$status, $classes=''" />
+<span class='cNexusSupportBadge ipsTruncate ipsTruncate_line {{if $classes}}{$classes}{{endif}}' {{if $status->color}}style="background-color: #{$status->color}"{{endif}} title="{$status->_title}" data-ipsTooltip data-ipsTooltip-label="{$status->_title}">{$status->_title}</span>

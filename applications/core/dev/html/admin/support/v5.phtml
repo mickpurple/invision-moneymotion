@@ -1,0 +1,77 @@
+<ips:template parameters="$phpCheck, $mySqlCheck, $innoDb, $deprecations=array()" />
+
+{{if !\IPS\CIC}}
+<div class='ipsBox ipsBox_shadowed ipsMargin_vertical {{if !$phpCheck}}elCritical{{endif}}' data-role='patchworkItem'>
+    <div class='elBlockTitle ipsPadding ipsFlex ipsFlex-ai:center ipsGap:2'>
+        <div>
+        {{if !$phpCheck}}
+            <span class='ipsType_warning' data-iconType="critical"><i class="fa fa-exclamation-triangle"></i></span>
+        {{else}}
+            <span class='ipsType_positive' data-iconType="ok"><i class='fa fa-check'></i></span>
+        {{endif}}
+        </div>
+        <div>
+            <h2 class='ipsBox_titleBar ipsPadding:none'>
+                {{$currentVersion = PHP_VERSION;}}
+                {{if $phpCheck}}
+                    {lang="v5_php_ready"}
+                {{else}}
+                    {lang="v5_php_fail" sprintf="$currentVersion"}
+                {{endif}}
+            </h2>
+            {{if ! $phpCheck}}<span data-role="desc">{lang="v5_php_fail_help"}</span>{{endif}}
+        </div>
+    </div>
+</div>
+
+<div class='ipsBox ipsBox_shadowed ipsMargin_vertical {{if !$mySqlCheck}}elCritical{{endif}}' data-role='patchworkItem'>
+    <div class='elBlockTitle ipsPadding ipsFlex ipsFlex-ai:center ipsGap:2'>
+        <div>
+        {{if !$mySqlCheck}}
+            <span class='ipsType_warning' data-iconType="critical"><i class="fa fa-exclamation-triangle"></i></span>
+        {{else}}
+            <span class='ipsType_positive' data-iconType="ok"><i class='fa fa-check'></i></span>
+        {{endif}}
+        </div>
+        <div>
+            <h2 class='ipsBox_titleBar ipsPadding:none'>
+                {{$currentVersion = \IPS\Db::i()->server_info;}}
+                {{if $mySqlCheck}}{lang="v5_mysql_ready"}{{else}}{lang="v5_mysql_fail" sprintf="$currentVersion"}{{endif}}
+            </h2>
+            {{if ! $mySqlCheck}}<span data-role="desc">{lang="v5_mysql_fail_help"}</span>{{endif}}
+        </div>
+    </div>
+</div>
+{{endif}}
+
+{{if !$innoDb}}
+<div class='ipsBox ipsBox_shadowed ipsMargin_vertical' data-role='patchworkItem'>
+    <div class='elBlockTitle ipsPadding ipsFlex ipsFlex-ai:center ipsGap:2'>
+        <div>
+            <span class='ipsType_issue' data-iconType="recommended"><i class="fa fa-info-circle"></i></span>
+        </div>
+        <div>
+            <h2 class='ipsBox_titleBar ipsPadding:none'>
+                {lang="v5_innodb"}
+            </h2>
+            <span data-role="desc">{lang="v5_innodb_fail_help"}</span>
+        </div>
+    </div>
+</div>
+{{endif}}
+
+{{if \count( $deprecations )}}
+    {{foreach $deprecations as $k => $v}}
+        <div class='ipsBox ipsBox_shadowed ipsMargin_vertical' data-role='patchworkItem'>
+            <div class='elBlockTitle ipsPadding ipsFlex ipsFlex-ai:center ipsGap:2'>
+                <div>
+                    <span class='ipsType_issue' data-iconType="recommended"><i class="fa fa-info-circle"></i></span>
+                </div>
+                <div>
+                    <h2 class='ipsBox_titleBar ipsPadding:none'>{$v|raw}</h2>
+                    <span data-role="desc">{lang="v5_deprecate_help"}</span>
+                </div>
+            </div>
+        </div>
+    {{endforeach}}
+{{endif}}

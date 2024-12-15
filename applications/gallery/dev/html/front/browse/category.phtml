@@ -1,0 +1,70 @@
+<ips:template parameters="$category, $albums, $table" />
+
+{{if $club = $category->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $category"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+<div class="ipsPageHeader ipsBox ipsPadding ipsResponsive_pull ipsClearfix ipsSpacer_bottom">
+	<h1 class="ipsType_pageTitle">{$category->_title}</h1>
+	{{if $category->show_rules || \IPS\Member::loggedIn()->language()->get('gallery_category_' . $category->_id . '_desc')}}
+		<hr class='ipsHr'>
+		<div class='ipsBox_alt ipsSpacer_bottom' data-controller="core.front.core.lightboxedImages">
+			{{if $category->show_rules == 1}}
+				<a href="{$category->rules_link}" class='ipsJS_show ipsType_normal' data-ipsDialog data-ipsDialog-title="{lang="gallery_category_{$category->id}_rulestitle"}" data-ipsDialog-content="#elCategoryRules">{lang="category_rules"}</a>
+				<div id='elCategoryRules' class='ipsHide ipsPad ipsSpacer_both'>
+					{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('gallery_category_' . $category->id . '_rules'), array('ipsType_medium')"}
+				</div>
+			{{elseif $category->show_rules == 2}}
+				<strong class='ipsType_normal'>{lang="gallery_category_{$category->id}_rulestitle"}</strong>
+				{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('gallery_category_' . $category->id . '_rules'), array('ipsType_normal', 'ipsSpacer_top')"}
+			{{endif}}
+			{{if \IPS\Member::loggedIn()->language()->get('gallery_category_' . $category->_id . '_desc')}}
+				{template="richText" group="global" app="core" location="global" params="$category->description, array('ipsType_medium', 'ipsSpacer_both')"}
+			{{endif}}
+		</div>
+	{{endif}}
+	<hr class='ipsHr ipsResponsive_hidePhone'>
+	<div class='ipsPos_right ipsResponsive_noFloat ipsResponsive_hidePhone'>
+        {{if \IPS\Application::appIsEnabled('cloud')}}
+            {template="analyticsButton" app="cloud" group="analytics" params="$category, $category->id"}
+        {{endif}}
+		{{$followerCount = \IPS\gallery\Image::containerFollowerCount( $category );}}
+		{template="follow" app="core" group="global" params="'gallery', 'category', $category->_id, $followerCount"}
+	</div>
+</div>
+
+{{if $category->can('add') and ( $category->allow_albums != 2 or member.group['g_create_albums'] or \IPS\gallery\Album::loadForSubmit( $category ) )}}
+	<ul class="ipsToolList ipsToolList_horizontal ipsClearfix ipsSpacer_bottom">
+		{template="categoryButtons" group="browse" params="$category->can('add'), $category, NULL"}
+	</ul>
+{{endif}}
+
+
+{{if $category->children()}}
+	<div class="ipsAreaBackground_light ipsPad ipsSpacer_bottom">
+		{template="categoryGrid" group="browse" app="gallery" params="$category->children()"}
+	</div>
+{{endif}}
+
+{{if $albums}}
+	<div class='ipsBox ipsResponsive_pull ipsSpacer_bottom'{{if settings.gallery_nsfw}} data-controller="gallery.front.global.nsfw"{{endif}}>
+		{$albums|raw}
+	</div>
+{{endif}}
+
+{{if $table}}
+	<div class='ipsBox ipsResponsive_pull'>
+		{$table|raw}
+	</div>
+{{endif}}
+
+<div class="ipsBox ipsPadding ipsResponsive_pull ipsResponsive_showPhone ipsMargin_top">
+	{template="follow" app="core" group="global" params="'gallery', 'category', $category->_id, $followerCount"}
+</div>
+
+{{if $category->club()}}
+	</div>
+{{endif}}

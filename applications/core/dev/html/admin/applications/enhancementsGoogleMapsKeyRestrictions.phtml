@@ -1,0 +1,64 @@
+<ips:template parameters="$public, $websiteUrl, $data" />
+<li class="ipsPad">{lang="google_maps_create_restrictions"}</li>
+<li class="ipsFieldRow ipsFieldRow_yesNo">
+	<div class="ipsFieldRow_title">
+		{lang="google_maps_api_key_name"}
+	</div>
+	<div class="ipsFieldRow_content ipsClearfix">
+		<div data-ipsCopy>
+			<code class="prettyprint lang-sql" data-role="copyTarget">{{if $public}}{lang="google_maps_api_key_public"}{{else}}{lang="google_maps_api_key_secret_name"}{{endif}}</code>
+			<button type="button" class="ipsButton ipsButton_light ipsButton_veryVerySmall ipsPos_right ipsHide" data-role="copyButton" data-clipboard-text="{{if $public}}{lang="google_maps_api_key_public"}{{else}}{lang="google_maps_api_key_secret_name"}{{endif}}">{lang="copy"}</button>
+		</div>	
+	</div>
+</li>
+<li class="ipsFieldRow ipsFieldRow_yesNo">
+	<div class="ipsFieldRow_title">
+		{lang="google_maps_api_key_app_restrict"}
+	</div>
+	<div class="ipsFieldRow_content ipsClearfix">
+		{{if $public}}
+			{lang="google_maps_api_key_app_restrict_public"}
+		{{else}}
+			{{if \IPS\CIC or !isset( $_SERVER['SERVER_ADDR'] )}}
+				{lang="google_maps_api_key_app_restrict_secret_none"}
+			{{else}}
+				{lang="google_maps_api_key_app_restrict_secret_ip" sprintf="$_SERVER['SERVER_ADDR']"}
+			{{endif}}
+		{{endif}}
+	</div>
+</li>
+{{if $public}}
+	<li class="ipsFieldRow ipsFieldRow_yesNo">
+		<div class="ipsFieldRow_title">
+			{lang="google_maps_api_key_web_restrict"}
+		</div>
+		<div class="ipsFieldRow_content ipsClearfix">
+			{lang="google_maps_api_key_web_restrict_val"}
+			<div class="ipsSpacer_top" data-ipsCopy>
+				<code class="prettyprint lang-sql" data-role="copyTarget">{$websiteUrl}</code>
+				<button type="button" class="ipsButton ipsButton_light ipsButton_veryVerySmall ipsPos_right ipsHide" data-role="copyButton" data-clipboard-text="{$websiteUrl}">{lang="copy"}</button>
+			</div>
+		</div>
+	</li>
+{{endif}}
+<li class="ipsFieldRow ipsFieldRow_yesNo">
+	<div class="ipsFieldRow_title">
+		{lang="google_maps_api_key_api_restrict"}
+	</div>
+	<div class="ipsFieldRow_content ipsClearfix">
+		{lang="google_maps_api_key_api_restrict_val"}
+		<ul>
+			{{if $public}}
+				{{if $data['googlemaps']}}
+					<li>{lang="googlemaps_api_jsapi"}</li>
+					<li>{lang="googlemaps_api_staticapi"}</li>
+				{{endif}}
+				{{if $data['googleplacesautocomplete']}}
+					<li>{lang="googlemaps_api_places"}</li>
+				{{endif}}
+			{{else}}
+				<li>{lang="googlemaps_api_geocodeapi"}</li>
+			{{endif}}
+		</ul>
+	</div>
+</li>

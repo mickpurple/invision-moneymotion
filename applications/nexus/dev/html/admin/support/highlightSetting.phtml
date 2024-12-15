@@ -1,0 +1,20 @@
+<ips:template parameters="$name, $stat, $number, $numberType" />
+<select name="{$name}[0]">
+	{{foreach array( 'r_started', 'r_last_reply', 'r_last_new_reply', 'r_last_staff_reply' ) as $k}}
+		<option value="{$k}" {{if $stat === $k}}selected{{endif}}>{lang="$k"}</option>
+	{{endforeach}}
+</select>
+<label>{lang="more_than"}</label>
+<input type="number" name="{$name}[1]" value="{$number}" class="ipsField_short" />
+<select name="{$name}[2]">
+	{{foreach array( 'minutes', 'hours', 'days' ) as $k}}
+		<option value="{$k}" {{if $numberType === $k}}selected{{endif}}>{lang="$k"}</option>
+	{{endforeach}}
+</select>
+<label>{lang="ago"}</label>
+<br><br>
+{lang="or"} 
+<span class='ipsCustomInput'>
+	<input type="checkbox" name="{$name}[3]" {{if !$number}}checked{{endif}} data-control="unlimited" id="{$name}_unlimited">
+	<span></span>
+</span> <label for="{$name}_unlimited" class='ipsField_unlimited'>{lang="do_not_highlight_requests"}</label>

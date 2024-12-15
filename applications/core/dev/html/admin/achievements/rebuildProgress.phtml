@@ -1,0 +1,8 @@
+<ips:template parameters="$data, $needsBottomSpacer=FALSE" />
+<div data-ipsSticky data-ipsSticky-spacing='60' class="ipsPad_half ipsAreaBackground_reset ipsType_center {{if $needsBottomSpacer}}ipsSpacer_bottom{{endif}}">
+	<strong class="ipsType_large">{lang="acp_rules_rebuilding_title"}</strong>
+	<p class="ipsType_light">{lang="acp_rules_rebuilding_blurb"}</p>
+	<div class="ipsProgressBar">
+	<div class="ipsProgressBar_progress" style="width:{expression="number_format( $data['percentage'], 2)"}%" data-role="percentageBar"><span data-role="percentage">{$data['percentage']}</span>% (<span data-role="number">{$data['processed']}</span> /{$data['count']})</div>
+	</div>
+</div>

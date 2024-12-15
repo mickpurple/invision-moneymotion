@@ -1,0 +1,18 @@
+<ips:template parameters="$purchases" />
+
+<h1 class='ipsType_pageTitle'>{lang="purchases_title"}</h1>
+
+{{if \count( $purchases )}}
+	<p class='ipsType_reset ipsType_normal ipsSpacer_bottom'>
+		{lang="purchases_info"}
+	</p>
+
+	<ul class='ipsList_reset'>
+		{template="purchaseList" group="clients" params="0, $purchases"}
+	</ul>
+{{else}}
+	<br>
+	<div class='ipsType_large ipsType_center ipsType_light ipsSpacer_bottom'>
+		{lang="purchases_none"}
+	</div>
+{{endif}}

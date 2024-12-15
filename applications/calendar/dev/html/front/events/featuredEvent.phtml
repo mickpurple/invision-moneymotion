@@ -1,0 +1,114 @@
+<ips:template parameters="$event, $idx = 0" />
+
+{{$image = FALSE;}}
+{{$coverPhoto = $event->coverPhoto();}}
+{{if $coverPhoto->file}}
+	{{$image = $coverPhoto->file;}}
+{{elseif $event->container()->club() !== NULL && $event->container()->club()->profile_photo}}
+	{{$image = \IPS\File::get('core_Clubs', $event->container()->club()->profile_photo );}}
+{{endif}}
+
+<div data-item="{$idx + 1}" class='cFeaturedEvents__event cFeaturedEvents__event--{$idx + 1}'>
+	{{if $image}}
+		<img class='cFeaturedEvents__image' src='{$image->url}' alt='{$event->title}'>
+	{{endif}}
+
+	<div class='cFeaturedEvents__event-details'>
+		<div class='cEvent__dateAside'>
+			{{if $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )}}
+				<span class='cEvent__dateAside__month'>{lang="_date_month_short" pluralize="$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->format( 'n' )"}</span>
+				<span class='cEvent__dateAside__day'>{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->format( 'd' )}</span>
+			{{else}}
+				<span class='cEvent__dateAside__month'>{lang="_date_month_short" pluralize="$event->lastOccurrence( 'startDate' )->format( 'n' )"}</span>
+				<span class='cEvent__dateAside__day'>{$event->lastOccurrence( 'startDate' )->format('d')}</span>
+			{{endif}}
+		</div>
+		{{if $event->_happening}}
+			<div class='ipsBadge'>{$event->_happening}</div>
+        {{endif}}
+		<h2 class='cFeaturedEvents__event-title ipsType_reset'>{$event->title}</h2>
+
+		<p class='cEvent__date'>
+            <time datetime='{expression="$event->_start_date->format( 'Y-m-d' )"}'>
+                {{if $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )}}
+                    <span data-controller="core.global.core.datetime" data-time="{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}}, {{endif}}">
+                        {$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->calendarDate()}{{if !$event->all_day}}, {{endif}}
+                    </span>
+                    {{if !$event->all_day}}
+                        <span data-controller="core.global.core.datetime" data-time="{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}">
+                            {$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->localeTime( FALSE )}
+                        </span>
+                    {{endif}}
+                    {{else}}
+                        <span data-controller="core.global.core.datetime" data-time="{$event->lastOccurrence( 'startDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}}, {{endif}}">
+                            {$event->lastOccurrence( 'startDate' )->calendarDate()}{{if !$event->all_day}}, {{endif}}
+                        </span>
+                        {{if !$event->all_day}}
+                        <span data-controller="core.global.core.datetime" data-time="{$event->lastOccurrence( 'startDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}">
+                            {$event->lastOccurrence( 'startDate' )->localeTime( FALSE )}
+                        </span>
+                    {{endif}}
+                {{endif}}
+            </time>
+
+            {{if $event->_end_date}}
+            &nbsp;-&nbsp;
+            <time datetime='{expression="$event->_end_date->format( 'Y-m-d' )"}'>
+                {{$sameDay = FALSE;}}
+                {{if $event->_end_date}}
+                    {{$sameDay = !( ($event->_start_date->mday != $event->_end_date->mday) or ($event->_start_date->mon != $event->_end_date->mon) or ($event->_start_date->year != $event->_end_date->year) );}}
+                {{endif}}
+                {{if $endDate = $event->nextOccurrence( $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' ) ?: \IPS\calendar\Date::getDate(), 'endDate' )}}
+                {{if !$sameDay}}
+                    <span data-controller="core.global.core.datetime" data-time="{$endDate->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}}, {{endif}}">
+                        {$endDate->calendarDate()}{{if !$event->all_day}}, {{endif}}
+                    </span>
+                {{endif}}
+                    {{if !$event->all_day}}
+                        <span data-controller="core.global.core.datetime" data-time="{$endDate->format('c')}" data-format="{expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}">
+                            {$endDate->localeTime( FALSE )}
+                        </span>
+                    {{endif}}
+                {{else}}
+                    <span data-controller="core.global.core.datetime" data-time="{$event->lastOccurrence( 'endDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}">
+                        {$event->lastOccurrence( 'endDate' )->calendarDate()}{{if !$event->all_day}} {$event->lastOccurrence( 'endDate' )->localeTime( FALSE )}{{endif}}
+                    </span>
+                {{endif}}
+            </time>
+            {{endif}}
+		</p>
+
+		<p class='cEvents__blurb'>
+			{$event->truncated(TRUE, 400)}
+		</p>
+
+		{{if ($event->club_associations && \count( $event->getAssociatedClubs() )) || $event->venue || $event->location}}
+			<ul class='cFeaturedEvents__meta'>
+				{{if $event->club_associations && \count( $event->getAssociatedClubs() )}}
+					{{$clubNames = [];}}
+					{{foreach $event->getAssociatedClubs() as $club}}
+						{{$clubNames[] = $club->name;}}
+					{{endforeach}}
+					{{shuffle( $clubNames );}}
+					<li>
+						<i class='fa fa-globe'></i> {expression="implode(', ', $clubNames )"}
+					</li>
+				{{elseif $event->container()->club() !== NULL}}
+					<li>
+						<i class='fa fa-globe'></i> {$event->container()->club()->name}
+					</li>
+				{{endif}}
+				{{if $event->venue || $event->location}}
+					{{if $event->venue}}
+						<li><i class='fa fa-map-marker'></i> {lang="calendar_venue_{$event->venue()->id}" escape="true"}</li>
+					{{elseif $event->location}}
+						{{$location = \IPS\GeoLocation::buildFromjson( $event->location );}}
+						<li><i class='fa fa-map-marker'></i> {$location->toString()}</li>
+					{{endif}}
+				{{endif}}
+			</ul>
+		{{endif}}
+
+		<a href='{$event->url()}' class='cFeaturedEvents__event-link'><span>View event</span></a>
+	</div>
+</div>

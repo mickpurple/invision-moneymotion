@@ -1,0 +1,496 @@
+<ips:template parameters="$file, $commentsAndReviews, $versionData, $previousVersions, $next=NULL, $prev=NULL, $cfields=array()" />
+
+{{if $club = $file->container()->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $file->container()"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+<div>
+	<div class='{{if $file->primary_screenshot}}ipsColumns ipsColumns_collapsePhone{{endif}} ipsClearfix ipsMargin_bottom'>
+		<div {{if $file->primary_screenshot_thumb}}class='ipsColumn ipsColumn_fluid'{{endif}}>
+			<div class='ipsPageHeader ipsResponsive_pull ipsBox ipsPadding'>
+				<div class='ipsFlex ipsFlex-ai:center ipsFlex-fw:wrap ipsGap:4'>
+					<div class='ipsFlex-flex:11'>
+						<h1 class='ipsType_pageTitle ipsContained_container'>
+							{{if $file->prefix() OR ( $file->canEdit() AND $file::canTag( NULL, $file->container() ) AND $file::canPrefix( NULL, $file->container() ) )}}
+								<span {{if !$file->prefix()}}class='ipsHide'{{endif}} {{if ( $file->canEdit() AND $file::canTag( NULL, $file->container() ) AND $file::canPrefix( NULL, $file->container() ) )}}data-editablePrefix{{endif}}>
+									{template="prefix" group="global" app="core" params="$file->prefix( TRUE ), $file->prefix()"}
+								</span>
+							{{endif}}
+							
+							{{if $file->hidden() === 1}}
+								<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa fa-warning'></i></span></span>
+							{{elseif $file->hidden() === -1}}
+								<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{$file->hiddenBlurb()}'><i class='fa fa-eye-slash'></i></span></span>
+							{{elseif $file->hidden() === -2}}
+								<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{$file->deletedBlurb()}'><i class='fa fa-trash'></i></span></span>
+							{{endif}}
+							{{if $file->mapped('pinned')}}
+								<span><span class="ipsBadge ipsBadge_icon ipsBadge_positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa fa-thumb-tack'></i></span></span>
+							{{endif}}
+							{{if $file->mapped('featured')}}
+								<span><span class="ipsBadge ipsBadge_icon ipsBadge_positive" data-ipsTooltip title='{lang="featured"}'><i class='fa fa-star'></i></span></span>
+							{{endif}}
+							{{if $file->canEdit()}}
+								<span class='ipsType_break ipsContained' data-controller="core.front.core.moderation">
+									{{if $file->locked()}}<i class='fa fa-lock'></i> {{endif}}<span data-role="editableTitle" title="{lang="click_hold_edit"}">{$file->name}</span>{{if $file->container()->version_numbers}} {$file->version}{{endif}}
+								</span>
+							{{else}}
+								<span class='ipsType_break ipsContained'>{{if $file->locked()}}<i class='fa fa-lock'></i> {{endif}}{$file->name}{{if $file->container()->version_numbers}} {$file->version}{{endif}}</span>
+							{{endif}}
+						</h1>
+
+						{{if $file->isPaid()}}
+							<p class="ipsType_pageTitle ipsType_reset ipsSpacer_top ipsSpacer_half">
+								{{if $price = $file->price()}}
+									<span class='cFilePrice'>{$price|raw}</span>
+									{{if $renewalTerm = $file->renewalTerm()}}
+										<span class='ipsType_light'>&middot; {lang="file_renewal_term_val" sprintf="$renewalTerm"}</span>
+									{{endif}}
+								{{endif}}
+							</p>
+						{{endif}}
+
+						{{if \count( $file->tags() ) OR ( $file->canEdit() AND $file::canTag( NULL, $file->container() ) )}}
+							{template="tags" group="global" app="core" params="$file->tags(), FALSE, FALSE, ( $file->canEdit() AND ( \count( $file->tags() ) OR $file::canTag( NULL, $file->container() ) ) ) ? $file->url() : NULL"}
+						{{endif}}
+					</div>
+					{{if $file->container()->bitoptions['reviews']}}
+						<div class='ipsFlex-flex:00'>
+							{template="rating" group="global" location="front" app="core" params="'large', $file->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of, $file->memberReviewRating()"}&nbsp;&nbsp; <span class='ipsType_normal ipsType_light'>({lang="num_reviews" pluralize="$file->reviews"})</span>
+						</div>
+					{{endif}}
+				</div>
+				<hr class='ipsHr'>
+				<div class='ipsPageHeader__meta ipsFlex ipsFlex-jc:between ipsFlex-ai:center ipsFlex-fw:wrap ipsGap:3'>
+					<div class='ipsFlex-flex:11'>
+						<div class='ipsPhotoPanel ipsPhotoPanel_tiny ipsClearfix'>
+							{template="userPhoto" app="core" group="global" params="$file->author(), 'tiny', $file->warningRef()"}
+							<div>
+								<p class='ipsType_reset ipsType_large ipsType_blendLinks'>
+									{lang="byline_nodate_itemprop" htmlsprintf="$file->author()->link( $file->warningRef(), NULL, $file->isAnonymous() )"}{{if member.group['idm_view_approvers'] and $file->approver}} {lang="file_approved_by" sprintf="\IPS\Member::load( $file->approver )->name" htmlsprintf="\IPS\DateTime::ts( $file->approvedon )->html()"}{{endif}}
+									{{if $file->isAnonymous() and \IPS\Member::loggedIn()->modPermission('can_view_anonymous_posters')}}
+										<a data-ipsHover data-ipsHover-width="370" data-ipsHover-onClick href="{$file->url( 'reveal' )->csrf()}"><span class="cAuthorPane_badge cAuthorPane_badge_small cAuthorPane_badge--anon" data-ipsTooltip title="{lang="post_anonymously_reveal"}"></span></a>
+									{{endif}}
+								</p>
+								{{if $file->author()->member_id OR $file->canChangeAuthor()}}
+								<ul class='ipsList_inline ipsType_light ipsType_blendLinks'>
+									{{if $file->author()->member_id}}
+										<li><a href='{url="app=core&module=members&controller=profile&id={$file->author()->member_id}&do=content&type=downloads_file" base="front" seoTitles="$file->author()->members_seo_name" seoTemplate="profile_content"}'>{lang="find_users_files"}</a></li>
+									{{endif}}
+									{{if $file->canChangeAuthor()}}
+										<li><a href='{$file->url()->setQueryString( array( 'do' => 'changeAuthor' ) )}' data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title="{lang="change_author_d"}" title='{lang="change_author_title"}'>{lang="change_author_d"}</a></li>
+									{{endif}}
+								</ul>
+								{{endif}}
+							</div>
+						</div>
+					</div>
+					<div class='ipsFlex-flex:01 ipsResponsive_hidePhone'>
+						<div class='ipsShareLinks'>
+							{{if \count( $file->shareLinks() )}}
+								{template="shareButton" app="core" group="sharelinks" params="$file"}
+							{{endif}}
+							{template="notify" app="downloads" group="view" params="$file"}
+							{{if \IPS\Application::appIsEnabled('cloud')}}
+								{template="spam" app="cloud" group="spam" params="$file"}
+							{{endif}}	
+                            {template="analyticsItemLink" app="core" group="system" params="$file"}
+							{template="promote" app="core" group="global" params="$file"}
+							{template="follow" app="core" group="global" params="'downloads', 'file', $file->id, $file->followersCount()"}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{template="contentItemMessages" group="global" app="core" params="$file->getMessages(), $file"}
+
+    {{if ( \IPS\Member::loggedIn()->member_id == $file->author()->member_id OR $file->canUnhide() OR $file->canHide() ) AND $file->hasPendingVersion()}}
+    <div class="ipsMessage ipsMessage_warning ipsSpacer_both ipsClearfix">
+        <p class="ipsType_reset">
+            {lang="file_pending_approval_version"}
+
+        <ul class='ipsList_inline ipsPos_right' data-controller="downloads.front.pending.buttons">
+          {{if $file->canUnhide() OR $file->canHide()}}
+          <li>
+              <a href="{expression="\IPS\downloads\File\PendingVersion::load($file->id, 'pending_file_id')->url()"}" class="ipsPos_right ipsButton ipsButton_positive ipsButton_verySmall sm:ipsMargin_top:half sm:ipsPos_left" title='{lang="file_pending_version_button"}'>{lang="file_pending_version_button"}</a>
+          </li>
+          {{endif}}
+          {{if $file->canDeletePendingVersion() }}
+          <li>
+              <a href="{expression="\IPS\downloads\File\PendingVersion::load($file->id, 'pending_file_id')->url()->setQueryString('do','delete')->csrf()"}" class="ipsPos_right ipsButton ipsButton_negative ipsButton_verySmall sm:ipsMargin_top:half sm:ipsPos_left" title='{lang="delete"}' data-confirm>{lang="delete"}</a>
+          </li>
+          {{endif}}
+        </ul>
+        </p>
+    </div>
+    {{endif}}
+	
+	{{if $file->hidden() === 1 and $file->canUnhide()}}
+		<div class="ipsMessage ipsMessage_warning ipsSpacer_both">
+			<p class="ipsType_reset">{lang="file_pending_approval"}</p>
+			<br>
+			<ul class='ipsList_inline'>
+				<li><a href="{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'unhide' ) )}" class="ipsButton ipsButton_positive ipsButton_verySmall" title='{lang="approve_title_file"}'><i class="fa fa-check"></i> {lang="approve"}</a></li>
+				{{if $file->canDelete()}}
+					<li><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'delete' ) )}' data-confirm  title='{lang="downloads_delete_title"}' class='ipsButton ipsButton_negative ipsButton_verySmall'><i class='fa fa-times'></i> {lang="delete"}</a></li>
+				{{endif}}
+			</ul>
+		</div>
+	{{endif}}
+
+	<div class='ipsBox ipsResponsive_pull'>
+		{{if $file->screenshots()->getInnerIterator()->count()}}
+			<section>
+				<h2 class='ipsType_sectionTitle ipsType_reset ipsHide'>{lang="screenshots_ct" pluralize="$file->screenshots()->getInnerIterator()->count()"}</h2>
+				<div class='ipsPadding ipsBorder_bottom'>
+					<div class='ipsCarousel ipsClearfix' data-ipsCarousel data-ipsCarousel-showDots>
+						<div class='ipsCarousel_inner'>
+							<ul class='cDownloadsCarousel ipsClearfix' data-role="carouselItems">
+								{{$fullScreenshots = iterator_to_array( $file->screenshots() );}}
+								{{foreach $file->screenshots( 1 ) as $id => $screenshot}}
+									<li class='ipsCarousel_item' data-ipsLazyLoad>
+										<span {{if settings.lazy_load_enabled}}data-background-src='{backgroundimage="$screenshot->url"}'{{else}}style='background-image: url({backgroundimage="$screenshot->url"})'{{endif}} class="ipsThumb ipsThumb_medium ipsThumb_bg ipsCursor_pointer" data-ipsLightbox data-ipsLightbox-group="download_{$file->id}" data-fullURL="{$fullScreenshots[ $id ]->url}">
+											<img {{if settings.lazy_load_enabled}}src='{expression="\IPS\Text\Parser::blankImage()"}' data-{{endif}}src="{$screenshot->url}" alt="">
+										</span>
+									</li>
+								{{endforeach}}
+							</ul>
+						</div>
+						<span class='ipsCarousel_shadow ipsCarousel_shadowLeft'></span>
+						<span class='ipsCarousel_shadow ipsCarousel_shadowRight'></span>
+						<a href='#' class='ipsCarousel_nav ipsHide' data-action='prev'><i class='fa fa-chevron-left'></i></a>
+						<a href='#' class='ipsCarousel_nav ipsHide' data-action='next'><i class='fa fa-chevron-right'></i></a>
+					</div>
+				</div>
+			</section>
+		{{endif}} 
+		<div class='ipsColumns ipsColumns_collapsePhone'>
+			<article class='ipsColumn ipsColumn_fluid'>
+				{{$tabs = array();}}
+				{{foreach $cfields as $field}}
+					{{if $field['location'] == 'tab'}}
+						{{$tabs[] = "downloads_{$field['key']}";}}
+					{{endif}}
+				{{endforeach}}
+
+				<div class='ipsPadding'>
+				{{if \count( $tabs )}}
+					<div class='ipsTabs ipsClearfix ipsJS_show' id='tabs_file' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_content_file'>
+						<a href='#tabs_file' data-action='expandTabs'><i class='fa fa-caret-down'></i></a>
+						<ul role='tablist'>
+							<li>
+								<a href='#ipsTabs_tabs_file_file_tab_desc_panel' id='file_tab_desc' class="ipsTabs_item" role="tab" aria-selected="true">{lang="file_desc"}</a>
+							</li>
+							{{foreach $tabs as $name}}
+								<li>
+									<a href='#ipsTabs_tabs_file_file_tab_{$name}_panel' id='file_tab_{$name}' class="ipsTabs_item" role="tab" aria-selected="false">
+										{lang="$name"}
+									</a>
+								</li>
+							{{endforeach}}
+						</ul>
+					</div>
+					<div id='ipsTabs_content_file' class='ipsTabs_panels'>
+						<div id='ipsTabs_tabs_file_file_tab_desc_panel' class="ipsTabs_panel ipsPadding" aria-labelledby="file_tab_desc" aria-hidden="false">
+				{{endif}}
+					<section class='ipsType_normal {{if \count( $tabs )}}ipsMargin_top{{endif}}'>
+						{{if !\count( $tabs )}}<h2 class='ipsType_sectionHead ipsMargin_bottom:half'>{lang="file_desc"}</h2>{{endif}}
+						<div class='ipsType_richText ipsContained ipsType_break ipsSpacer_bottom' data-controller='core.front.core.lightboxedImages'>
+							{$file->content()|raw}
+						</div>
+						{{if $file->editLine()}}
+						    {$file->editLine()|raw}
+						{{endif}}
+						{{if $versionData['b_changelog'] or !empty( $previousVersions )}}
+							<hr class='ipsHr ipsSpacer_both ipsSpacer_double'>
+							<section data-controller='downloads.front.view.changeLog'>
+								<h2 class='ipsType_sectionHead'>{lang="whats_new_in_version" sprintf="$versionData['b_version'] ?: (string) \IPS\DateTime::ts( $versionData['b_backup'] )"}{{if !empty( $previousVersions )}} &nbsp;&nbsp;<a href='#' id='elChangelog' data-ipsMenu data-ipsMenu-selectable="radio" class='ipsButton ipsButton_verySmall ipsButton_link' title='{lang="see_changelog_title"}'>{lang="see_changelog"} <i class='fa fa-caret-down'></i></a>{{endif}}</h2>
+
+								<div data-role='changeLogData'>
+									{template="changeLog" group="view" params="$file, $versionData"}
+								</div>
+								<ul class='ipsMenu ipsMenu_selectable ipsMenu_auto ipsHide' id='elChangelog_menu'>
+									{{$versionNumber = $file->version ?: (string) \IPS\DateTime::ts( $file->published );}}
+									<li class='ipsMenu_item {{if !request.changelog}}ipsMenu_itemChecked{{endif}}' data-ipsMenuValue='{$versionNumber}'><a href='{$file->url()->setQuerystring( 'changelog', 0 )}' title='{lang="see_changelog_for" sprintf="$versionNumber"}'>{$versionNumber}</a></li>
+									{{foreach $previousVersions as $version}}
+										{{$versionNumber = $version['b_version'] ?: (string) \IPS\DateTime::ts( $version['b_backup'] );}}
+										<li class='ipsMenu_item {{if request.changelog == $version['b_id']}}ipsMenu_itemChecked{{endif}} {{if $version['b_hidden']}}ipsModerated{{endif}}' data-ipsMenuValue='{expression="md5( $versionNumber . $version['b_backup'] . mt_rand() )"}' data-changelogTitle="{$versionNumber}">
+											<a href='{$file->url()->setQueryString( 'changelog', $version['b_id'] )}' title='{lang="see_changelog_for" sprintf="$versionNumber"}'>
+												{$versionNumber}<br>
+												<span class='ipsType_light'>{expression="\IPS\DateTime::ts( $version['b_backup'] )->html()" raw="true"}</span>
+											</a>
+										</li>
+									{{endforeach}}
+								</ul>
+							</section>
+						{{endif}}
+
+						{{foreach $cfields as $field}}
+							{{if $field['location'] == 'below'}}
+								<hr class='ipsHr ipsSpacer_both ipsSpacer_double'>
+								<h2 class='ipsType_sectionHead'>{lang="downloads_{$field['key']}"}</h2>
+								<div class='ipsType_richText ipsContained ipsType_break' data-controller='core.front.core.lightboxedImages'>
+									{$field['value']|raw}
+								</div>
+							{{endif}}
+						{{endforeach}}
+					</section>
+				{{if \count( $tabs )}}
+					</div>
+					{{foreach $cfields as $field}}
+						{{if $field['location'] == 'tab'}}
+							<div id='ipsTabs_tabs_file_file_tab_downloads_{$field['key']}_panel' class="ipsTabs_panel ipsPadding" aria-labelledby="file_tab_{$field['key']}" aria-hidden="false">
+								<div class='ipsType_richText ipsContained ipsType_break' data-controller='core.front.core.lightboxedImages'>
+									{$field['value']|raw}
+								</div>
+							</div>
+						{{endif}}
+					{{endforeach}}
+						</div>
+				{{endif}}
+				</div>
+			</article>
+			<aside class='ipsColumn ipsColumn_wide'>
+				<div class='ipsPadding'>
+					<ul class="ipsToolList ipsToolList_vertical ipsClearfix">
+						{{if $file->canBuy()}}
+							{{if $file->canDownload()}}
+								{template="downloadButton" group="view" app="downloads" params="$file"}
+							{{endif}}
+							<li class='ipsToolList_primaryAction'>
+								{{if !$file->isPurchasable( FALSE )}}
+									<span class="ipsType_light ipsType_blendLinks ipsResponsive_hidePhone ipsResponsive_inline"><i class="fa fa-info-circle"></i> {lang="purchasing_disabled"}</span>
+								{{else}}
+									<a href='{{if !$file->container()->message('disclaimer') OR !\in_array( $file->container()->disclaimer_location, [ 'purchase', 'both' ] )}}{$file->url('buy')->csrf()}{{else}}{$file->url('buy')}{{endif}}' class='ipsButton ipsButton_fullWidth ipsButton_large ipsButton_important' {{if $file->container()->message('disclaimer') AND \in_array( $file->container()->disclaimer_location, [ 'purchase', 'both'])}}data-ipsDialog{{endif}}><i class='fa fa-shopping-cart'></i> &nbsp;{lang="buy_now"}{{if $price = $file->price()}} - {$price|raw}{{endif}}</a>
+								{{endif}}
+							</li>
+						{{else}}
+							{{if $file->canDownload() or !$file->downloadTeaser()}}
+								{template="downloadButton" group="view" app="downloads" params="$file"}
+							{{else}}
+								{$file->downloadTeaser()|raw}
+							{{endif}}
+						{{endif}}
+						{{if ( isset( $purchasesToRenew ) or $purchasesToRenew = $file->purchasesToRenew() ) and \count( $purchasesToRenew )}}
+							<li class='ipsToolList_primaryAction'>
+								{{if \count( $purchasesToRenew ) === 1}}
+									{{foreach $purchasesToRenew as $purchase}}
+										<a href='{$purchase->url()->setQueryString('do', 'renew')->csrf()}' class='ipsButton ipsButton_fullWidth ipsButton_large ipsButton_important'><i class='fa fa-refresh'></i> &nbsp;{lang="purchase_renew_now"} - {$purchase->renewals->cost}</a>
+									{{endforeach}}
+								{{else}}
+									<a href='#elFileRenew_menu' id='elFileRenew' class='ipsButton ipsButton_fullWidth ipsButton_large ipsButton_important' data-ipsMenu><i class='fa fa-refresh'></i> &nbsp;{lang="purchase_renew_now"} <i class="fa fa-caret-down"></i></a>
+									<ul id='elFileRenew_menu' class='ipsMenu ipsMenu_auto ipsHide'>
+										{{foreach $purchasesToRenew as $purchase}}
+											<li class='ipsMenu_item'><a href="{$purchase->url()->setQueryString('do', 'renew')->csrf()}">{$purchase->name}<br><span class='ipsType_light'>{$purchase->renewals}</span></a></li>
+										{{endforeach}}
+									</ul>		
+								{{endif}}						
+							</li>
+						{{endif}}
+					</ul>
+					<hr class='ipsHr'>
+
+				{{if $file->topic()}}
+					<a href='{$file->topic()->url()}' title='{lang="dl_get_support_title"}' class='ipsButton ipsButton_normal ipsButton_fullWidth'>{lang="dl_get_support"}</a>
+					<br>
+				{{endif}}
+				<h2 class='ipsType_sectionHead'>{lang="file_information"}</h2>
+				<ul class="ipsDataList ipsDataList_reducedSpacing ipsSpacer_top">
+					<li class="ipsDataItem">
+						<span class="ipsDataItem_generic ipsDataItem_size3"><strong>{lang="views"}</strong></span>
+						<span class="ipsDataItem_generic cFileInfoData">{number="$file->views"}</span>
+					</li>
+					{{if $file->isPaid() and !$file->nexus and \in_array( 'purchases', explode( ',', settings.idm_nexus_display ) )}}
+						<li class="ipsDataItem">
+							<span class="ipsDataItem_generic ipsDataItem_size3"><strong>{lang="idm_purchases"}</strong></span>
+							<span class="ipsDataItem_generic cFileInfoData">{$file->purchaseCount()}</span>
+						</li>
+					{{endif}}
+					{{if !$file->isPaid() or \in_array( 'downloads', explode( ',', settings.idm_nexus_display ) ) }}
+						<li class="ipsDataItem">
+							<span class="ipsDataItem_generic ipsDataItem_size3"><strong>{lang="downloads_file_info"}</strong></span>
+							<span class="ipsDataItem_generic cFileInfoData">{number="$file->downloads"}</span>
+						</li>
+					{{endif}}
+					<li class="ipsDataItem">
+						<span class="ipsDataItem_generic ipsDataItem_size3"><strong>{lang="submitted"}</strong></span>
+						<span class="ipsDataItem_generic cFileInfoData">{datetime="$file->submitted"}</span>
+					</li>
+					{{if $file->published}}
+						<li class="ipsDataItem">
+							<span class="ipsDataItem_generic ipsDataItem_size3"><strong>{lang="file_published"}</strong></span>
+							<span class="ipsDataItem_generic cFileInfoData">{datetime="$file->published"}</span>
+						</li>
+					{{endif}}
+					{{if $file->updated != $file->submitted}}
+						<li class="ipsDataItem">
+							<span class="ipsDataItem_generic ipsDataItem_size3"><strong>{lang="updated"}</strong></span>
+							<span class="ipsDataItem_generic cFileInfoData">{datetime="$file->updated"}</span>
+						</li>
+					{{endif}}
+					{{if $file->filesize()}}
+						<li class="ipsDataItem">
+							<span class="ipsDataItem_generic ipsDataItem_size3"><strong>{lang="filesize"}</strong></span>
+							<span class="ipsDataItem_generic cFileInfoData">{filesize="$file->filesize()"}</span>
+						</li>
+					{{endif}}
+					{{foreach $cfields as $field}}
+						{{if $field['location'] == 'sidebar'}}
+							<li class="ipsDataItem">
+								<span class="ipsDataItem_generic ipsDataItem_size3"><strong>{lang="downloads_{$field['key']}"}</strong></span>
+								<div class="ipsDataItem_generic ipsType_break cFileInfoData">
+									{$field['value']|raw}
+								</div>
+							</li>
+						{{endif}}
+					{{endforeach}}
+
+					{{if $file->canViewDownloaders() and $file->downloads}}
+						<br>
+						<a href='{$file->url('log')}' title='{lang="view_downloader_list"}' class='' data-ipsDialog data-ipsDialog-size="wide" data-ipsDialog-title="{lang="downloaders"}">{lang="who_downloaded"}</a>
+					{{endif}}
+				</ul>
+				</div>
+			</aside>
+		</div>
+		{{if ( $file->canEdit() or $file->canPin() or $file->canUnpin() or $file->canFeature() or $file->canUnfeature() or $file->canHide() or $file->canUnhide() or $file->canMove() or $file->canLock() or $file->canUnlock() or $file->canDelete() or $file->canEnablePurchases() or $file->canDisablePurchases() ) or ( $file->hidden() == -2 AND \IPS\Member::loggedIn()->modPermission('can_manage_deleted_content') ) or $file->canReportOrRevoke() or ( \IPS\IPS::classUsesTrait( $file, 'IPS\Content\Reactable' ) and settings.reputation_enabled )}}
+			<div class='ipsItemControls cDownloadsItemControls'>
+				{{if \IPS\IPS::classUsesTrait( $file, 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+					{template="reputation" app="core" group="global" params="$file"}
+				{{endif}}
+				{{if ( $file->canEdit() or $file->canPin() or $file->canUnpin() or $file->canFeature() or $file->canUnfeature() or $file->canHide() or $file->canUnhide() or $file->canMove() or $file->canLock() or $file->canUnlock() or $file->canDelete() or $file->canEnablePurchases() or $file->canDisablePurchases() ) or ( $file->hidden() == -2 AND \IPS\Member::loggedIn()->modPermission('can_manage_deleted_content') ) or $file->canReportOrRevoke()}}
+					<ul class='ipsComment_controls ipsClearfix ipsItemControls_left'>
+						{{if ( $file->canEdit() or $file->canPin() or $file->canUnpin() or $file->canFeature() or $file->canUnfeature() or $file->canHide() or $file->canUnhide() or $file->canMove() or $file->canLock() or $file->canUnlock() or $file->canDelete() or $file->canEnablePurchases() or $file->canDisablePurchases() ) or ( $file->hidden() == -2 AND \IPS\Member::loggedIn()->modPermission('can_manage_deleted_content') )}}
+							<li>
+								<a href='#elFileActions_menu' id='elFileActions' class='ipsButton ipsButton_light ipsButton_verySmall ipsButton_fullWidth' data-ipsMenu>{lang="file_actions"} <i class='fa fa-caret-down'></i></a>
+								<ul id='elFileActions_menu' class='ipsMenu ipsMenu_auto ipsHide'>
+									{{if $file->canReportOrRevoke() === TRUE}}
+										<li class='ipsMenu_item'>
+											<a href='{$file->url('report')}' {{if member.member_id or \IPS\Helpers\Form\Captcha::supportsModal()}}data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-title="{lang="report_file"}" data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage="{lang="report_submit_success"}"{{endif}} title="{lang="report_file"}" >{lang="report"}</a>
+										</li>
+										<li class='ipsMenu_sep'><hr></li>
+									{{endif}}
+									{{if \IPS\Member::loggedIn()->modPermission('can_manage_deleted_content') AND $file->hidden() == -2}}
+										<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'restore' ) )}' data-confirm data-confirmSubMessage='{lang="restore_as_visible_desc"}'>{lang="restore_as_visible"}</a></li>
+										<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'restoreAsHidden' ) )}' data-confirm data-confirmSubMessage='{lang="restore_as_hidden_desc"}'>{lang="restore_as_hidden"}</a></li>
+										<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'delete', 'immediate' => 1 ) )}' data-confirm data-confirmSubMessage='{lang="delete_immediately_desc"}'>{lang="delete_immediately"}</a></li>
+									{{else}}
+										{{if $file->canEdit() AND $file->container()->can('add')}}
+											{{if $file->hasPendingVersion()}}
+												<li class='ipsMenu_item ipsMenu_itemDisabled'><a href='#'>{lang="upload_new_version_pending"}</a></li>
+                                            {{else}}
+												<li class='ipsMenu_item'><a href='{$file->url()->setQueryString( array( 'do' => 'newVersion' ) )}' title='{lang="upload_new_version_title"}'>{lang="upload_new_version"}</a></li>
+											{{endif}}
+										{{endif}}
+										{{if $file->canEdit()}}
+											<li class='ipsMenu_item'><a href='{$file->url()->setQueryString( array( 'do' => 'edit' ) )}' title='{lang="downloads_edit_details_title"}'>{lang="downloads_edit_details"}</a></li>
+										{{endif}}
+										{{if $file->canFeature()}}				
+											<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'feature' ) )}' title='{lang="feature_title_file"}'>{lang="feature"}</a></li>
+										{{endif}}
+										{{if $file->canUnfeature()}}				
+											<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'unfeature' ) )}' title='{lang="unfeature_title_file"}'>{lang="unfeature"}</a></li>
+										{{endif}}
+										{{if $file->canPin()}}				
+											<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'pin' ) )}' title='{lang="pin_title_file"}'>{lang="pin"}</a></li>
+										{{endif}}
+										{{if $file->canUnpin()}}				
+											<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'unpin' ) )}' title='{lang="unpin_title_file"}'>{lang="unpin"}</a></li>
+										{{endif}}
+										{{if $file->canHide()}}				
+											<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'hide' ) )}' title='{lang="hide_title_file"}' data-ipsDialog data-ipsDialog-title="{lang="hide"}">{lang="hide"}</a></li>
+										{{endif}}
+										{{if $file->canUnhide()}}				
+											<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'unhide' ) )}' title='{{if $file->hidden() === 1}}{lang="approve_title_file"}{{else}}{lang="unhide_title_file"}{{endif}}'>{{if $file->hidden() === 1}}{lang="approve"}{{else}}{lang="unhide"}{{endif}}</a></li>
+										{{endif}}
+										{{if $file->canLock()}}				
+											<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'lock' ) )}' title='{lang="lock_title_file"}'>{lang="lock"}</a></li>
+										{{endif}}
+										{{if $file->canUnlock()}}				
+											<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'unlock' ) )}' title='{lang="unlock_title_file"}'>{lang="unlock"}</a></li>
+										{{endif}}
+										{{if $file->canMove()}}				
+											<li class='ipsMenu_item'><a href='{$file->url()->setQueryString( array( 'do' => 'move' ) )}' data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title="{lang="move"}"  title='{lang="downloads_move_title"}'>{lang="move"}</a></li>
+										{{endif}}
+										{{if $file->canDelete()}}				
+											<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'delete' ) )}' data-confirm  title='{lang="downloads_delete_title"}'>{lang="delete"}</a></li>
+										{{endif}}
+										{{if $file->canOnMessage( 'add' )}}
+											<li class='ipsMenu_item'><a href='{$file->url()->setQueryString( array( 'do' => 'messageForm' ) )}' data-ipsDialog data-ipsDialog-title='{lang="add_message"}'>{lang='add_message'}</a></li>
+										{{endif}}
+										{{if $file->isPurchasable() AND $file->canDisablePurchases()}}
+											<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'purchaseStatus', 'value' => 0 ) )}' data-confirm>{lang="disable_purchases"}</a></li>
+										{{endif}}
+										{{if !$file->isPurchasable() AND $file->canEnablePurchases()}}
+											<li class='ipsMenu_item'><a href='{$file->url()->csrf()->setQueryString( array( 'do' => 'purchaseStatus', 'value' => 1 ) )}' data-confirm>{lang="enable_purchases"}</a></li>
+										{{endif}}
+                                        {{if \IPS\Member::loggedIn()->modPermission('can_view_moderation_log')}}
+                                            <li class='ipsMenu_sep'><hr></li>
+                                            <li class="ipsMenu_item"><a data-ipsDialog data-ipsDialogTitle="{lang="moderation_log"}" href='{$file->url()->setQueryString( array( 'do' => 'modLog' ) )}'>{lang="moderation_log"}</a></li>
+                                        {{endif}}
+									{{endif}}
+								</ul>
+							</li>
+						{{elseif $file->canReportOrRevoke() === TRUE}}
+							<li>
+								<a href='{$file->url('report')}' {{if member.member_id or \IPS\Helpers\Form\Captcha::supportsModal()}}data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-title="{lang="report_file"}" data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage="{lang="report_submit_success"}"{{endif}} title="{lang="report_file"}" class='ipsButton ipsButton_link ipsButton_verySmall ipsButton_fullWidth'>{lang="report"}</a>
+							</li>
+						{{endif}}
+					</ul>
+				{{endif}}
+			</div>
+		{{endif}}
+	</div>
+
+	<div class='ipsBox ipsPadding ipsResponsive_pull ipsResponsive_showPhone ipsMargin_top'>
+		<div class='ipsShareLinks'>
+			{template="notify" app="downloads" group="view" params="$file"}
+			{{if \count( $file->shareLinks() )}}
+				{template="shareButton" app="core" group="sharelinks" params="$file, 'verySmall', 'light'"}
+			{{endif}}
+			{{if \IPS\Application::appIsEnabled('cloud')}}
+				{template="spam" app="cloud" group="spam" params="$file"}
+			{{endif}}	
+            {template="analyticsItemLink" app="core" group="system" params="$file"}
+			{template="follow" app="core" group="global" params="'downloads', 'file', $file->id, $file->followersCount()"}
+			{template="promote" app="core" group="global" params="$file"}
+		</div>
+	</div>
+	
+	{{if $prev || $next}}
+		<div class='ipsPager ipsSpacer_top'>
+			<div class="ipsPager_prev">
+				{{if $prev !== NULL}}
+					<a href="{$prev->url()}" title="{lang="prev_file"}">
+						<span class="ipsPager_type">{lang="prev_file"}</span>
+						<span class="ipsPager_title ipsType_light ipsTruncate ipsTruncate_line">{$prev->mapped('title')}</span>
+					</a>
+				{{endif}}
+			</div>
+			{{if $next !== NULL}}
+				<div class="ipsPager_next">
+					<a href="{$next->url()}" title="{lang="next_file"}">
+						<span class="ipsPager_type">{lang="next_file"}</span>
+						<span class="ipsPager_title ipsType_light ipsTruncate ipsTruncate_line">{$next->mapped('title')}</span>
+					</a>
+				</div>
+			{{endif}}
+		</div>
+		<hr class='ipsHr'>
+	{{endif}}
+
+	{{if $commentsAndReviews}}
+		<a id="replies"></a>
+		<h2 class='ipsHide'>{lang="user_feedback"}</h2>
+		<div class='ipsMargin_top'>{$commentsAndReviews|raw}</div>
+	{{endif}}
+</div>
+
+{{if $file->container()->club()}}
+	</div>
+{{endif}}

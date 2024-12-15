@@ -1,0 +1,67 @@
+<ips:template parameters="$listItems" />
+<ul class="ipsList_reset">
+	{{if \count( $listItems )}}
+		{{$count = 1;}}
+		{{foreach $listItems as $idx => $listItem}}
+			<li class='{{if $count < \count( $listItems )}}ipsBorder_bottom{{endif}}'>
+				{{$count++;}}
+				{{if !empty( $listItem['link'] )}}
+					<a href="{$listItem['link']}" {{if !isset( $listItem['skipDialog'] )}}data-ipsDialog data-ipsDialog-title="{{if !empty( $listItem['dialogTitle'] )}}{lang="$listItem['dialogTitle']"}{{else}}{lang="self_service"}{{endif}}"{{endif}} class="ipsPadding_vertical:half ipsPadding_horizontal ipsFlex ipsFlex-ai:center {{if $listItem['critical']}}ipsType_negative ipsType_bold{{elseif $listItem['advice']}}ipsType_issue{{else}}ipsType_neutral{{endif}}" {{if isset($listItem['dialogSize'])}}data-ipsDialog-size="{$listItem['dialogSize']}"{{endif}}>
+				{{elseif !empty( $listItem['element'] )}}
+					<a href="#{$listItem['element']}" data-ipsDialog data-ipsDialog-content='#{$listItem['element']}' data-ipsDialog-title="{{if !empty( $listItem['dialogTitle'] )}}{lang="$listItem['dialogTitle']"}{{else}}{lang="self_service"}{{endif}}" class="ipsPadding_vertical:half ipsPadding_horizontal ipsFlex ipsFlex-ai:center {{if $listItem['critical']}}ipsType_negative ipsType_bold{{elseif $listItem['advice']}}ipsType_issue{{else}}ipsType_neutral{{endif}}">
+				{{else}}
+					<div class='ipsPadding_vertical:half ipsPadding_horizontal ipsFlex ipsFlex-ai:center ipsType_neutral'>
+				{{endif}}
+
+					{{if $listItem['critical']}}
+						<i class="fa fa-exclamation-triangle ipsMargin_right:half"></i>
+					{{elseif $listItem['advice']}}
+						<i class="fa fa-info-circle ipsMargin_right:half"></i>
+					{{elseif $listItem['success']}}
+						<i class="fa fa-check ipsMargin_right:half"></i>
+					{{else}}
+						<i class="fa fa-info-circle ipsMargin_right:half"></i>
+					{{endif}}
+					
+					<p class='ipsType_reset ipsFlex-flex:11 ipsType_break'>{$listItem['detail']}</p>
+				
+				{{if !empty( $listItem['learnmore'] )}}
+				<button class="ipsButton ipsButton_light ipsButton_small">{lang="health_learn_more"}</button>
+                    </a>
+				{{elseif !empty( $listItem['link'] ) OR !empty( $listItem['element'] )}}
+				{{if isset( $listItem['button'], $listItem['button']['lang'] ) }}
+				<button class="ipsButton ipsButton_light ipsButton_small">{lang="$listItem['button']['lang']"}</button>
+				{{else}}
+				<button class="ipsButton ipsButton_light ipsButton_small">{lang="health_fix_this"}</button>
+				{{endif}}
+					</a>
+				{{else}}
+					</div>
+				{{endif}}
+
+				{{if !empty( $listItem['element'] )}}
+					<div id="{$listItem['element']}" class='ipsHide'>
+						<div class='ipsPadding:double ipsType_large'>
+							{$listItem['body']|raw}
+						</div>
+						{{if empty( $listItem['learnmore'] )}}
+						<div class="ipsAreaBackground_light ipsClearfix ipsPadding ipsType_center">
+							{{if !empty( $listItem['button'] )}}
+								<a href="{$listItem['button']['href']}" class="ipsButton {$listItem['button']['css']}">{lang="$listItem['button']['lang']"}</a>
+							{{endif}}	
+							<a href="{url="app=core&module=support&controller=support"}" class="ipsButton ipsButton_alternate">{lang="support_check_again"}</a>
+						</div>
+						{{endif}}
+					</div>
+				{{endif}}
+			</li>
+		{{endforeach}}
+	{{else}}
+		<li>
+			<div class="ipsPadding_vertical:half ipsPadding_horizontal ipsFlex ipsFlex-ai:center ipsType_neutral">
+				<i class="fa fa-check ipsMargin_right:half"></i>
+				<p class='ipsType_reset ipsFlex-flex:11'>{lang="health_no_issues"}</p>
+			</div>
+		</li>
+	{{endif}}
+</ul>

@@ -1,0 +1,21 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+{{if isset( $rows['owner'] ) AND \count( $rows['owner'] )}}
+	<h2 class='ipsType_pageTitle'>{lang="user_blogs"}</h2>
+	<br>
+	<ol class='ipsList_reset ipsClear ipsGrid ipsGrid_collapsePhone' id='elTable_{$table->uniqueId}_owner'>
+		{template="$table->rowsTemplate[1]" params="$table, $headers, $rows['owner'], FALSE" object="$table->rowsTemplate[0]"}
+	</ol>
+{{endif}}
+{{if isset( $rows['contributor'] ) AND \count( $rows['contributor'] )}}
+	{{if isset( $rows['owner'] ) AND \count( $rows['owner'] )}}
+		<h3 class='ipsType_sectionHead'>{lang="also_contributes"}</h3>
+		<br><br>
+	{{else}}
+		<h2 class='ipsType_pageTitle'>{lang="contributes_to"}</h2>
+	{{endif}}
+
+	<ol class='ipsList_reset ipsClear ipsGrid ipsGrid_collapsePhone' id='elTable_{$table->uniqueId}_contributor'>
+		{template="$table->rowsTemplate[1]" params="$table, $headers, $rows['contributor'], TRUE" object="$table->rowsTemplate[0]"}
+	</ol>
+	<br>
+{{endif}}

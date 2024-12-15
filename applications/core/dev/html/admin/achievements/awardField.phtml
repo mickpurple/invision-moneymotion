@@ -1,0 +1,11 @@
+<ips:template parameters="$name, $value" />
+<input type="number" name="{$name}[points]" value="{{if isset( $value['points'] )}}{$value['points']}{{else}}0{{endif}}" class="ipsField_short" min="0">
+{lang="achievements_points_awarded"}
+{lang="and"}
+<select name="{$name}[badge]">
+	<option value="">{lang="achievements_badge_none"}</option>
+	{{foreach \IPS\core\Achievements\Badge::roots() as $badge}}
+		<option value="{$badge->id}" {{if isset( $value['badge'] ) and $value['badge'] == $badge->id}}selected{{endif}}>{$badge->_title}</option>
+	{{endforeach}}
+</select>
+{lang="achievements_badge"}

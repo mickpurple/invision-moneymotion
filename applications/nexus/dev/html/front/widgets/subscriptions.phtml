@@ -1,0 +1,26 @@
+<ips:template parameters="" />
+<h3 class="ipsType_reset ipsWidget_title">{lang="nexus_subs_widget_title"}</h3>
+<div class='ipsWidget_inner'>
+	<ul class='ipsDataList'>
+		{{foreach \IPS\nexus\Subscription\Package::roots() as $package}}
+		{{if $package->enabled }}
+			<li class="ipsDataItem">
+				<a href="{$package->url()}" class="ipsType_blendLinks">
+					<div class='ipsDataItem_main'>
+						<div class='cWidgetSubscription ipsPad_half'>
+							<div class="cWidgetSubscription_bg" {{if $package->_image}}style='background-image: url( "{expression="str_replace( array( '(', ')' ), array( '\(', '\)' ), $package->_image->url )"}" )'{{endif}}></div>
+							<span class='cWidgetSubscription_text'>
+                                {lang="nexus_subs_widget_title_and_price" sprintf="$package->_title, $package->priceBlurb()"}
+                                {{if \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}<span class='cNexusPrice_tax ipsType_light'>{lang="nexus_tax_explain_val"}</span>{{endif}}
+                            </span>
+						</div>
+					</div>
+				</a>
+			</li>
+		{{endif}}
+		{{endforeach}}
+	</ul>
+	<p class='cWidgetSubscription_linkbox ipsType_reset ipsPad_half ipsType_right ipsType_small'>
+		<a href='{url="app=nexus&module=subscriptions&controller=subscriptions" seoTemplate="nexus_subscriptions"}' class='ipsType_light'>{lang="nexus_subs_show_all_subs"} <i class='fa fa-caret-right'></i></a>
+	</p>
+</div>

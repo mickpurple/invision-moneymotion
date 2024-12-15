@@ -1,0 +1,11 @@
+<ips:template parameters="$points, $badge, $title" />
+<ul class="ipsList_reset ipsCaterpillar" data-ipsTooltip data-ipsTooltip-safe title="{{if $title}}<strong>{lang="$title"}</strong><br>{{endif}}{{if $points and $badge}}{lang="achievements_awards_points_and_badge" sprintf="$badge->_title" pluralize="$points"}{{elseif $points}}{lang="achievements_awards_points" pluralize="$points"}{{elseif $badge}}{lang="achievements_awards_badge" sprintf="$badge->_title"}{{endif}}">
+	{{if $points}}
+		<li class='ipsCaterpillar__item ipsDimension_height:4 ipsDimension_minWidth:4 ipsAreaBackground ipsRadius:full ipsFlex ipsFlex-ai:center ipsFlex-jc:center'>
+			{$points}
+		</li>
+	{{endif}}
+	{{if $badge}}
+		<li class='ipsCaterpillar__item'>{$badge->html('ipsDimension:4', FALSE)|raw}</li>
+	{{endif}}
+</ul>

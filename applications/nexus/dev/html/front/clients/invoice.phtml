@@ -1,0 +1,237 @@
+<ips:template parameters="$invoice" />
+
+<div class='ipsBox ipsPadding ipsMargin_bottom'>
+	<div class='ipsFlex ipsFlex-jc:between sm:ipsFlex-fd:column ipsMargin_bottom:half'>
+		<div>
+			<h1 class='ipsType_pageTitle'>{lang="order_title"} #{$invoice->id}</h1>
+			<p class='ipsType_light ipsType_normal ipsType_reset'>{lang="order_placed"} {datetime="$invoice->date" lowercase="true"}</p>
+		</div>
+		<div class='ipsType_normal ipsFlex ipsFlex-fd:column ipsFlex-ai:stretch ipsFlex-jc:center ipsGap:1 sm:ipsMargin_top'>
+			<a href='{{if $invoice->guest_data and isset( $invoice->guest_data['guestTransactionKey'] )}}{$invoice->url()->setQueryString( array( 'do' => 'printout', 'key' => $invoice->guest_data['guestTransactionKey'] ) )}{{else}}{$invoice->url()->setQueryString( 'do', 'printout' )}{{endif}}' target="_blank" rel='noopener' class='ipsButton ipsButton_verySmall ipsButton_light ipsButton_fullWidth'>{lang="order_invoice_print"}</a>
+			{{if $invoice->po}}
+				<p class='ipsType_reset ipsType_medium ipsMargin_vertical:half'>
+					{lang="invoice_po_number"}: {$invoice->po} <a href="{$invoice->url()->setQueryString( array( 'do' => 'poNumber' ) )}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="order_po_number_dialog"}' class='ipsType_small ipsType_brandedLink' title='{lang="order_po_number"}'>({lang="edit"})</a>
+				</p>
+			{{else}}
+				<a href="{$invoice->url()->setQueryString( array( 'do' => 'poNumber' ) )}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="order_po_number_dialog"}' title='{lang="order_po_number_add_title"}' class='ipsButton ipsButton_verySmall ipsButton_link ipsButton_fullWidth'>{lang="order_po_number_add"}</a>
+			{{endif}}
+		</div>
+	</div>
+
+	<hr class='ipsHr'>
+
+	<div class='ipsGrid ipsGrid_collapsePhone ipsSpacer_top cNexusInvoiceView'>
+		<div class='ipsGrid_span6'>
+			{{if $invoice->billaddress or ( $invoice->hasPhysicalItems() && $invoice->shipaddress ) }}
+				<div class='ipsGrid ipsGrid_collapsePhone ipsSpacer_bottom ipsSpacer_double'>
+					{{if $invoice->billaddress }}
+						<div class='ipsGrid_span6'>
+							<h3 class='ipsType_sectionHead'>{lang="billing_address"}</h3>
+							<div class='ipsType_medium ipsSpacer_top'>
+								{$invoice->billaddress->toString('<br>')|raw}
+							</div>
+						</div>
+					{{endif}}
+					{{if $invoice->hasPhysicalItems() && $invoice->shipaddress}}
+						<div class='ipsGrid_span6'>
+							<h3 class='ipsType_sectionHead'>{lang="shipping_address"}</h3>
+							<div class='ipsType_medium ipsSpacer_top'>
+								{$invoice->shipaddress->toString('<br>')|raw}
+							</div>
+						</div>
+					{{endif}}
+				</div>
+			{{endif}}
+
+			{{if $invoice->notes}}
+				<h2 class='ipsType_sectionHead'>{lang="invoice_notes"}</h2>
+				<div class='ipsType_normal ipsMargin_bottom:half'>
+					{expression="nl2br( htmlspecialchars( $invoice->notes, ENT_QUOTES | ENT_DISALLOWED, 'UTF-8', FALSE ) )" raw="true"}
+				</div>
+				<a href="{$invoice->url()->setQueryString( array( 'do' => 'notes' ) )}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="order_edit_invoice_notes"}' class='ipsType_brandedLink'>({lang="edit"})</a>
+			{{else}}
+				<p class='ipsSpacer_top'><a href="{$invoice->url()->setQueryString( array( 'do' => 'notes' ) )}" class='ipsButton ipsButton_light ipsButton_verySmall' data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="order_edit_invoice_notes"}' title='{lang="order_add_invoice_notes"}'>{lang="order_add_invoice_notes"}</a></p>
+			{{endif}}
+		</div>
+		<div class='ipsGrid_span6 ipsType_center'>
+			<div class='ipsBox ipsBox--child ipsPadding'>
+				<h2 class='ipsType_minorHeading'>{lang="order_order_total"}</h2>
+				<span class='cNexusOrderBadge cNexusOrderBadge_{$invoice->status}'>{lang="istatus_{$invoice->status}"}</span> &nbsp;&nbsp;&nbsp;<span class='cNexusPrice'>{$invoice->total}</span>
+
+				{{if $invoice->status === $invoice::STATUS_PENDING}}
+					<ul class='ipsToolList ipsToolList_vertical ipsSpacer_top'>
+						<li><a href="{$invoice->checkoutUrl()}" class='ipsButton ipsButton_primary ipsButton_fullWidth ipsButton_small' title="{lang="order_pay_now_title"}">{lang="order_pay_now"}</a></li>
+						<li><a href="{$invoice->url()->setQueryString( 'do', 'cancel' )->csrf()}" class='ipsButton ipsButton_light ipsButton_fullWidth ipsButton_small' data-confirm title='{lang="order_cancel_invoice"}'>{lang="cancel"}</a></li>
+					</ul>
+				{{elseif $invoice->status === $invoice::STATUS_EXPIRED}}
+					<p class='ipsType_center ipsType_light ipsType_reset ipsSpacer_top'>
+						{lang="order_invoice_expired"}
+					</p>
+				{{elseif $invoice->status === $invoice::STATUS_CANCELED}}
+					<p class='ipsType_center ipsType_light ipsType_reset ipsSpacer_top'>
+						{lang="order_invoice_cancelled"}
+					</p>
+				{{elseif $invoice->status === $invoice::STATUS_PAID}}
+					<p class='ipsType_center ipsType_light ipsType_reset ipsSpacer_top'>
+						{lang="order_invoice_paid"}<br>
+						{{if $invoice->billaddress AND \count( $invoice->transactions( array( \IPS\nexus\Transaction::STATUS_PAID, \IPS\nexus\Transaction::STATUS_WAITING, \IPS\nexus\Transaction::STATUS_HELD, \IPS\nexus\Transaction::STATUS_REVIEW, \IPS\nexus\Transaction::STATUS_REFUSED, \IPS\nexus\Transaction::STATUS_REFUNDED, \IPS\nexus\Transaction::STATUS_PART_REFUNDED, \IPS\nexus\Transaction::STATUS_GATEWAY_PENDING ) ) ) > 0 }}
+							<a href='#elPaymentDetails' data-ipsDialog data-ipsDialog-content='#elPaymentDetails' data-ipsDialog-title='{lang="order_payment_details"}' data-ipsDialog-size='narrow'>{lang="order_view_payment"}</a>
+						{{endif}}
+					</p>
+
+					{{if $invoice->billaddress}}
+						<div id='elPaymentDetails' class='ipsType_left ipsJS_hide'>
+							{template="paymentLog" group="clients" app="nexus" params="$invoice"}
+						</div>
+					{{endif}}
+				{{endif}}
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{{$shipments = $invoice->shipments( array( \IPS\nexus\Shipping\Order::STATUS_SHIPPED, \IPS\nexus\Shipping\Order::STATUS_PENDING ) );}}
+{{$summary = $invoice->summary();}}
+
+{{if \count( $shipments )}}
+	<div class='ipsColumns ipsColumns_collapsePhone'>
+		<div class='ipsColumn ipsColumn_fluid'>
+{{endif}}
+		<div class='ipsBox'>
+			<h2 class='ipsType_sectionTitle ipsType_reset'>{lang="order_details"}</h2>
+			<div class='ipsPad ipsAreaBackground_light'>
+				<ul class='ipsDataList ipsBox ipsPad'>
+					{{foreach $summary['items'] as $k => $item}}
+						<li class='ipsDataItem'>
+							<div class='ipsDataItem_generic ipsDataItem_size2'>
+								{{try { $package = \IPS\nexus\Package::load( $item->id ); } catch( \Exception $e ) { $package = NULL; } }}
+								{{if $item instanceof \IPS\nexus\extensions\nexus\Item\Package and $package and $package->image}}
+									<img src="{$package->image}" class='ipsImage'>
+								{{else}}
+									<div class='ipsNoThumb ipsNoThumb_product ipsThumb_small'>&nbsp;</div>
+								{{endif}}
+							</div>
+							<div class='ipsDataItem_main'>
+								<h2 class='ipsDataItem_title ipsType_sectionHead ipsType_break'>
+									{{if $url = $item->url()}}
+										<a href="{$url}" class="ipsType_blendLinks"><span class='ipsType_light'>{$item->quantity} x</span> {$item->name}</a>
+									{{else}}
+										<span class='ipsType_light'>{$item->quantity} x</span> {$item->name}
+									{{endif}}
+								</h2>
+								<dl class='ipsList_reset cNexusPurchase_info ipsSpacer_top'>
+									{{foreach $item->details as $k => $v}}
+										<dt class='ipsType_minorHeading'><strong>{lang="nexus_pfield_{$k}"}</strong></dt>
+										<dd class='ipsType_normal'>{expression="\IPS\nexus\Package\CustomField::load( $k )->displayValue( $v )" raw="true"}</dd>
+									{{endforeach}}
+								</dl>
+							</div>
+							<div class='ipsDataItem_generic ipsDataItem_size4 ipsType_right ipsPos_top'>
+								<span class='cNexusPrice ipsType_large'>
+									{$item->linePrice()}
+								</span>
+								{{if $item->quantity > 1}}
+									<p class='ipsType_reset ipsType_small ipsType_light'>
+                                        {lang="each_short" sprintf="$item->price"}
+									</p>
+								{{endif}}
+							</div>
+						</li>
+					{{endforeach}}
+					{{foreach $summary['items'] as $item}}
+						{{if $item instanceof \IPS\nexus\extensions\nexus\Item\CouponDiscount}}
+							<li class='ipsDataItem cNexusCheckout_coupon'>
+								<div class='ipsDataItem_main ipsType_right'>
+									<strong>{lang="coupon"}</strong>
+								</div>
+								<div class='ipsDataItem_generic ipsDataItem_size3 ipsType_right cNexusPrice'>
+									{$item->linePrice()}
+								</div>
+							</li>
+						{{endif}}
+					{{endforeach}}	
+					<li class='ipsDataItem cNexusCheckout_subtotal'>
+						<div class='ipsDataItem_main ipsType_right'>
+							<strong>{lang="subtotal"}</strong>
+						</div>
+						<div class='ipsDataItem_generic ipsDataItem_size3 ipsType_right cNexusPrice'>
+							{$summary['subtotal']}
+						</div>
+					</li>
+					{{foreach $summary['shipping'] as $shipping}}
+						<li class='ipsDataItem'>
+							<div class='ipsDataItem_main ipsType_right'>
+								<strong>{lang="shipping"} <span class='ipsType_light ipsType_unbold'>({$shipping->name})</span></strong>
+							</div>
+							<div class='ipsDataItem_generic ipsDataItem_size3 ipsType_right cNexusPrice'>
+								{$shipping->linePrice()}
+							</div>
+						</li>
+					{{endforeach}}
+					{{foreach $summary['tax'] as $taxId => $tax}}
+						<li class='ipsDataItem'>
+							<div class='ipsDataItem_main ipsType_right'>
+								<strong>{lang="nexus_tax_{$taxId}"} ({expression="$tax['rate']*100"}%)</strong>
+							</div>
+							<div class='ipsDataItem_generic ipsDataItem_size3 ipsType_right cNexusPrice'>
+								{$tax['amount']}
+							</div>
+						</li>
+					{{endforeach}}
+					<li class='ipsDataItem ipsType_large cNexusCheckout_subtotal'>
+						<div class='ipsDataItem_main ipsType_right'>
+							<strong>{lang="total"}</strong>
+						</div>
+						<div class='ipsDataItem_generic ipsDataItem_size3 ipsType_right cNexusPrice'>
+							<strong>{$summary['total']}</strong>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+{{if \count( $shipments )}}
+	</div>
+	<div class='ipsColumn ipsColumn_wide'>
+		<!--<h2 class='ipsType_sectionHead'>{lang="invoice_shipments"}</h2>-->
+		{{foreach $shipments as $shipment}}
+			<div class='ipsAreaBackground_light ipsPad'>
+				{{if $shipment->status === $shipment::STATUS_SHIPPED}}	
+					<div class='ipsSpacer_bottom ipsSpacer_half'>	
+						<h3 class='ipsType_large ipsType_reset'>{lang="sstatus_{$shipment->status}"}</h3>
+						<p class='ipsType_medium ipsType_reset'>
+							{lang="order_shipped" pluralize="$shipment->itemCount()" sprintf="$shipment->shipped_date, $shipment->method->_title"} {{if $shipment->tracknumber}}<span class='ipsType_light'>({$shipment->tracknumber})</span>{{endif}}
+						</p>
+					</div>
+					{{if $shipment->trackingUrl()}}
+						<a href="{$shipment->trackingUrl()}" class='ipsButton ipsButton_light ipsButton_verySmall ipsButton_fullWidth' target="_blank" rel='noopener'>{lang="order_track_delivery"}</a>
+					{{endif}}
+				{{elseif $shipment->status === $shipment::STATUS_PENDING}}
+					<h3 class='ipsType_large ipsType_reset'>{lang="sstatus_{$shipment->status}"}</h3>
+					<p class='ipsType_normal ipsType_reset'>
+						{lang="order_will_ship" pluralize="$shipment->itemCount()" sprintf="$shipment->method->_title"}
+					</p>
+				{{endif}}
+				<div class='ipsBox ipsPad ipsSpacer_top ipsSpacer_half cNexusInvoiceView_shipList'>
+					<ul class='ipsDataList ipsDataList_reducedSpacing'>
+						{{foreach $shipment->items as $item}}
+							<li class='ipsDataItem'>
+								<div class='ipsDataItem_main'>
+									<h4 class='ipsType_normal ipsType_reset'><span class='ipsType_light'>{$item['quantity']} x</span> {$item['name']}</h4>
+									{{if \count( $item['details'] )}}
+										<span class="ipsType_light">
+											{{foreach $item['details'] as $k => $v}}
+												{lang="nexus_pfield_{$k}"}: {$v}<br>
+											{{endforeach}}
+										</span>
+									{{endif}}
+								</div>
+							</li>
+						{{endforeach}}
+					</ul>
+				</div>
+			</div>
+		{{endforeach}}
+	</div>
+</div>
+{{endif}}

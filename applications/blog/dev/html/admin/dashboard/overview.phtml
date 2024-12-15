@@ -1,0 +1,13 @@
+<ips:template parameters="$data" />
+<ul class="ipsDataList">
+	{{foreach $data as $k => $v}}
+		<li class="ipsDataItem">
+			<span class="ipsDataItem_generic ipsDataItem_size6">
+				<strong>{lang="$k"}</strong>
+			</span>
+			<span class="ipsDataItem_generic">
+				{$v}
+			</span>
+		</li>
+	{{endforeach}}
+</ul>

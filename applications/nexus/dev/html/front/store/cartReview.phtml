@@ -1,0 +1,42 @@
+<ips:template parameters="$package, $quantity, $upsell" />
+{template="pixel" app="core" group="global" params="array( 'AddToCart' => array( 'content_type' => 'product', 'content_ids' => array( $package->id ) ) )"}
+{{if \IPS\Request::i()->registerCheckout}}
+	<div class='ipsType_center ipsPad ipsType_light ipsType_large ipsBox'>
+		{lang="package_added_to_cart" sprintf="$package->_title"}
+		<br><br>
+		<a href='{url="app=nexus&module=store&controller=cart" seoTemplate="store_cart"}' class='ipsButton ipsButton_medium ipsButton_primary'>{lang="continue_to_registration"}</a>
+	</div>
+{{else}}
+	<div class='ipsPad'>
+	 	<div class='ipsAreaBackground_light ipsPad ipsType_center ipsSpacer_bottom'>
+			<h3 class='ipsType_sectionHead ipsType_center ipsSpacer_bottom ipsSpacer_half ipsType_success'><i class='fa fa-check-circle-o'></i> {lang="product_added_to_cart"}</h3>
+			<h4 class='ipsType_reset ipsType_large'>{$package->_title}</h4>
+			<p class='ipsType_reset ipsType_medium'>{lang="quantity"}: {$quantity}</p>
+		</div>
+		<ul class='ipsGrid ipsGrid_collapsePhone'>
+			<li class='ipsGrid_span6'>
+				<a href='#' data-action='dialogClose' class='ipsButton ipsButton_fullWidth ipsButton_light ipsButton_medium'>{lang="continue_shopping"}</a>
+			</li>
+			<li class='ipsGrid_span6'>
+				<a href='{url="app=nexus&module=store&controller=cart" seoTemplate="store_cart"}' title="{lang="review_cart_title"}" class='ipsButton ipsButton_fullWidth ipsButton_primary ipsButton_medium'>{lang="review_and_checkout"}</a>
+			</li>
+		</ul>
+		{{if \count( $upsell )}}
+			<hr class='ipsHr'>
+			<h2 class='ipsType_sectionHead'>{lang="related_products_you_might_like"}</h2>
+			<div class='ipsCarousel ipsClearfix ipsSpacer_top' data-ipsCarousel data-ipsCarousel-showDots>
+				<div class='ipsCarousel_inner'>
+					<ul class='cNexusCarousel cNexusCategory_grid ipsClearfix' data-role="carouselItems">
+						{{foreach $upsell as $upsellPackage}}
+							{template="packageBlock" group="store" params="$upsellPackage, TRUE, TRUE"}
+						{{endforeach}}
+					</ul>
+				</div>
+				<span class='ipsCarousel_shadow ipsCarousel_shadowLeft'></span>
+				<span class='ipsCarousel_shadow ipsCarousel_shadowRight'></span>
+				<a href='#' class='ipsCarousel_nav ipsHide' data-action='prev'><i class='fa fa-chevron-left'></i></a>
+				<a href='#' class='ipsCarousel_nav ipsHide' data-action='next'><i class='fa fa-chevron-right'></i></a>
+			</div>
+		{{endif}}
+	</div>
+{{endif}}

@@ -1,0 +1,18 @@
+<ips:template parameters="$currentCategory, $hideMobile=FALSE"/>
+{{if settings.idm_default_view_choose and member.member_id}}
+{{$chosen = \IPS\downloads\Category::getMemberView();}}
+<li>
+    <ul class='ipsButton_split'>
+        <li>
+            <a href='{$currentCategory->url()->setQueryString("do", "setMethod")->setQueryString("method","table")->csrf()}' class='ipsButton {{if $chosen == 'table'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}} ipsButton_narrow ipsButton_medium' data-ipsTooltip data-ipsTooltip-safe title='{lang='downloads_default_view_table' escape='true'}' rel='nofollow'>
+            <i class='fa fa-align-justify'></i>
+            </a>
+        </li>
+        <li>
+            <a href='{$currentCategory->url()->setQueryString('do', 'setMethod')->setQueryString('method','grid')->csrf()}' class='ipsButton {{if $chosen == 'grid'}}ipsButton_primary{{else}}ipsButton_veryLight{{endif}} ipsButton_narrow ipsButton_medium'  data-ipsTooltip data-ipsTooltip-safe title='{lang='downloads_default_view_grid' escape='true'}' rel='nofollow'>
+            <i class='fa fa-th-large'></i>
+            </a>
+        </li>
+    </ul>
+</li>
+{{endif}}

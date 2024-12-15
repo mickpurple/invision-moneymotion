@@ -1,0 +1,14 @@
+<ips:template parameters="$logs" />
+{lang="health__logs_repeats_info"}
+<ul class='ipsDataList ipsDataList_reducedSpacing ipsMargin_top'>
+	<li class='ipsDataItem ipsAreaBackground'>
+		<div class="ipsDataItem_generic ipsDataItem_main ipsPadding:half">{lang="health__repeat_logs_message"}</div>
+		<div class='ipsDataItem_stats ipsPadding:half'>{lang="health__repeat_logs_count"}</div>
+	</li>
+	{{foreach $logs as $message => $count}}
+		<li class="ipsDataItem">
+			<div class="ipsDataItem_generic ipsDataItem_main ipsPadding:half">{$message}</div>
+			<div class='ipsDataItem_stats ipsPadding:half'>{$count}</div>
+		</li>
+	{{endforeach}}
+</ul>

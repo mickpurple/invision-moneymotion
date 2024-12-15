@@ -1,0 +1,31 @@
+<ips:template parameters="$address" />
+
+<div class='ipsType_normal'>
+	{$address->address->toString('<br>')|raw}
+	{{if isset( $address->address->vat ) and $address->address->vat}}
+		<br>
+		{lang="cm_checkout_vat_number"}: {$address->address->vat}
+	{{endif}}
+</div>
+<ul class='ipsList_inline ipsType_medium ipsSpacer_top ipsSpacer_half'>
+	<li><a href="{url="app=nexus&module=clients&controller=addresses&do=form&id={$address->id}" seoTemplate="clientsaddresses"}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="edit_address_title"}' title="{lang="edit_address_title"}">{lang="edit"}</a></li>
+	<li><a href="{url="app=nexus&module=clients&controller=addresses&do=delete&id={$address->id}" seoTemplate="clientsaddresses" csrf="true"}" data-confirm data-confirmMessage='{{if $address->primary_billing}}{lang="delete_address_confirm_billing"}{{else}}{lang="delete_address_confirm"}{{endif}}' title='{lang="delete_address_title"}'>{lang="delete"}</a></li>
+</ul>
+
+{{if !$address->primary_billing || !$address->primary_shipping}}
+	<ul class='ipsList_inline'>
+		<li>
+			<strong>{lang="set_as_address"}</strong>
+		</li>
+		{{if !$address->primary_billing}}
+			<li>
+				<a href="{url="app=nexus&module=clients&controller=addresses&do=primary&id={$address->id}&primary=billing" seoTemplate="clientsaddresses" csrf="true"}" class='ipsButton ipsButton_narrow ipsButton_light ipsButton_verySmall' title="{lang="address_billing_title"}">{lang="address_billing"}</a>
+			</li>
+		{{endif}}
+		{{if !$address->primary_shipping}}
+			<li>
+				<a href="{url="app=nexus&module=clients&controller=addresses&do=primary&id={$address->id}&primary=shipping" seoTemplate="clientsaddresses" csrf="true"}" class='ipsButton ipsButton_narrow ipsButton_light ipsButton_verySmall' title="{lang="address_shipping_title"}">{lang="address_shipping"}</a>
+			</li>
+		{{endif}}
+	</ul>
+{{endif}}

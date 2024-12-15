@@ -1,0 +1,12 @@
+<ips:template parameters="$request, $email" />
+<br />
+{$email->language->addToStack("support_confirm_header", FALSE)}<br />
+<br />
+{{if $request->member}}
+	<a href='{$request->url()}' style="color: #ffffff; font-family: 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 12px; background: #417ba3; line-height: 32px; padding: 0 10px; display: inline-block; border-radius: 3px;">{$email->language->addToStack("view_support_request", FALSE)}</a>
+	<br />
+{{endif}}
+<br />
+<em style='color: #8c8c8c'>&mdash; {setting="board_name"}</em>
+<br />
+<div style="font-size: 0px; line-height: 0px; color:#ffffff !important;">{$email->language->addToStack("support_reply_email_id", FALSE, array( 'sprintf' => array( '[SR' . $request->id . '.' . $request->email_key . ']' ) ) )}</div>

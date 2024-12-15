@@ -1,0 +1,100 @@
+<ips:template parameters="$stream, $items, $recipient, $subscription, $viewMoreLink, $email" />
+{{if $subscription['frequency'] == 'daily'}}
+	{$email->language->addToStack( 'email_core_activity_stream_subscription_daily', FALSE, ['sprintf' => $stream->_title])}
+{{else}}
+	{$email->language->addToStack( 'email_core_activity_stream_subscription_weekly', FALSE, ['sprintf' => $stream->_title])}
+{{endif}}
+
+<br /><br />
+<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+	{{foreach $items as $item}}
+		{{$content = $item['object'];}}
+		<tr>
+			<td>
+				<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+					<tr>
+						<td dir='{dir}' width='40' valign='top' class='hidePhone' style='width: 0; max-height: 0; overflow: hidden; float: left; padding-top: 15px'>
+							<img src='{$content->author()->get_photo( true, true )}' width='40' height='40' style='border: 1px solid #777777; vertical-align: middle;'>
+						</td>
+						<td dir='{dir}' width='30' valign='top' class='hidePhone' style='width: 0; max-height: 0; overflow: hidden; float: left;'>
+							<span style='display: block; width: 0px; height: 0px; border-width: 15px; border-color: transparent #f9f9f9 transparent transparent; border-style: solid; margin-top: 23px;'></span>
+						</td>
+						<td dir='{dir}' width='100%' valign='top' style='background: #f9f9f9;'>
+							<table width='100%' cellpadding='10' cellspacing='0' border='0'>
+								<tr>
+									<td width='100%'>
+										<table width='100%' cellpadding='5' cellspacing='0' border='0'>
+											<tr>
+												<td dir='{dir}' width='100%' style="font-family: 'Helvetica Neue', helvetica, sans-serif; color: #8d8d8d; font-size: 14px;">
+													{{$itemClass = $item['itemClass'];}}
+
+													<h2 style="color: #333333; font-weight: bold; line-height: 1.1; font-size: {{if !$item['indexData']['index_title']}}16px{{else}}20px{{endif}}; margin: 0 0 3px 0;">
+														<a href='{$content->url()}' style='text-decoration: none; color: #333333;'>{$item['itemData'][ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['title'] ]}</a>
+													</h2>
+
+													{expression="$itemClass::searchResultSummaryLanguage( $item['authorData'], $itemClass::articlesFromIndexData( $itemClass, $item['containerData'] ), $item['indexData'], $item['itemData'], FALSE )"} <a href='{$item['containerUrl']}'>{$item['containerTitle']|raw}</a>
+												</td>
+											</tr>
+											<tr>
+												<td dir='{dir}' width='100%' style="font-family: 'Helvetica Neue', helvetica, sans-serif; color: #333; font-size: 15px;">
+													{{$emailContent = $email->parseTextForEmail( $content->content(), $email->language, ( \IPS\Settings::i()->email_truncate ? 150 : NULL ) );}}
+													{$emailContent|raw}{{if \IPS\Settings::i()->email_truncate AND \mb_strlen( $content->content() ) > 150}}...{{endif}}
+												</td>
+											</tr>
+											<tr>
+												<td width='100%'>
+													<table cellpadding='0' cellspacing='0' border='0'>
+														<tr>
+															<td style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;">
+																<a href='{$content->url()}'>{$email->language->addToStack('read_more')}</a>
+															</td>
+															<td>
+																<img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="20" height="1" />
+															</td>
+															<td style="color: #8d8d8d; font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;">
+																<img src="{setting="base_url"}applications/core/interface/email/clock.png" alt='' width="13" height="13" style="vertical-align: middle" />
+																<img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="1" height="1" />
+																<a href='{$content->url()}' style='color: inherit; text-decoration: none;'>{expression="\IPS\DateTime::ts( $item['indexData']['index_date_created'] )->localeDate( $recipient )"}</a>
+															</td>
+															{{if isset( $itemClass::$databaseColumnMap['num_comments'] ) and isset( $item['itemData'][ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['num_comments'] ] ) and $item['itemData'][ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['num_comments'] ] > ( $itemClass::$firstCommentRequired ? 1 : 0 )}}
+																<td>
+																	<img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="20" height="1" />
+																</td>
+																<td style="color: #8d8d8d; font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;">
+																	<img src="{setting="base_url"}applications/core/interface/email/comment_alt.png" alt='' width="13" height="13" style="vertical-align: middle" />
+																	<img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="1" height="1" />
+																	<a href='{$content->url()}' style='color: inherit; text-decoration: none;'>
+																		{{if $itemClass::$firstCommentRequired}}
+																			{expression="$item['itemData'][ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['num_comments'] ]-1"}
+																		{{else}}
+																			{expression="$item['itemData'][ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['num_comments'] ]"}
+																		{{endif}}
+																	</a>
+																</td>
+															{{endif}}
+														</tr>
+													</table>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td height="20">&nbsp;</td>
+		</tr>
+	{{endforeach}}
+    {{if $viewMoreLink}}
+
+        <tr>
+            <td dir='{dir}' align='center'>
+                <a href='{$stream->url()}' style="color: #ffffff; font-family: 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background: {setting="email_color"}; line-height: 32px; padding: 0 10px; display: inline-block; border-radius: 3px;">{$email->language->addToStack('stream_view_more', FALSE)}</a>
+            </td>
+        </tr>
+    {{endif}}
+</table>

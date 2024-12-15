@@ -1,0 +1,124 @@
+:root {
+	--condition-title-width: 90px;
+	--condition-line-width: 3px;
+	--condition-button-size: 20px;
+}
+
+.cRulesForm {
+	max-width: 50rem;
+}
+
+	.cRulesForm__container:before {
+		content: '';
+		width: var(--condition-line-width);
+		background: var(--c3);
+		position: absolute;
+		top: var(--sp-6);
+		bottom: var(--sp-6);
+		left: calc( ( var(--sp-5) * 2 ) + ( var( --condition-title-width ) / 2 ) + ( var(--condition-line-width ) / 2 ) );
+		z-index: 0;
+	}
+
+		.cRulesForm__container > * {
+			z-index: 10;
+		}
+	
+	.cRulesForm__condition {
+	
+	}
+
+		.cRulesForm__condition--subCondition {
+			margin-left: var(--sp-6);
+		}
+
+		.cRulesForm__condition__title {
+			background: rgb( var(--theme-brand_primary ) );
+			width: 90px;
+			padding-top: var(--sp-1);
+			padding-bottom: var(--sp-1);
+		}
+
+		.cRulesForm__conditionButtons {
+			padding-left: calc( ( var(--sp-5) * 2 ) + ( var( --condition-title-width ) - var(--sp-2 ) ) ) !important;
+			padding-top: 0 !important; /* Override ipsGap */
+			padding-bottom: 0 !important;
+			color: rgb( var(--theme-brand_primary) );
+			margin-top: calc( var(--sp-1 ) * -1 );
+		}
+
+			.cRulesForm_conditionWrap:not( .ipsHide ) + .cRulesForm__conditionButtons {
+				padding-top: var(--sp-4) !important; /* Override ipsGap */
+			}
+
+@media screen and (max-width: 767px) {
+	.cRulesForm__container:before {
+		display: none;
+	}
+
+	.cRulesForm__conditionButtons {
+		padding-left: var(--sp-3) !important;
+	}
+
+	.cRulesForm__condition--subCondition {
+		margin-left: 0;
+	}
+}
+
+		.cRulesForm__conditionButton {
+			color: inherit;
+			padding: var(--sp-1) var(--sp-2);
+			-webkit-appearance: none !important;
+		}
+
+			.cRulesForm__conditionButton:hover {
+				background: var(--c2);
+				color: inherit;
+			}
+
+			.cRulesForm__conditionButton__icon {
+				width: var(--condition-button-size);
+				height: var(--condition-button-size);
+				margin-right: var(--sp-1);
+				border-radius: var(--condition-button-size);
+				text-align: center;
+				background: rgb( var(--theme-brand_primary) );
+				color: rgb( var(--theme-text_very_light) );
+				font-size: 10px;
+				line-height: 1;
+			}
+
+		.cRulesForm__condition__close {
+			position: absolute;
+			right: -6px;
+			top: -6px;
+		}
+
+		.cRulesForm__condition__toDesc {
+			margin-bottom: var(--sp-1);
+		}
+
+			.cRulesForm__condition__toDesc:empty {
+				display: none;
+			}
+
+/* Badges */
+.ipsAchievementsBadge{
+	display: inline-block;
+	border-radius: 4px;
+	border: 1px solid currentColor;
+	color: var(--achievementsBadge--color, var(--c8));
+	background: var(--achievementsBadge--background-color, var(--c2));
+	padding: .1em .6em;
+	margin: 0 .1em;
+	font-size: 95%;
+}
+
+.ipsAchievementsBadge--milestone{
+	--achievementsBadge--color: #10967E;
+	--achievementsBadge--background-color: #E5FDF9;
+}
+
+.ipsAchievementsBadge--location{
+	--achievementsBadge--color: #8168BD;
+	--achievementsBadge--background-color: #F4F0FF;
+}

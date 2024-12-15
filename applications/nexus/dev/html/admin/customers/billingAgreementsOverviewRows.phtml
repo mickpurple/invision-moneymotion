@@ -1,0 +1,12 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{foreach $rows as $row}}
+	<li>
+		<a href="{url="app=nexus&module=payments&controller=billingagreements&id={$row['id']}"}" class="ipsType_blendLinks">
+			<span class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+				{$row['gw_id']}
+			</span>
+			<span class='ipsType_medium ipsType_light ipsTruncate ipsTruncate_line'>{{if $row['next_cycle']}}{lang="ba_next_cycle"} {$row['next_cycle']}{{endif}}</span>
+		</a>
+	</li>
+{{endforeach}}

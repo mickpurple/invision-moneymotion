@@ -1,0 +1,6 @@
+<ips:template parameters="$hook" />
+    <span class="ipsType_light ipsType_small">
+        {{foreach $hook->events as $badge}}
+            <span class="ipsBadge ipsBadge_normal"> {$badge}</span>
+        {{endforeach}}
+    </span>

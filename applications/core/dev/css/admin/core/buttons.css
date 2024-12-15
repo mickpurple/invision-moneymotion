@@ -1,0 +1,180 @@
+.ipsToolList {
+	margin-bottom: 15px;
+}
+
+.ipsApp .ipsButton {
+	border-radius: 5px;
+}
+
+.ipsApp .ipsButton_primary {
+	background: #0c849f;
+}
+
+.ipsApp .ipsButton_important {
+	background: #d66723;
+}
+
+.ipsApp .ipsButton_normal {
+	background: #727d8c;
+}
+
+.ipsApp .ipsButton_alternate {
+	background: #215e98;
+}
+
+.ipsApp .ipsButton_light {
+	background: #f3f6fa;
+	background: var(--c3);
+	color: var(--c7);
+}
+
+.ipsApp .ipsButton_veryLight{
+	background: var(--c2);
+	color: var(--c8);
+}
+.ipsApp .ipsButton_light,
+.ipsApp .ipsButton_veryLight,
+.acpToolbar .ipsButton_normal {
+	background-clip: padding-box;
+	border-color: rgba(24, 45, 70, 0.15);
+}
+
+	.ipsDarkMode{
+		--theme-link_button: 255,255,255;
+	}
+	.ipsDarkMode.ipsApp .ipsButton_light,
+	.ipsDarkMode.ipsApp .ipsButton_veryLight,
+	.ipsDarkMode .acpToolbar .ipsButton_normal,
+	.ipsDarkMode .acpToolbar .ipsButton_primary{
+		border-color: rgba(255,255,255,0.07);
+		background-clip: border-box;
+	}
+
+.ipsApp .ipsButton_verySmall{
+	line-height: 32px;
+}
+
+html[dir="ltr"] .ipsButtonBar.ipsPos_left .ipsButtonRow,
+html[dir="ltr"] .ipsButtonBar .ipsButtonRow:not( .ipsPos_right ) {
+	margin-left: 0;
+}
+html[dir="rtl"] .ipsButtonBar.ipsPos_left .ipsButtonRow,
+html[dir="rtl"] .ipsButtonBar .ipsButtonRow:not( .ipsPos_right ) {
+	margin-right: 0;
+}
+
+	.ipsButtonRow::before{
+		border: 1px solid var(--c9);
+	}
+
+.ipsButtonRow li > a, 
+.ipsButtonRow li > button,
+.ipsButtonRow li > span {
+	background-color: var(--c0);
+	color: var(--c4);
+}
+
+/* Reset some of the button row inside button bar styles */
+.ipsButtonBar .ipsButtonRow li > a, 
+.ipsButtonBar .ipsButtonRow li > button, 
+.ipsButtonBar .ipsButtonRow li > span {
+	background-color: transparent;
+	color: var(--c9);
+}
+
+	.ipsButtonBar .ipsButtonRow li > a:hover,
+	.ipsButtonBar .ipsButtonRow li > button:hover,
+	.ipsButtonBar .ipsButtonRow li > span:hover{
+		background-color: var(--c2);
+	}
+
+.ipsButtonRow li > a.ipsButtonRow_active, 
+.ipsButtonRow li > button.ipsButtonRow_active {
+	background-color: var(--c4) !important;
+	color: inherit;
+	font-weight: bold;
+}
+
+.ipsButtonBar {
+	background: transparent;
+	box-shadow: none;
+	border: none;
+}
+
+.ipsButtonBar ~ .ipsButtonBar{
+	border-width: 0;
+}
+
+.ipsButton_split{
+	background: #fff;
+	background: var(--c2);
+	background-clip: padding-box;
+	border: 1px solid rgba(24, 45, 70, 0.15);
+	border-radius: 5px;
+	box-shadow: rgba(44, 95, 140, 0.08) 0px 3px 4px -1px;
+	padding: 2px;
+}
+
+	.ipsDarkMode .ipsButton_split{
+		box-shadow: none;
+		border-color: rgba(255,255,255,0.1);
+		background-clip: border-box;
+	}
+
+	.ipsButton_split > *{
+		border-width: 0px !important;
+		box-shadow: none !important;
+	}
+
+	/* Remove clearfix since this is flexbox */
+	.ipsButton_split::after{
+		display: none;
+	}
+
+	.ipsButton_split .ipsButton_verySmall{
+		line-height: 28px;
+	}
+
+
+/* BUTTONS */
+.acpToolbar .ipsButton_verySmall {
+	line-height: 30px;
+}
+.acpToolbar .ipsButton_normal {
+	background: #fff;
+	background: var(--c0);
+	color: inherit;
+}
+
+.acpToolbar .ipsButton_primary {
+	background: #49bd5b;
+	color: #fff;
+}
+
+	.acpToolbar .ipsButton_primary:active {
+		box-shadow: inset rgba(0,0,0,0.1) 0px 100px 0;
+	}
+
+html[dir="ltr"] .acpToolbar > ul > li:not(:last-child) {
+	margin-right: 7px;
+}
+html[dir="rtl"] .acpToolbar > ul > li:not(:last-child) {
+	margin-left: 7px;
+}
+
+/* Fix social login buttons */
+.ipsApp .ipsSocial{
+	padding: 0 !important;
+	line-height: 40px;
+}
+
+	.ipsSocial_text{
+		line-height: inherit;
+	}
+
+/* Fix alignment when New button is next to search form at the top of tables */
+.ipsApp .acpWidgetToolbar + .acpTrees_buttons .ipsToolList{
+	margin: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+}

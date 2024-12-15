@@ -1,0 +1,22 @@
+<ips:template parameters="$message, $newMessage, $email" />
+{$email->language->addToStack("your_reply_is_pending", FALSE)}<br />
+<br />
+{{$key = md5( $message->item()->email_key . $message->date );}}
+<a href='{url="app=nexus&module=support&controller=email&do=sendDiscard&id={$message->id}&key={$key}&send=1" base="front"}' style="color: #ffffff; font-family: 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 12px; background: #417ba3; line-height: 32px; padding: 0 10px; display: inline-block; border-radius: 3px;">{$email->language->addToStack("send_it", FALSE)}</a>
+<a href='{url="app=nexus&module=support&controller=email&do=sendDiscard&id={$message->id}&key={$key}&send=0" base="front"}' style="color: #ffffff; font-family: 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 12px; background: #417ba3; line-height: 32px; padding: 0 10px; display: inline-block; border-radius: 3px;">{$email->language->addToStack("discard_it", FALSE)}</a>
+<br />
+<br />
+<table width='100%' cellpadding='15' cellspacing='0' border='0' style='background: #f5f5f5'>
+	<tr>
+		<td dir='{dir}'>
+			{$email->parseTextForEmail( $newMessage->content(), $email->language )|raw}
+		</td>
+	</tr>
+</table>
+<br />
+
+<a href='{$message->item()->acpUrl()}' style="color: #ffffff; font-family: 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 12px; background: {setting="email_color"}; line-height: 32px; padding: 0 10px; display: inline-block; border-radius: 3px;">{$email->language->addToStack("view_support_request", FALSE)}</a><br />
+
+<br />
+<br />
+<em style='color: #8c8c8c'>&mdash; {setting="board_name"}</em>

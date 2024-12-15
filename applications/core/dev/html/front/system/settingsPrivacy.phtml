@@ -1,0 +1,53 @@
+<ips:template parameters="" />
+
+{{if settings.pii_type=='on'}}
+<div class='ipsPadding'>
+    <div class='ipsClearfix'>
+		<h2 class='ipsType_sectionHead ipsType_large' id="piiDataRequest">{lang='pii_data_request'}</h2>
+		<p class='ipsType_medium'>{lang='pii_data_request_desc'}</p>
+		{{if \IPS\Member\PrivacyAction::canRequestPiiData() AND !\IPS\Member\PrivacyAction::hasPiiRequest(NULL, TRUE ) }}
+		    <a href='{url="app=core&module=system&controller=settings&do=requestPiiData" seoTemplate="settings" csrf="true"}' class='ipsButton ipsButton_verySmall ipsButton_primary'>{lang='download_pii_data_request'}</a>
+		{{endif}}
+		{{if \IPS\Member\PrivacyAction::hasPiiRequest(NULL, TRUE )}}
+			<a href='{url="app=core&module=system&controller=settings&do=downloadPiiData" seoTemplate="settings" csrf="true"}' class='ipsButton ipsButton_verySmall ipsButton_primary'>{lang='download_pii_data'}</a>
+		{{elseif  \IPS\Member\PrivacyAction::hasPiiRequest(NULL, FALSE )}}
+		<div class="ipsMessage ipsMessage_success">{lang="pii_data_request_pending"}</div>
+		{{endif}}
+    </div>
+</div>
+{{elseif settings.pii_type=='redirect'}}
+<div class='ipsPadding'>
+    <div class='ipsClearfix'>
+        <h2 class='ipsType_sectionHead ipsType_large' id="piiDataRequest">{lang='pii_data_request'}</h2>
+        <p class='ipsType_medium'>{lang='pii_data_request_desc'}</p>
+<a href='{setting="pii_link"}' target="_blank" rel="noopener"  class='ipsButton ipsButton_verySmall ipsButton_primary'>{lang='download_pii_data_request'}</a>
+</div>
+</div>
+{{endif}}
+{{if \IPS\Member::loggedIn()->canUseAccountDeletion() }}
+<div class='ipsPadding'>
+	<div class='ipsClearfix'>
+		<h2 class='ipsType_sectionHead ipsType_large' id="requestAccountDeletion">{lang='account_deletion'}</h2>
+		<p class='ipsType_medium'>{lang='account_deletion_desc'}</p>
+		{{if \IPS\Member\PrivacyAction::canDeleteAccount() AND !\IPS\Member::loggedIn()->isDeletionPending}}
+		<a href='{url="app=core&module=system&controller=settings&do=requestAccountDeletion" seoTemplate="settings" csrf="true"}' class='ipsButton ipsButton_verySmall ipsButton_primary'>{lang='request_account_deletion'}</a>
+		{{else}}
+		{{if \IPS\Member::loggedIn()->isDeletionPending}}
+		<div class='ipsMessage ipsMessage_error'>{lang="email_account_delete_warning"}<br>
+			<a href='{url="app=core&module=system&controller=settings&do=cancelAccountDeletion" seoTemplate="settings" csrf="true"}' class=''>{lang='cancel'}</a></div>
+		{{else}}
+			<div class='ipsMessage ipsMessage_error'>{lang='account_deletion_pending'}</div>
+		{{endif}}
+
+		{{endif}}
+    </div>
+</div>
+{{elseif settings.right_to_be_forgotten_type=='redirect'}}
+<div class='ipsPadding'>
+    <div class='ipsClearfix'>
+        <h2 class='ipsType_sectionHead ipsType_large' id="requestAccountDeletion">{lang='account_deletion'}</h2>
+        <p class='ipsType_medium'>{lang='account_deletion_desc'}</p>
+        <a href='{setting="right_to_be_forgotten_link"}' target="_blank" rel="noopener" class='ipsButton ipsButton_verySmall ipsButton_primary'>{lang='request_account_deletion'}</a>
+</div>
+</div>
+{{endif}}

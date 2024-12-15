@@ -1,0 +1,57 @@
+<ips:template parameters="$table, $headers, $images" />
+{{foreach $images as $image}}
+	{{$imageWidth=isset( $image->_dimensions['small'][0] ) ? $image->_dimensions['small'][0] : 0;}}
+	{{$imageHeight=isset( $image->_dimensions['small'][1] ) ? $image->_dimensions['small'][1] : 0;}}
+	<li class='iGalleryMasonry__item {{if $image->hidden()}}ipsModerated{{endif}}' {{if $imageWidth && $imageHeight}}style='--ratio:{$imageWidth}/{$imageHeight}'{{endif}}>
+		<div class='ipsImageBlock ipsImageBlock--hover'>
+			<a href="{$image->url()->setQueryString( 'context', 'new' )}" class='ipsImageBlock__main'>
+				{{if $image->media }}
+					<video loading="lazy"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{else}} preload="metadata"{{endif}}>
+						<source src="{file="$image->original_file_name" extension="gallery_Images"}{{if !$image->masked_file_name }}#t=1{{endif}}" type='{$image->file_type}' />
+					</video>
+					<div class='ipsImageBlock__video-icon'></div>
+				{{else}}
+					<img src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}" loading="lazy" />
+				{{endif}}
+            </a>
+			<div class='ipsImageBlock__header'>
+				{{if $image->hidden() === -1 || $image->hidden() === 1 || $image->mapped('pinned') || $image->mapped('featured')}}
+					<div>
+						{{if $image->hidden() === -1}}
+							<span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{$image->hiddenBlurb()}'><i class='fa fa-eye-slash'></i></span>
+						{{elseif $image->hidden() === 1}}
+							<span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa fa-warning'></i></span>
+						{{endif}}
+						{{if $image->mapped('pinned')}}
+							<span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa fa-thumb-tack'></i></span>
+						{{endif}}
+						{{if $image->mapped('featured')}}
+							<span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="featured"}'><i class='fa fa-star'></i></span>
+						{{endif}}
+					</div>
+				{{endif}}
+				{{if $table->canModerate()}}
+					<input type='checkbox' data-role='moderation' name="moderate[{$image->id}]" data-actions="{{if $image->mapped('featured')}}unfeature{{else}}feature{{endif}} {{if $image->mapped('pinned')}}unpin{{else}}pin{{endif}} {{if $image->hidden() === -1}}unhide{{elseif $image->hidden() === 1}}approve{{else}}hide{{endif}} {{if $image->mapped('locked')}}unlock{{else}}lock{{endif}} move delete" data-state='{{if $image->tableStates()}}{$image->tableStates()}{{endif}}'>
+				{{endif}}
+			</div>
+			<div class='ipsImageBlock__footer'>
+				<div class='ipsImageBlock__title'>
+					{{if $image->unread()}}
+						<span class='ipsItemStatus ipsItemStatus_small' data-ipsTooltip title='{{if $image->unread() === -1}}{lang="new"}{{else}}{lang="updated"}{{endif}}'><i class='fa fa-circle'></i></span>
+					{{endif}}
+					<a href="{$image->url()->setQueryString( 'context', 'new' )}" tabindex='-1'>{$image->caption}</a>
+				</div>
+				<div>
+					{lang="byline_nodate_itemprop" htmlsprintf="$image->author()->link( $image->warningRef() )"}
+
+					{{if $image->directContainer()->allow_comments}}
+						{{if $image->comments > 0}}
+							&middot; <span>{lang="num_comments" pluralize="$image->comments"}</span>
+						{{endif}}
+					{{endif}}
+				</div>
+			</div>
+            {template="nsfwOverlay" app="gallery" location="front" group="global" params="$image"}
+		</div>
+	</li>
+{{endforeach}}

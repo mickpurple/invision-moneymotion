@@ -1,0 +1,16 @@
+<ips:template parameters="$name, $amount=0, $unit='kg', $unlimited=NULL, $unlimitedChecked=FALSE" />
+<input type="number" name="{$name}[amount]" size="4" value="{expression="number_format( $amount, 2, '.', '' )"}" class="ipsField_short" step="0.01">
+<select name="{$name}[unit]">
+	<option value="kg" {{if $unit == 'kg'}}selected{{endif}}>{lang="kg"}</option>
+	<option value="lb" {{if $unit == 'lb'}}selected{{endif}}>{lang="lb"}</option>
+</select>
+{{if $unlimited !== NULL}}
+	&nbsp;
+	{lang="or"}
+	&nbsp;
+	<span class='ipsCustomInput'>
+		<input type="checkbox" role='checkbox' data-control="unlimited" name="{$name}[unlimited]" value="1" {{if $unlimitedChecked}}checked aria-checked='true'{{endif}} id="{$name}-unlimitedCheck">
+		<span></span>
+	</span> <label for='{$name}-unlimitedCheck' class='ipsField_unlimited'>{lang="$unlimited"}</label>
+	<br>
+{{endif}}

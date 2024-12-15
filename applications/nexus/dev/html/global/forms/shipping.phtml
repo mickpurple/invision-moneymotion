@@ -1,0 +1,51 @@
+<ips:template parameters="$name, $value, $options" />
+{{foreach $options['options'] as $id => $set}}
+	<div class="ipsGrid ipsAreaBackground_light ipsPad">
+		<div class="ipsGrid_span7">
+			<h3 class='ipsType_minorHeading'>{lang="items_in_shipment"}</h3>
+			<ul class='ipsDataList ipsDataList_reducedSpacing'>
+				{{foreach $set['items'] as $item}}
+					<li class='ipsDataItem'>
+						<div class='ipsDataItem_generic ipsDataItem_size1'>
+							{{if $image = $item->image()}}
+								<img src="{$image->url}" class='ipsImage ipsThumb_tiny'>
+							{{else}}
+								<div class='ipsNoThumb ipsNoThumb_product ipsThumb_tiny'>&nbsp;</div>
+							{{endif}}
+						</div>
+						<div class='ipsDataItem_main'>
+							<h4 class='ipsType_normal ipsType_reset'>{$item->name}</h4>
+							{{if \count( $item->details )}}
+								<span class="ipsType_light">
+									{{foreach $item->details as $k => $v}}
+										<strong>{lang="nexus_pfield_{$k}"}: </strong> {expression="\IPS\nexus\Package\CustomField::load( $k )->displayValue( $v )" raw="true"}<br>
+									{{endforeach}}
+								</span>
+							{{endif}}
+						</div>
+					</li>
+				{{endforeach}}
+			</ul>
+		</div>
+		<div class="ipsGrid_span5">
+			<h3 class='ipsType_minorHeading'>{lang="delivery_choice"}</h3>
+			<ul class="ipsField_fieldList" role="radiogroup">
+				{{foreach $set['methods'] as $k => $method}}
+					<li>
+						<span class='ipsCustomInput'>
+							<input type="radio" name="{$name}[{$id}]" value="{$k}" id='elShipping_{$id}_{$k}' {{if $value[$id] == $k}}checked{{endif}}>
+							<span></span>
+						</span>
+						<div class="ipsField_fieldList_content ipsType_break">
+							<label for="elShipping_{$id}_{$k}">
+								<span class='ipsType_medium'>
+									<strong>{{if $method->getPrice( $set['items'], $options['currency'], $options['invoice'] )->amount->isZero()}}<span class='ipsType_success'>{lang="free_shipping"}</span>{{else}}{$method->getPrice( $set['items'], $options['currency'], $options['invoice'] )}{{endif}}</strong> - {$method->getName()}{{if $estimatedDeliveryTime = $method->getEstimatedDelivery( $set['items'], $options['invoice'] )}} <span class='ipsType_light'>({$estimatedDeliveryTime})</span>{{endif}}
+								</span>
+							</label>
+						</div>
+					</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	</div>
+{{endforeach}}

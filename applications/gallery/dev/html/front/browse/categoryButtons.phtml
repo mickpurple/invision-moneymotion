@@ -1,0 +1,28 @@
+<ips:template parameters="$canSubmitImages, $currentCategory=NULL, $currentAlbum=NULL" />
+<li class='ipsToolList_primaryAction'>
+	<a class="ipsButton ipsButton_medium ipsButton_important ipsButton_fullWidth" data-ipsDialog data-ipsDialog-close='false' data-ipsDialog-size='medium' data-ipsDialog-extraClass='cGalleryDialog_outer' data-ipsDialog-destructOnClose='true' data-ipsDialog-remoteSubmit='true' {{if $currentAlbum}}href="{url="app=gallery&module=gallery&controller=submit&category={$currentCategory->id}&album={$currentAlbum->id}&_new=1" seoTemplate="gallery_submit"}" {{elseif $currentCategory}} href="{url="app=gallery&module=gallery&controller=submit&category={$currentCategory->id}&_new=1" seoTemplate="gallery_submit"}" {{else}} href="{url="app=gallery&module=gallery&controller=submit&_new=1" seoTemplate="gallery_submit"}" {{endif}} rel='nofollow noindex'>{lang="add_gallery_image"}</a>
+</li>
+
+{{if $currentCategory AND $currentCategory->cover_img_id AND \IPS\gallery\Image::modPermission( 'edit', \IPS\Member::loggedIn(), $currentCategory )}}
+	<li>
+		<a href="{$currentCategory->url()->setQueryString( array( 'do' => 'unsetCoverPhoto' ) )->csrf()}" title='{lang="gallery_unset_cover"}' class='ipsButton ipsButton_medium ipsButton_fullWidth ipsButton_link'>{lang="gallery_unset_cover"}</a>
+	</li>
+{{endif}}
+
+{{if !$currentCategory}}
+    <li>
+        <ul class="ipsButton_split">
+            <li>
+                <a href="{url="app=gallery" seoTemplate="gallery"}" class="ipsButton{{if !request.do=='categories'}} ipsButton_primary{{else}} ipsButton_veryLight{{endif}} ipsButton_narrow ipsButton_medium" data-ipstooltip="" data-ipstooltip-safe="" title="{lang="gallery_overview"}" rel="nofollow">
+                <i class="fa fa-align-justify"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{url="app=gallery&module=gallery&controller=browse&do=categories" seoTemplate="gallery_categories"}" class="ipsButton{{if request.do=='categories'}} ipsButton_primary{{else}} ipsButton_veryLight{{endif}} ipsButton_narrow ipsButton_medium" data-ipstooltip="" data-ipstooltip-safe="" title="{lang="gallery_view_categories"}" rel="nofollow">
+                    <i class="fa fa-folder-open"></i>
+                </a>
+            </li>
+
+        </ul>
+    </li>
+{{endif}}

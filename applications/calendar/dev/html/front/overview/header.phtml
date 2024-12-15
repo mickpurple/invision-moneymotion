@@ -1,0 +1,74 @@
+<ips:template parameters="$date, $thisCalendar=NULL, $downloadLinks=NULL" />
+
+<div class="ipsPageHeader ipsMargin_bottom">
+    <div class="ipsFlex ipsFlex-ai:center ipsFlex-jc:between ipsGap:3 sm:ipsFlex-fd:column">
+        <h1 class="ipsType_pageTitle">{lang="frontnavigation_calendar"}</h2>
+        <ul class="ipsToolList ipsToolList_horizontal ipsClearfix">
+            <li class="ipsToolList_primaryAction">
+                {{if \IPS\Application::appIsEnabled('cloud') and \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'cloud', 'livetopics' ) ) and \IPS\cloud\LiveTopic::canCreate( \IPS\Member::loggedIn() )}}
+                    <a href="#elEventCreate_menu" id="elEventCreate" class="ipsButton ipsButton_medium ipsButton_important" data-ipsMenu>{lang="livetopic_create_event"} <i class="fa fa-caret-down"></i></a>
+                    <ul id="elEventCreate_menu" class="ipsMenu ipsMenu_normal ipsHide">
+                        <li class="ipsMenu_item" data-menuItem="livetopic">
+                            {{if !\IPS\Settings::i()->club_nodes_in_apps and $theOnlyNode = \IPS\calendar\Calendar::theOnlyNode() }}
+                            <a class="ipsMenu_link" href="{url="app=calendar&module=calendar&controller=submit&do=livetopic&id={$theOnlyNode->_id}" seoTemplate="calendar_submit"}">{lang="event_create_livetopic"}</a>
+                            {{elseif ( $thisCalendar AND $thisCalendar->can('add') )}}
+                            <a class="ipsMenu_link" href='{url="app=calendar&module=calendar&controller=submit&do=livetopic&id={$thisCalendar->_id}" seoTemplate="calendar_submit"}' data-ipsTooltip title='{lang="add_event"}'>{lang="event_create_livetopic"}</a>
+                            {{elseif \IPS\calendar\Calendar::canOnAny('add')}}
+                            <a class="ipsMenu_link" href="{url="app=calendar&module=calendar&controller=submit&do=livetopic" seoTemplate="calendar_submit"}">{lang="event_create_livetopic"}</a>
+                            {{endif}}
+                        </li>
+                        <li class="ipsMenu_item" data-menuItem="event">
+                            {{if !\IPS\Settings::i()->club_nodes_in_apps and $theOnlyNode = \IPS\calendar\Calendar::theOnlyNode() }}
+                            <a class="ipsMenu_link" href="{url="app=calendar&module=calendar&controller=submit&do=submit&id={$theOnlyNode->_id}" seoTemplate="calendar_submit"}">{lang="event_create_normal"}</a>
+                            {{elseif ( $thisCalendar AND $thisCalendar->can('add') )}}
+                            <a class="ipsMenu_link" href='{url="app=calendar&module=calendar&controller=submit&do=submit&id={$thisCalendar->_id}" seoTemplate="calendar_submit"}' data-ipsTooltip title='{lang="add_event"}'>{lang="event_create_normal"}</a>
+                            {{elseif \IPS\calendar\Calendar::canOnAny('add')}}
+                            <a class="ipsMenu_link" href="{url="app=calendar&module=calendar&controller=submit" seoTemplate="calendar_submit"}" data-ipsdialog="" data-ipsdialog-size="narrow" data-ipsdialog-title="{lang="select_calendar"}">{lang="event_create_normal"}</a>
+                            {{endif}}
+                        </li>
+                    </ul>
+                {{else}}
+                    {{if !\IPS\Settings::i()->club_nodes_in_apps and $theOnlyNode = \IPS\calendar\Calendar::theOnlyNode() }}
+                        <a class="ipsButton ipsButton_medium ipsButton_important" href="{url="app=calendar&module=calendar&controller=submit&do=submit&id={$theOnlyNode->_id}" seoTemplate="calendar_submit"}">{lang="create_event"}</a>
+                    {{elseif ( $thisCalendar AND $thisCalendar->can('add') )}}
+                        <a class="ipsButton ipsButton_medium ipsButton_important" href='{url="app=calendar&module=calendar&controller=submit&do=submit&id={$thisCalendar->_id}" seoTemplate="calendar_submit"}' data-ipsTooltip title='{lang="add_event"}'>{lang="create_event"}</a>
+                    {{elseif \IPS\calendar\Calendar::canOnAny('add')}}
+                        <a class="ipsButton ipsButton_medium ipsButton_important" href="{url="app=calendar&module=calendar&controller=submit" seoTemplate="calendar_submit"}" data-ipsdialog="" data-ipsdialog-size="narrow" data-ipsdialog-title="{lang="select_calendar"}">{lang="create_event"}</a>
+                    {{endif}}
+                {{endif}}
+            </li>
+            {{if request.view=='overview'}}
+                <li>
+                    <a href='#elCalendarSettings_menu' id='elCalendarSettings' data-ipsMenu data-ipsMenu-alignCenter class='ipsButton ipsButton_veryLight ipsButton_medium'>{lang="subscribe_button"} <i class='fa fa-caret-down'></i></a>
+                </li>
+            {{endif}}
+            <li>
+                <ul class="ipsButton_split">
+                    {{if !$thisCalendar or !(\IPS\IPS::classUsesTrait( $thisCalendar, 'IPS\Content\ClubContainer' ) AND $thisCalendar->club() )}}
+                    <li>
+                        <a href="{url="app=calendar&module=calendar&controller=view&view=overview" seoTemplate="calendar"}" class="ipsButton{{if request.view=='overview'}} ipsButton_primary{{else}} ipsButton_veryLight{{endif}} ipsButton_narrow ipsButton_medium" data-ipstooltip="" data-ipstooltip-safe="" title="{lang="event_view_overview"}" rel="nofollow">
+                            <i class="fa fa-align-justify"></i>
+                        </a>
+                    </li>
+                    {{endif}}
+                    <li>
+                        <a href="{{if $thisCalendar}}{url="app=calendar&module=calendar&controller=view&view=month&y={$date->year}&m={$date->mon}&id={$thisCalendar->_id}" seoTemplate="calendar_month"}{{else}}{url="app=calendar&module=calendar&controller=view&view=month&y={$date->year}&m={$date->mon}" seoTemplate="calendar_month"}{{endif}}" class="ipsButton{{if request.view=='month'}} ipsButton_primary{{else}} ipsButton_veryLight{{endif}} ipsButton_narrow ipsButton_medium" data-ipstooltip="" data-ipstooltip-safe="" title="{lang="event_view_monthly"}" rel="nofollow">
+                            <i class="fa fa-calendar"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{if $thisCalendar}}{url="app=calendar&module=calendar&controller=view&view=week&w={$date->year}-{$date->mon}-{$date->mday}&id={$thisCalendar->_id}" seoTemplate="calendar_week"}{{else}}{url="app=calendar&module=calendar&controller=view&view=week&w={$date->year}-{$date->mon}-{$date->mday}" seoTemplate="calendar_week"}{{endif}}" class="ipsButton{{if request.view=='week'}} ipsButton_primary{{else}} ipsButton_veryLight{{endif}} ipsButton_narrow ipsButton_medium" data-ipstooltip="" data-ipstooltip-safe="" title="{lang="event_view_weekly"}" rel="nofollow">
+                            <i class="fa fa-calendar-minus-o"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{if $thisCalendar}}{url="app=calendar&module=calendar&controller=view&view=day&y={$date->year}&m={$date->mon}&d={$date->mday}&id={$thisCalendar->_id}" seoTemplate="calendar_day"}{{else}}{url="app=calendar&module=calendar&controller=view&view=day&y={$date->year}&m={$date->mon}&d={$date->mday}" seoTemplate="calendar_day"}{{endif}}" class="ipsButton{{if request.view=='day'}} ipsButton_primary{{else}} ipsButton_veryLight{{endif}} ipsButton_narrow ipsButton_medium" data-ipstooltip="" data-ipstooltip-safe="" title="{lang="event_view_daily"}" rel="nofollow">
+                            <i class="fa fa-calendar-o"></i>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+{template="subscribeMenu" app="calendar" group="global" params="$thisCalendar, $downloadLinks"}

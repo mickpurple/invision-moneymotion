@@ -1,0 +1,20 @@
+<ips:template parameters="$mr, $query" />
+<div data-controller="core.admin.system.upgradeManualQuery" data-url="{url="app=core&module=system&controller=upgrade&mr={$mr}&runQuery=1"}">
+	<div class="ipsPad">
+		<div class="ipsSpacer_bottom">
+			<h2 class='ipsType_sectionHead'>{lang="download_upgrade_error"}</h2>
+		</div>
+		<p class="ipsType_normal ipsType_reset ipsSpacer_bottom">{lang="upgrade_delta_manual_query"}</p>
+		<div class="ipsCode ipsSpacer_bottom" data-ipsCopy>
+			<code class="prettyprint lang-sql" data-role="copyTarget">{$query}</code>
+			<button type="button" class="ipsButton ipsButton_light ipsButton_veryVerySmall ipsPos_right ipsHide" data-role="copyButton" data-clipboard-text="{$query}">{lang="copy"}</button>
+		</div>
+	</div>
+	<div class="ipsAreaBackground_light ipsClearfix ipsPad ipsType_center" data-role="querySuccessButtons">
+		<a href="{url="app=core&module=system&controller=upgrade&mr={$mr}&query_has_been_ran=1"}" class="ipsButton ipsButton_primary" data-action="redirectContinue">{lang="upgrade_delta_manual_query_done"}</a>
+		<div class="ipsHide" data-role="runManualButton">
+			&nbsp; {lang="or"} &nbsp;
+			<button type="button" class="ipsButton ipsButton_alternate" data-action="runQuery">{lang="upgrade_delta_manual_query_auto"}</button>
+		</div>
+	</div>
+</div>

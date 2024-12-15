@@ -1,0 +1,233 @@
+<ips:template parameters="" />
+<!DOCTYPE html>
+<html lang="{expression="\IPS\Member::loggedIn()->language()->bcp47()"}" dir="{{if member.language()->isrtl}}rtl{{else}}ltr{{endif}}">
+	<head>
+		<title>{lang="you_are_offline"} - {expression="\IPS\Settings::i()->board_name"}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+			:root {
+				/* Master scales & styles */
+				--sp-1: 4px;
+				--sp-2: 8px;
+				--sp-3: 12px;
+				--sp-4: 16px;
+				--sp-5: 20px;
+				--sp-6: 24px;
+				--sp-7: 32px;
+				--sp-8: 40px;
+				--sp-9: 48px;
+				--sp-10: 64px;
+
+				/* Border vars */
+				--radius-1: 4px;
+				--radius-2: 8px;
+				--border-1px: 1px solid rgba( var(--theme-text_light), 0.15 );
+
+				/* Variables used for specific contexts */
+				--box--boxShadow: 0px 2px 4px -1px rgba( var(--theme-area_background_dark), 0.1 );
+				--box--backgroundColor: rgb( var(--theme-area_background_reset) );
+				--box--radius: var(--radius-1);
+				--solved--borderColor: 44, 140, 105;
+				
+
+				/* Nav sizes */
+				--header--height: {theme="header_height"}px;
+				--responsive-header--height: {theme="header_height_mobile"}px;
+				--logo--height: {theme="logo_height"}%;
+				--responsive-logo--height: var(--logo--height);
+				--primary-navigation--height: 52px;
+				--secondary-navigation--height: 50px;
+
+				/* Button styles */
+				--button--radius: var(--radius-1);
+
+				/* Page widths */
+				--container--width: 1340px;
+				--minimal_container--width: 1000px;
+				
+				/* Theme settings */
+				/* Format is --theme-[setting-key] */
+			{expression="\IPS\Theme::i()->css_vars"}
+
+			}
+
+			@-webkit-viewport { width: device-width; }
+			@-moz-viewport { width: device-width; }
+			@-ms-viewport { width: device-width; }
+			@-o-viewport { width: device-width; }
+			@viewport { width: device-width; }
+
+			*{
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			}
+
+			html {
+				min-height: 100%;
+				position: relative;
+			}
+
+			body {
+				font-family: {{if theme.body_font != 'default'}}"{theme="body_font"}",{{endif}} -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+				font-size: 16px;
+				line-height: 1.5;
+				color: rgb( var(--theme-text_color) );
+				height: 100%;
+				background-color: rgb( var(--theme-page_background) );
+				margin: 0;
+			}
+
+			.ipsLayout_container {
+				{{if theme.enable_fluid_width}}
+					{{if theme.fluid_width_size}}
+						max-width: {theme="fluid_width_size"}%;
+					{{else}}
+						max-width: 100%;
+					{{endif}}
+				{{else}}
+					max-width: var(--container--width);
+				{{endif}}
+				padding: 0 15px;
+				margin: 0 auto;
+				position: relative;
+			}
+
+			/* ======================================================== */
+			/* TYPOGRAPHY */
+			.ipsType_reset {
+				margin: 0;
+			}
+
+			.ipsType_pageTitle,
+			.ipsType_sectionHead {
+				{{if theme.headline_font != 'default'}}
+					font-family: "{theme="headline_font"}", "Helvetica Neue", Helvetica, Arial, sans-serif;
+				{{endif}}
+			}
+
+			/* ======================================================== */
+			/* Page title: the large text shown at the top of pages */
+			.ipsType_pageTitle {
+				font-size: {fontsize="2x_large"};
+				font-weight: bold;
+				line-height: 1.2;
+				letter-spacing: -.02em;
+				margin: 0;
+				color: rgb( var(--theme-text_dark) );
+			}
+
+			/* ======================================================== */
+			/* Section heading: a text-based heading for smaller sections */
+			.ipsType_sectionHead {
+				font-size: {fontsize="large"};
+				color: rgb( var(--theme-text_dark) );
+				line-height: {fontsize="2x_large"};
+				font-weight: bold;
+				display: inline-block;
+				margin: 0;
+			}
+
+			/* ======================================================== */
+			/* BOX STYLES */
+			.ipsBox {
+				box-shadow: var(--box--boxShadow);
+				border-radius: var(--box--radius);
+				background-color: var(--box--backgroundColor);
+			}
+
+			/* ======================================================== */
+			/* BASE BUTTONS */
+			.ipsApp .ipsButton {
+				font-size: {fontsize="medium"};
+				font-weight: 400;
+				text-align: center;
+				text-decoration: none;
+				text-shadow: none;
+				white-space: nowrap;
+				display: inline-block;
+				vertical-align: middle;
+				padding: 10px 20px;
+				border-radius: var(--button--radius);
+				border: 1px solid transparent;
+				transition: 0.1s all linear;
+				cursor: pointer;
+				{prefix="user-select" value="none"}
+				max-width: 100%;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+				.ipsApp .ipsButton:hover:not(:active) {
+					background-image: linear-gradient(to bottom, rgba(255,255,255,0.08) 0%,rgba(255,255,255,0.08) 100%);
+				}
+
+				.ipsApp .ipsButton:active {
+					border-color: rgba(0,0,0,0.1);
+					background-image: linear-gradient(to bottom, rgba( var(--theme-text_dark), 0.1 ) 0%, rgba( var(--theme-text_dark), 0.1 ) 100%);
+				}
+				
+				.ipsApp .ipsButton_important {
+					font-weight: 500;
+					background: rgb( var(--theme-important_button) );
+					color: rgb( var(--theme-important_button_font) );
+				}
+
+				.ipsApp .ipsButton_medium {
+					font-size: {fontsize="medium"};
+					line-height: 3;
+					padding: 0 20px;
+				}
+
+				.ipsApp .ipsButton_fullWidth {
+					display: block;
+					width: 100%;
+					text-overflow: ellipsis;
+					overflow: hidden;
+				}
+
+			/* ======================================================== */
+			/* HORIZONTAL RULE */
+			hr.ipsHr {
+				margin: 15px 0;
+				height: 0;
+				padding: 0;
+				border: 1px solid rgba( var(--theme-text_color), 0.08 );
+				border-width: 1px 0 0 0;
+			}
+
+			/* ======================================================== */
+			/* OFFLINE SPECIFIC */
+			.cOfflineBox {
+				margin: var(--sp-8) auto 0;
+				max-width: 475px;
+				padding: var(--sp-5);
+			}
+		</style>
+		<link rel='shortcut icon' href='data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0iIzMzMzMzMyI+PHBhdGggZD0iTSAxNSAzIEMgMTQuMTY4NDMyIDMgMTMuNDU2MDYzIDMuNTA2NzIzOCAxMy4xNTQyOTcgNC4yMjg1MTU2IEwgMi4zMDA3ODEyIDIyLjk0NzI2NiBMIDIuMzAwNzgxMiAyMi45NDkyMTkgQSAyIDIgMCAwIDAgMiAyNCBBIDIgMiAwIDAgMCA0IDI2IEEgMiAyIDAgMCAwIDQuMTQwNjI1IDI1Ljk5NDE0MSBMIDQuMTQ0NTMxMiAyNiBMIDE1IDI2IEwgMjUuODU1NDY5IDI2IEwgMjUuODU5Mzc1IDI1Ljk5MjE4OCBBIDIgMiAwIDAgMCAyNiAyNiBBIDIgMiAwIDAgMCAyOCAyNCBBIDIgMiAwIDAgMCAyNy42OTkyMTkgMjIuOTQ3MjY2IEwgMjcuNjgzNTk0IDIyLjkxOTkyMiBBIDIgMiAwIDAgMCAyNy42ODE2NDEgMjIuOTE3OTY5IEwgMTYuODQ1NzAzIDQuMjI4NTE1NiBDIDE2LjU0MzkzNyAzLjUwNjcyMzggMTUuODMxNTY4IDMgMTUgMyB6IE0gMTMuNzg3MTA5IDExLjM1OTM3NSBMIDE2LjIxMjg5MSAxMS4zNTkzNzUgTCAxNi4wMTE3MTkgMTcuODMyMDMxIEwgMTMuOTg4MjgxIDE3LjgzMjAzMSBMIDEzLjc4NzEwOSAxMS4zNTkzNzUgeiBNIDE1LjAwMzkwNiAxOS44MTA1NDcgQyAxNS44MjU5MDYgMTkuODEwNTQ3IDE2LjMxODM1OSAyMC4yNTI4MTMgMTYuMzE4MzU5IDIxLjAwNzgxMiBDIDE2LjMxODM1OSAyMS43NDg4MTIgMTUuODI1OTA2IDIyLjE4OTQ1MyAxNS4wMDM5MDYgMjIuMTg5NDUzIEMgMTQuMTc1OTA2IDIyLjE4OTQ1MyAxMy42Nzk2ODggMjEuNzQ4ODEzIDEzLjY3OTY4OCAyMS4wMDc4MTIgQyAxMy42Nzk2ODggMjAuMjUyODEzIDE0LjE3NDkwNiAxOS44MTA1NDcgMTUuMDAzOTA2IDE5LjgxMDU0NyB6IiBmaWxsPSIjMzMzMzMzIi8+PC9zdmc+Cg==' type="image/svg+xml">
+	</head>
+	<body class='ipsApp ipsApp_front ipsClearfix ipsLayout_noBackground ipsClearfix'>
+		<div class='ipsLayout_container'>
+
+			<div class='cOfflineBox ipsBox'>
+				<h1 class='ipsType_pageTitle'>{expression="\IPS\Settings::i()->board_name"}</h1>
+				
+				<hr class='ipsHr'>
+
+				<h2 class='ipsType_sectionHead'>{lang="user_offline_title"}</h2>
+				<p>
+					{lang="user_offline_1"}
+				</p>
+				<p>
+					{lang="user_offline_2"}
+				</p>
+
+				<hr class='ipsHr'>
+
+				<button onclick="javascript: window.location.reload()" class='ipsButton ipsButton_important ipsButton_medium ipsButton_fullWidth'>
+					{lang="offline_try_again"}
+				</button>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,12 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{foreach $rows as $row}}
+	<li>
+		<p class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+			{$row['member_id']|raw}
+		</p>
+		<span class='ipsType_medium ipsType_light'>
+			{$row['email']}
+		</span>
+	</li>
+{{endforeach}}

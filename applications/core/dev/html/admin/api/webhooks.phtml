@@ -1,0 +1,72 @@
+<ips:template parameters="$webhooks" />
+
+<div class='ipsPad_half'>
+	<div class='acpBlock'>
+	    <div class='ipsTabs ipsClearfix' id='tabs_hooks' data-ipsTabBar data-ipsTabBar-contentArea='#elWebhookReference' data-ipstabbar-updateurl="false">
+	        <a href='#tabs_hooks' data-action='expandTabs'><i class='icon-caret-down'></i></a>
+	        <ul role='tablist'>
+	            {{foreach $webhooks as $app => $appWebhooks}}
+	            {{if \count($appWebhooks)}}
+	            <li role='presentation'>
+	                <a href='#ipsTabs_tabs_hooks_elTab_{$app}_panel' role='tab' id='elTab_{$app}' class='ipsTabs_item' aria-selected="true">
+	                    {lang="__app_{$app}"}
+	                </a>
+	            </li>
+	            {{endif}}
+	            {{endforeach}}
+	        </ul>
+	    </div>
+	
+	    <section id='elWebhookReference' class='acpFormTabContent'>
+	        {{foreach $webhooks as $app => $appWebhooks}}
+	        {{$additionalClasses = [];}}
+	        {{if \count($appWebhooks)}}
+	            <div id='ipsTabs_tabs_hooks_elTab_{$app}_panel' class="ipsTabs_panel" aria-labelledby="elTab_{$app}" aria-hidden="false">
+	                <div class="ipsPad">
+	                    {{foreach $appWebhooks as $key => $data}}
+	                    <div class="ipsPadding_top">
+	                        <h2 class="ipsType_sectionHead ipsType_center">{$key}</h2>
+	                        <hr class="ipsHr">
+	                        <p class="ipsType_normal">{{if \IPS\Member::loggedIn()->language()->checkKeyExists( "webhook_" . $key ) }}{lang="webhook_{$key}"}{{endif}}</p>
+	                        <hr class="ipsHr">
+	                        <p class="ipsType_bold ipsSpacer_bottom ipsSpacer_half">{lang="webhook_payload"}</p>
+	
+	                        {{if \is_string($data)}}
+	                        {{$additionalClasses[$data] = \IPS\Api\DocumentationHelper::getDescriptionForClass($data);}}
+                            {{foreach \IPS\Api\DocumentationHelper::getAdditionalClasses($data) as $c}}
+                                {{$additionalClasses[$c] = \IPS\Api\DocumentationHelper::getDescriptionForClass($c);}}
+                            {{endforeach}}
+
+	                        <pre><a href="#object-{expression="mb_strtolower( mb_substr( $data, mb_strrpos( $data, '\\' ) + 1 ) )"}">{$data}</a></pre>
+	                        {{else}}
+	                        <table class="ipsTable">
+	                            <thead><tr><th>{lang="webhook_key"}</th><th>{lang="webhook_description"}</th></tr></thead>
+	                            {{if \is_array($data)}}
+	                            {{foreach $data as $k => $v}}
+	                            <tr>
+	                                <td>{$k}</td>
+	                                <td>{$v}</td>
+	                            </tr>
+	                            {{endforeach}}
+	                            {{endif}}
+	                        </table>
+	                        {{endif}}
+	                    </div>
+	                    <hr class="ipsHr_thick">
+	                    {{endforeach}}
+	                </div>
+	                <div class="ipsPad">
+	                    <h2>{lang="webhook_class_payload"}</h2>
+                        {{foreach $additionalClasses as $class => $data}}
+                            <a id="object-{expression="mb_strtolower( mb_substr( $class, mb_strrpos( $class, '\\' ) + 1 ) )"}"></a>
+                            <h3 class="ipsType_sectionHead ipsSpacer_bottom ipsSpacer_half ipsType_blendLinks"><code>{$class}</code> {lang="api_object"}</h3>
+                            {$data|raw}
+                            <hr class='ipsHr'>
+                        {{endforeach}}
+	                </div>
+	            </div>
+	        {{endif}}
+	        {{endforeach}}
+	    </section>
+	</div>
+</div>

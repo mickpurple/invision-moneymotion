@@ -1,0 +1,10 @@
+<ips:template parameters="$file" />
+{{if member.member_id and $file->author()->member_id !== \IPS\Member::loggedIn()->member_id}}
+<div data-controller='downloads.front.view.subscribe'>
+	{{if $file->subscribed()}}
+		<a class="ipsButton ipsButton_primary ipsButton_verySmall ipsButton_fullWidth ipsType_light" data-action="subscribe" data-ipsHover data-ipsHover-target="{$file->url()->setQueryString( array( 'do' => 'subscribeBlurb' ) )}" href="{url="app=downloads&module=downloads&controller=view&id={$file->id}&do=toggleSubscription" csrf="true"}" class="ipsType_blendLinks ipsType_noUnderline">{lang="file_unsubscribe"}</i></a>
+	{{else}}
+		<a class="ipsButton ipsButton_link ipsButton_verySmall ipsButton_fullWidth" data-action="subscribe" data-ipsHover data-ipsHover-target="{$file->url()->setQueryString( array( 'do' => 'subscribeBlurb' ) )}" href="{url="app=downloads&module=downloads&controller=view&id={$file->id}&do=toggleSubscription" csrf="true"}" class="ipsType_blendLinks ipsType_noUnderline">{lang="file_subscribe"}</a>
+	{{endif}}
+</div>
+{{endif}}

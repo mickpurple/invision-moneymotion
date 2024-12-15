@@ -1,0 +1,119 @@
+<ips:template parameters="$field, $types, $number, $expMonth, $expYear, $ccv, $storedCards" />
+<div {{if $field->htmlId}}id="{$field->htmlId}"{{endif}} class=''>
+	{{if $field->options['attr']}}
+		<div {{foreach $field->options['attr'] as $k => $v}}{$k}="{$v}"{{endforeach}}>
+	{{endif}}
+	{{if $field->options['jsRequired']}}
+		<div class="ipsJS_hide" data-role="error">
+			<div class="ipsMessage ipsMessage_error" data-role="errorMessage">{lang="card_requires_js"}</div>
+		</div>
+	{{endif}}
+	<div class="ipsJS_show ipsBox ipsPad" data-role="paymentMethodForm">
+		<div {{if $field->options['loading'] and !\count( $storedCards )}}class="ipsLoading ipsFaded ipsFaded_more"{{endif}}>
+			{{if \count( $storedCards )}}
+					<div class='ipsFieldRow ipsSpacer_half'>
+						<ul class='ipsFieldRow_content ipsField_fieldList'>
+							{{$j = 0;}}
+							{{foreach $storedCards as $i => $card}}
+								<li>
+									<input type='radio' name="{$field->name}[stored]" value="{$card->id}" id="{$field->name}_stored{$i}" {{if $j === 0}}checked{{endif}}>
+									<div class='ipsField_fieldList_content'>
+										<label for='{$field->name}_stored{$i}'><span class='ipsType_light'>xxxx</span>{$card->card->lastFour}</label><br>
+										<span class='ipsFieldRow_desc'>{{if $card->card->type}}{lang="card_type_{$card->card->type}"}{{endif}} {{if $card->card->expMonth}}{lang="card_expires_lc"} {$card->card->expMonth}/{$card->card->expYear}{{endif}}</span>
+									</div>
+								</li>
+								{{$j++;}}
+							{{endforeach}}
+							<li>
+								<input type='radio' name="{$field->name}[stored]" value="0" id="{$field->name}_stored0" data-control="toggle" data-toggles="{$field->name}_new">
+								<div class='ipsField_fieldList_content'>
+									<label for='{$field->name}_stored0'>{lang="use_new_card"}</label><br>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div id='{$field->name}_new' class="ipsHide">
+						<hr class='ipsHr'>
+			{{endif}}
+			{{if \count( $types )}}
+				<ul class='ipsList_inline ipsList_noSpacing ipsSpacer_bottom cPayment_cardTypeList'>
+					{{foreach $types as $key => $lang}}
+						<li><span class='cPayment cPayment_{$key}'>{lang="$lang"}</span></li>
+					{{endforeach}}
+				</ul>
+			{{endif}}
+			<div class='ipsFieldRow {{if $field->error == 'card_number_invalid'}}ipsFieldRow_error{{endif}}'>
+				<label class='ipsFieldRow_label' for='elInput_{$field->htmlId}-number'>
+					{lang="card_number"} <span class='ipsFieldRow_required'>{lang="required"}</span>
+				</label>
+				<div class='ipsFieldRow_content'>
+					{{if $field->options['dummy']}}
+						<div class="ipsField_dummy ipsField_fullWidth ipsField_primary" id="elInput_{$field->htmlId}-number" data-role="dummyCard"></div>
+					{{else}}
+						<input type="text" class='ipsField_fullWidth ipsField_primary' {{if $field->options['names']}}name="{$field->name}[number]"{{endif}} data-card="number" id="elInput_{$field->htmlId}-number" maxlength="16" value="{$number}" autocomplete="cc-number">
+						<br>
+					{{endif}}
+					<span class="ipsType_warning" data-warning="number">{{if $field->error and !\in_array( $field->error, array( 'card_expire_expired', 'ccv_invalid', 'ccv_invalid_3', 'ccv_invalid_4' ) )}}{lang="$field->error"}{{endif}}</span>
+				</div>
+			</div>
+			<div class='ipsGrid ipsSpacer_bottom'>
+				<div class='ipsGrid_span7 cNexusCard_expiry'>
+					<div class='ipsFieldRow {{if $field->error == 'card_expire_expired'}}ipsFieldRow_error{{endif}}'>
+						<label class='ipsFieldRow_label' for='elInput_{$field->htmlId}-exp_month'>
+							{lang="card_expire"} <span class='ipsFieldRow_required'>{lang="required"}</span>
+						</label>
+						<div class='ipsFieldRow_content'>
+							{{if $field->options['dummy']}}
+								<div class="ipsField_dummy" id="elInput_{$field->htmlId}-exp" data-role="dummyExp"></div>
+							{{else}}
+								<select {{if $field->options['names']}}name="{$field->name}[exp_month]"{{endif}} data-card="exp_month" id="elInput_{$field->htmlId}-exp_month" autocomplete="cc-exp-month">
+									<option {{if $expMonth === NULL}}selected{{endif}} disabled>MM</option>
+									{{foreach range( 1, 12 ) as $m}}
+										<option value="{$m}" {{if $expMonth === $m}}selected{{endif}}>{expression="str_pad( $m, 2, '0', STR_PAD_LEFT )"}</option>
+									{{endforeach}}
+								</select>
+								<select {{if $field->options['names']}}name="{$field->name}[exp_year]"{{endif}} data-card="exp_year" id="elInput_{$field->htmlId}-exp_year" autocomplete="cc-exp-year">
+									<option {{if $expYear === NULL}}selected{{endif}} disabled>YYYY</option>
+									{{foreach range( date('Y'), date('Y') + 10 ) as $y}}
+										<option value="{$y}" {{if $expYear === $y}}selected{{endif}}>{$y}</option>
+									{{endforeach}}
+								</select>
+								<br>
+							{{endif}}
+						</div>
+						<span class="ipsType_warning" data-warning="exp">{{if $field->error == 'card_expire_expired'}}{lang="$field->error"}{{endif}}</span>
+					</div>
+				</div>
+				<div class='ipsGrid_span5'>
+					<div class='ipsFieldRow {{if $field->error == 'ccv_invalid' or $field->error == 'ccv_invalid_3' or $field->error == 'ccv_invalid_4'}}ipsFieldRow_error{{endif}}'>
+						<label class='ipsFieldRow_label' for='elInput_{$field->htmlId}-number'>
+							<span title="{{if array_key_exists( \IPS\nexus\CreditCard::TYPE_AMERICAN_EXPRESS, $types )}}{lang="card_ccv_desc"}{{else}}{lang="card_ccv_desc_no_amex"}{{endif}}" data-ipsTooltip>{lang="card_ccv"}</span>  <span class='ipsFieldRow_required'>{lang="required"}</span>
+						</label>
+						<div class='ipsFieldRow_content'>
+							{{if $field->options['dummy']}}
+								<div class="ipsField_dummy" id="elInput_{$field->htmlId}-ccv" data-role="dummyCcv"></div>
+							{{else}}
+								<input type="text" size='4' {{if $field->options['names']}}name="{$field->name}[ccv]"{{endif}} data-card="ccv" id="elInput_{$field->htmlId}-ccv" maxlength="4" value="{$ccv}" autocomplete="cc-csc">
+							{{endif}}
+						</div>
+						<span class="ipsType_warning" data-warning="ccv">{{if $field->error == 'ccv_invalid' or $field->error == 'ccv_invalid_3' or $field->error == 'ccv_invalid_4'}}{lang="$field->error"}{{endif}}</span>
+					</div>
+				</div>
+			</div>
+			{{if $field->options['save']}}
+				<div class='ipsFieldRow ipsFieldRow_checkbox'>
+					<input type='checkbox' name="{$field->name}[save]" value="1" id='el{$field->name}Save' checked> 
+					<div class='ipsFieldRow_content'>
+						<label for='el{$field->name}Save'>{lang="card_save"}</label>
+					</div>
+				</div>
+			{{endif}}
+			{{if \count( $storedCards )}}
+				</div>
+			{{endif}}
+		</div>
+	</div>
+	{{if $field->options['attr']}}
+		</div>
+	{{endif}}
+</div>

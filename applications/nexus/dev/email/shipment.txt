@@ -1,0 +1,18 @@
+<ips:template parameters="$shipment, $email" />
+
+{$email->language->addToStack("email_shipment_done", FALSE, array( 'htmlsprintf' => array( $shipment->invoice->id ) ) )}
+
+-- {setting="board_name"}
+
+====={{$data = $shipment->data;}}
+
+{$email->language->addToStack("email_shipping_to", FALSE)}:
+{$data['cm_first_name']} {$data['cm_last_name']}
+{$shipment->address()->toString("\n")|raw}
+{{if $shipment->method}}
+{$email->language->addToStack("email_shipping_method", FALSE)}: {$email->language->addToStack( $shipment->method->_titleLanguageKey, FALSE )}
+{{endif}}
+{{if $shipment->tracknumber}}
+{$email->language->addToStack("email_tracking_number", FALSE)}: {$shipment->tracknumber}
+{{endif}}
+{{if $shipment->trackingUrl()}}{$email->language->addToStack("order_track_delivery", FALSE)}: {$shipment->trackingUrl()}{{endif}}

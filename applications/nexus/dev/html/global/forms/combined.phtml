@@ -1,0 +1,20 @@
+<ips:template parameters="$name, $field1, $field2" />
+<input type="hidden" name="{$name}" value="">
+<div class="ipsClearfix">
+	<div class="ipsPos_left">
+		{$field1->html()|raw}
+	</div>
+	<div class="ipsPos_left">
+		&nbsp;&nbsp;&nbsp;
+	</div>
+	<div class="ipsPos_left">
+		<div id="{$name}_unit">
+			{$field2->html()|raw}
+			{{if $name === 'f_maxmind'}}
+				&nbsp;/ 100
+			{{elseif $name === 'f_maxmind_proxy'}}
+				&nbsp;/ 4
+			{{endif}}
+		</div>
+	</div>
+</div>

@@ -1,0 +1,29 @@
+<ips:template parameters="$transaction, $log" />
+
+{{if $extraData = $transaction->method->disputeData( $transaction, $log )}}
+	{$extraData|raw}
+{{else}}
+	<li class='ipsClearfix cTransaction_intermediate'>
+		<div class='cTransaction_icon ipsPos_left'>
+			<i class='fa fa-undo'></i>
+		</div>
+		<div class='cTransaction_info ipsType_normal'>
+			<h3 class="ipsType_sectionHead">
+				<strong>
+					{lang="tstatus_dspd_set"}
+				</strong>
+			</h3>
+			<br>
+			
+			{{if isset( $log['on'] ) and $log['on']}}
+				{expression="\IPS\DateTime::ts( $log['on'] )"}
+				{{if isset( $log['by'] ) and $log['by']}}
+					<br>
+					<span class='ipsType_medium ipsType_light'>
+						{lang="byline_nodate" sprintf="\IPS\Member::load( $log['by'] )->name"}
+					</span>
+				{{endif}}
+			{{endif}}
+		</div>
+	</li>
+{{endif}}
