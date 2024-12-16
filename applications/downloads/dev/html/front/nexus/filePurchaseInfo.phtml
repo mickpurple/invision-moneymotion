@@ -1,0 +1,17 @@
+<ips:template parameters="$file, $reactivateUrl=NULL" />
+
+<ul class='ipsList_inline'>
+    {{if $reactivateUrl}}
+        <li><a href="{$reactivateUrl}" class='ipsButton ipsButton_light'>{lang="reactivate_package"}</a></li>
+    {{endif}}
+
+    {{if $file->canDownload()}}
+        <li><a {{if $file->canView()}}href='{{if settings.idm_antileech AND !$file->requiresDownloadConfirmation()}}{$file->url('download')->csrf()}{{else}}{$file->url('download')}{{endif}}'{{endif}} class='ipsButton ipsButton_medium {{if $file->canView()}}ipsButton_primary{{else}}ipsButton_disabled{{endif}}' {{if $file->requiresDownloadConfirmation()}}data-ipsDialog{{endif}}>{lang="download_now"}</a></li>
+    {{endif}}
+    {{if $file->container()->can( 'view' )}}
+        <li><a {{if $file->canView() }}href='{$file->url( "getPrefComment" )}'{{endif}} class='ipsButton ipsButton_medium {{if $file->canView()}}ipsButton_alternate{{else}}ipsButton_disabled{{endif}}'>{lang="file_view_details"}</a></li>
+    {{endif}}
+</ul>
+{{if !$file->canView()}}
+<p class='ipsType_light'>{lang="nexus_file_no_longer_available"}</p>
+{{endif}}

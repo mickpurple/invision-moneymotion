@@ -1,0 +1,82 @@
+<ips:template parameters="$shipment" />
+
+{{$data = $shipment->data;}}
+
+<div id='elShipping'>
+	<header class='ipsClearfix'>
+		<h1 class='ipsType_reset ipsPos_right'>{lang="packing_slip"}</h1>
+		<div class='ipsPos_left'>
+			<h2 class='ipsType_reset'>{setting="board_name"}</h2>
+			{{if \IPS\Settings::i()->site_address}}
+				<p class='ipsType_reset ipsType_normal'>{address="\IPS\Settings::i()->site_address"}</p>
+			{{endif}}
+			<p class='ipsType_reset ipsType_medium'><a href='#'>{url="/" base="public"}</a></p>
+		</div>
+	</header>
+
+	<hr class='ipsHr'>
+
+	<div id='elOrderID'>
+		<p class='ipsType_reset'>
+			<strong>{lang="order_id"}: #{$shipment->invoice->id}</strong><br>
+			{lang="order_placed"}: {datetime="$shipment->invoice->date" dateonly="true" lowercase="true"}
+			{{if $shipment->invoice->po}}
+				<br>{lang="invoice_po_number"}: {$shipment->invoice->po}
+			{{endif}}
+		</p>
+	</div>
+
+	<hr class='ipsHr'>
+	<div class='ipsGrid' id='elPackingAddresses'>
+		<div class='ipsGrid_span6'>
+			<h3 class='ipsType_reset'>{lang="billing_address"}</h3>
+			{$data['cm_first_name']} {$data['cm_last_name']}<br>
+			{{if $shipment->invoice->billaddress}}
+				{$shipment->invoice->billaddress->toString('<br>')|raw}
+			{{endif}}
+		</div>
+		<div class='ipsGrid_span6'>
+			<h3 class='ipsType_reset'>{lang="shipping_address"}</h3>
+			{$data['cm_first_name']} {$data['cm_last_name']}<br>
+			{$shipment->address()->toString('<br>')|raw}
+		</div>
+	</div>
+	<br><br>
+	
+	{{$quantity = 0;}}
+	<table id='elPackingTable'>
+		<thead>
+			<tr>
+				<th style='width: 10%'>{lang="item_id"}</th>
+				<th>{lang="invoice_item"}</th>
+				<th style='width: 15%'>{lang="invoice_quantity"}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{foreach $shipment->items as $item}}
+				<tr>
+					<td>{$item['id']}</td>
+					<td>
+						<strong>{$item['name']}</strong>
+						{{if \count( $item['details'] )}}
+							<br>
+							<span>
+								{{foreach $item['details'] as $k => $v}}
+									<strong>{lang="nexus_pfield_{$k}"}:</strong> {$v}<br>
+								{{endforeach}}
+							</span>
+						{{endif}}
+					</td>
+					<td>
+						{$item['quantity']}
+						{{$quantity += $item['quantity'];}}
+					</td>
+				</tr>
+			{{endforeach}}
+		</tbody>
+	</table>
+
+	<p class='ipsType_right'>
+		<strong>{lang="total_items_shipped" pluralize="$quantity"}</strong>
+	</p>
+</div>

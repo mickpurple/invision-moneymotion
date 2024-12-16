@@ -1,0 +1,121 @@
+<ips:template parameters="$similar, $title, $orientation='vertical'" />
+{{if !empty( $similar ) }}
+<h3 class='ipsWidget_title ipsType_reset'>{$title}</h3>
+
+{{if $orientation == 'vertical'}}
+	<div class='ipsWidget_inner'>
+		<ul class='ipsDataList ipsDataList_reducedSpacing'>
+			{{foreach $similar as $item}}
+				{{$numComments = ( $item::$firstCommentRequired ) ? $item->mapped('num_comments') - 1 : $item->mapped('num_comments');}}
+				<li class='ipsDataItem {{if $item->hidden()}} ipsModerated{{endif}}'>
+					<div class='ipsDataItem_icon ipsPos_top'>
+						{template="userPhoto" group="global" app="core" params="$item->author(), 'tiny'"}
+					</div>
+					<div class='ipsDataItem_main cWidgetComments'>
+						<div class="ipsCommentCount ipsPos_right {{if $numComments === 0}}ipsFaded{{endif}}" data-ipsTooltip title='{lang="replies_number" pluralize="$numComments"}'>{expression="\IPS\Member::loggedIn()->language()->formatNumber($numComments)"}</div>
+						
+						<div class='ipsType_break ipsContained'>
+							{{if $item->mapped('featured') || $item->hidden() === -1 || $item->hidden() === 1 || \IPS\IPS::classUsesTrait( $item, 'IPS\Content\Solvable' )}}
+								{{if $item->hidden() === -1}}
+									<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{$item->hiddenBlurb()}'><i class='fa fa-eye-slash'></i></span></span>
+								{{elseif $item->hidden() === 1}}
+									<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa fa-warning'></i></span></span>
+								{{endif}}
+								{{if $item->mapped('featured')}}
+									<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="featured"}'><i class='fa fa-star'></i></span></span>
+								{{endif}}
+								{{if \IPS\IPS::classUsesTrait( $item, 'IPS\Content\Solvable' ) and $item->isSolved()}}
+									<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="this_is_solved"}'><i class='fa fa-check'></i></span></span>
+								{{endif}}
+							{{endif}}							
+							<a href="{$item->url( "getPrefComment" )}" title='{lang="view_this_topic" sprintf="$item->title"}' class='ipsDataItem_title'>{$item->mapped('title')}</a>
+						</div>
+						<p class='ipsType_reset ipsType_medium ipsType_blendLinks ipsContained'>
+							<span>{lang="byline_nodate" htmlsprintf="$item->author()->link( NULL, NULL, $item->isAnonymous() )"}</span><br>
+							<span class='ipsType_light'>{lang="started_date" htmlsprintf="\IPS\DateTime::ts( $item->mapped('date') )->html()"}</span>
+						</p>
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+	</div>
+{{else}}
+	<div class='ipsWidget_inner'>
+		<ul class='ipsDataList'>
+			{{foreach $similar as $item}}
+				<li class="ipsDataItem ipsDataItem_responsivePhoto {{if $item->hidden()}}ipsModerated{{endif}}">
+					<div class='ipsDataItem_main'>
+						<h4 class='ipsDataItem_title ipsContained_container'>
+							{{if $item->mapped('pinned') || $item->mapped('featured') || $item->hidden() === -1 || $item->hidden() === 1 || \IPS\IPS::classUsesTrait( $item, 'IPS\Content\Solvable' )}}
+								{{if $item->hidden() === -1}}
+									<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{$item->hiddenBlurb()}'><i class='fa fa-eye-slash'></i></span></span>
+								{{elseif $item->hidden() === 1}}
+									<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa fa-warning'></i></span></span>
+								{{endif}}							
+								{{if $item->mapped('pinned')}}
+									<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa fa-thumb-tack'></i></span></span>
+								{{endif}}
+								{{if $item->mapped('featured')}}
+									<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="featured"}'><i class='fa fa-star'></i></span></span>
+								{{endif}}
+								{{if \IPS\IPS::classUsesTrait( $item, 'IPS\Content\Solvable' ) and $item->isSolved()}}
+									<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="this_is_solved"}'><i class='fa fa-check'></i></span></span>
+								{{endif}}
+							{{endif}}
+							{{if $item->prefix()}}
+								<span>{template="prefix" group="global" app="core" params="$item->prefix( TRUE ), $item->prefix()"}</span>
+							{{endif}}
+							
+							<span class='ipsType_break ipsContained'>
+								<a href='{$item->url( "getPrefComment" )}' {{if $item->tableHoverUrl and $item->canView()}}data-ipsHover data-ipsHover-target='{$item->url()->setQueryString('preview', 1)}' data-ipsHover-timeout='1.5' {{endif}}>
+									{$item->mapped('title')}
+								</a>
+							</span>
+							{{if $item->commentPageCount() > 1}}
+								{$item->commentPagination( array(), 'miniPagination' )|raw}
+							{{endif}}
+						</h4>
+						
+						<p class='ipsType_reset ipsType_medium ipsType_light'>
+							{lang="byline" htmlsprintf="$item->author()->link( NULL, NULL, $item->isAnonymous() )"} {datetime="$item->mapped('date')"}
+						</p>
+						{{if \count( $item->tags() )}}
+							&nbsp;&nbsp;
+							{template="tags" group="global" app="core" params="$item->tags(), true, true"}
+						{{endif}}
+					</div>
+					<ul class='ipsDataItem_stats'>
+						{{foreach $item->stats(FALSE) as $k => $v}}
+							<li {{if \in_array( $k, $item->hotStats )}}class="ipsDataItem_stats_hot" data-text='{lang="hot_item"}' data-ipsTooltip title='{lang="hot_item_desc"}'{{endif}}>
+								<span class='ipsDataItem_stats_number'>{number="$v"}</span>
+								<span class='ipsDataItem_stats_type'>{lang="{$k}" pluralize="$v"}</span>
+							</li>
+						{{endforeach}}
+					</ul>
+					<ul class='ipsDataItem_lastPoster ipsDataItem_withPhoto'>
+						<li>
+							{{if $item->mapped('num_comments')}}
+								{template="userPhoto" app="core" group="global" params="$item->lastCommenter(), 'tiny'"}
+							{{else}}
+								{template="userPhoto" app="core" group="global" params="$item->author(), 'tiny'"}
+							{{endif}}
+						</li>
+						<li>
+							{{if $item->mapped('num_comments')}}
+								{$item->lastCommenter()->link()|raw}
+							{{else}}
+								{$item->author()->link( NULL, NULL, $item->isAnonymous() )|raw}
+							{{endif}}
+						</li>
+						<li class="ipsType_light">
+							<a href='{$item->url( 'getLastComment' )}' title='{lang="get_last_post"}' class='ipsType_blendLinks'>
+								{{if $item->mapped('last_comment')}}{datetime="$item->mapped('last_comment')"}{{else}}{datetime="$item->mapped('date')"}{{endif}}
+							</a>
+						</li>
+					</ul>
+				</li>
+			{{endforeach}}
+		</ul>
+	</div>
+{{endif}}
+{{endif}}

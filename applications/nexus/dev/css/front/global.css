@@ -1,0 +1,22 @@
+.ipsStream_price .cNexusPrice {
+	color: rgb( var(--theme-price) );
+	font-weight: bold;
+	font-size: {fontsize="base"};
+}
+	.ipsStream_price_small .cNexusPrice {
+		font-size: {fontsize="medium"};
+	}
+	.ipsStream_price small {
+		font-size: {fontsize="small"};
+	}
+		.ipsStream_price_small small {
+			font-size: {fontsize="x_small"};
+		}
+	.ipsStream_price .cNexusPrice s {
+		font-size: {fontsize="medium"};
+		color: #9a9a9a;
+		font-weight: normal;
+	}
+		.ipsStream_price_small .cNexusPrice s {
+			font-size: {fontsize="small"};
+		}

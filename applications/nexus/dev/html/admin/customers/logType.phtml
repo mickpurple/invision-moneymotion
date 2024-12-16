@@ -1,0 +1,36 @@
+<ips:template parameters="$type" />
+{{if $type === 'invoice'}}
+	<i class="fa fa-file-text"></i>
+{{elseif $type === 'purchase'}}
+	<i class="fa fa-archive"></i>
+{{elseif $type === 'transaction'}}
+	<i class="fa fa-money"></i>
+{{elseif $type === 'shipping'}}
+	<i class="fa fa-truck"></i>
+{{elseif $type === 'comission' or $type === 'payout'}}
+	<i class="fa fa-folder-open"></i>
+{{elseif $type === 'giftvoucher'}}
+	<i class="fa fa-gift"></i>
+{{elseif $type === 'info'}}
+	<i class="fa fa-user"></i>
+{{elseif $type === 'address'}}
+	<i class="fa fa-home"></i>
+{{elseif $type === 'card'}}
+	<i class="fa fa-credit-card"></i>
+{{elseif $type === 'alternative'}}
+	<i class="fa fa-users"></i>
+{{elseif $type === 'lkey'}}
+	<i class="fa fa-key"></i>
+{{elseif $type === 'support'}}
+	<i class="fa fa-life-ring"></i>
+{{elseif $type === 'download'}}
+	<i class="fa fa-download"></i>
+{{elseif $type === 'billingagreement'}}
+	<i class="fa fa-paypal"></i>
+{{elseif $type === 'note'}}
+	<i class="fa fa-file-text"></i>
+{{elseif $type === 'custom'}}
+	<i class="fa fa-star"></i>
+{{else}}
+	{$type}
+{{endif}}

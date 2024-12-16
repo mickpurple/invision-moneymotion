@@ -1,0 +1,13 @@
+<ips:template parameters="$databaseErrors" />
+<div class="ipsPad">
+	
+	<p class="ipsMessage ipsMessage_success">
+		{lang="upgrade_complete"}
+	</p>
+	{{if $databaseErrors}}
+		<div class="ipsMessage ipsMessage_warning">
+			{lang="upgrade_complete_database_error"}<br>
+			<a href="{url="app=core&module=system&controller=upgrade&do=databaseChecker" csrf="true"}" data-ipsDialog data-ipsDialog-title="{lang="self_service"}" class="ipsButton ipsButton_veryLight ipsButton_verySmall ipsSpacer_top ipsSpacer_half">{lang="help_me_fix_this"}</a>
+		</div>
+	{{endif}}
+</div>

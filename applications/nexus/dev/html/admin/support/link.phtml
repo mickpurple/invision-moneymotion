@@ -1,0 +1,9 @@
+<ips:template parameters="$request, $hovercard=TRUE" />
+<a href="{$request->acpUrl()}" {{if $hovercard}}data-ipsHover data-ipsHover-target="{$request->acpUrl()->setQueryString( array( 'do' => 'hovercard' ) )}" data-ipsHover-width="750"{{endif}} data-role="supportLink">
+	{{if $request->unread()}}
+		<strong>{$request->title}</strong>
+	{{else}}
+		{$request->title}
+	{{endif}}
+</a>
+<span class='ipsType_light ipsType_medium'>#{$request->id}</span>

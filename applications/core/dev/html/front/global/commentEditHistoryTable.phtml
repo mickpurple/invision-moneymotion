@@ -1,0 +1,14 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+<div data-baseurl='{$table->baseUrl}' data-resort='{$table->resortKey}' data-controller='core.global.core.table' {{if $table->dummyLoading}}data-dummyLoading{{endif}} {{if $table->getPaginationKey() != 'page'}}data-pageParam='{$table->getPaginationKey()}'{{endif}} data-tableID='{expression="md5($table->baseUrl->stripQueryString($table->getPaginationKey()))"}'>
+    {{if \count( $rows )}}
+    <div class="ipsClear" data-role="tableRows" id='elTable_{$table->uniqueId}'>
+        {template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+    </div>
+    {{else}}
+    <p class='ipsType_large ipsType_light'>{lang="no_edit_history"}</p>
+    {{endif}}
+
+    <div class="ipsButtonBar ipsPad_half ipsClearfix ipsClear {{if $table->pages <= 1}}ipsHide{{endif}}" data-role="tablePagination">
+        {template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+    </div>
+</div>

@@ -1,0 +1,37 @@
+/* PHONES */
+@media screen and (max-width: 767px) {
+	.ipsPost {
+		font-size: 13px;
+	}
+
+	.cAuthorPane_badge {
+		top: -6px;
+		font-size: 18px;
+		width: 1.2em;
+		height: 1.2em;
+	}
+		html[dir="ltr"] .cAuthorPane_badge {
+			right: -8px;
+			left: auto;
+		}
+		html[dir="rtl"] .cAuthorPane_badge {
+			left: -8px;
+			right: auto;
+		}
+
+
+		.cAuthorPane_badge--rank {
+			top: auto;
+			bottom: 0;
+			width: 1em; 
+			height: 1em;
+		}
+			html[dir="ltr"] .cAuthorPane_badge--rank {
+				right: auto;
+				left: -8px;
+			}
+			html[dir="rtl"] .cAuthorPane_badge--rank {
+				left: auto;
+				right: -8px;
+			}
+}

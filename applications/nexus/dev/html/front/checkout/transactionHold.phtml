@@ -1,0 +1,21 @@
+<ips:template parameters="$transaction" />
+
+<p class='ipsType_large ipsType_center'>
+	{lang="order_thanks_blurb_no_email"}
+</p>
+<p class='ipsType_large ipsType_center'>
+	<strong>{lang="order_held_blurb"}</strong><br>
+	{lang="order_held_blurb2"}
+</p>
+{{if member.member_id}}
+    <p class='ipsType_medium ipsType_center ipsType_reset'>
+        <i class='fa fa-info-circle'></i> {lang="track_orders_in_billing"}
+    </p>
+{{endif}}
+{{if isset( $transaction->extra['publicNote'] )}}
+	<div class='ipsType_medium ipsType_richText ipsType_contained ipsType_break ipsSpacer'>
+		{$transaction->extra['publicNote']}
+	</div>
+{{endif}}
+
+{template="orderReview" group="checkout" app="nexus" params="$transaction->invoice"}

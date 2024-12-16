@@ -1,0 +1,27 @@
+/* PHONES */
+@media screen and (max-width: 767px) {
+	#elCustomerStanding {
+		height: auto;
+	}
+
+		#elCustomerStanding > div {
+			width: 50%;
+			margin-bottom: 10px;
+		}
+
+		#elCustomerStanding + .ipsHr {
+			margin-top: 0;
+		}
+
+	.cCustomerStanding_value {
+		font-size: 18px;
+	}
+
+	#acpPageHeader.cNexusSupportHeader .acpToolbar {
+		margin-top: 15px;
+	}
+
+	#elCustomerData {
+		padding-left: 0;
+	}
+}

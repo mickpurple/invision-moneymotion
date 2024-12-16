@@ -1,0 +1,51 @@
+<ips:template parameters="$details" />
+<div class='cNexusProduct__prices'>
+	{{if $details === NULL}}
+		<div>
+			<em class='cNexusPrice_tax ipsType_light'>{lang="nexus_no_price_info"}</em>
+		</div>
+	{{elseif $details['primaryPriceIsZero'] AND $details['initialTerm']}}
+
+		<div>
+			<span class="cNexusPrice">{$details['renewalPrice']}</span>
+			{{if \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}
+				<span class='cNexusPrice_tax ipsType_light'>{lang="nexus_tax_explain_val"}</span>
+			{{endif}}
+		</div>
+		<div>
+			{$details['primaryPrice']}
+			{{if $details['initialTerm']}}
+				{lang="package_initial_term" sprintf="$details['initialTerm']"}
+			{{endif}}
+		</div>
+
+	{{else}}
+
+		<div>
+			<span class="cNexusPrice">
+				{$details['primaryPrice']}
+				{{if $details['primaryPriceDiscountedFrom']}}
+					<s>{$details['primaryPriceDiscountedFrom']}</s>
+				{{endif}}
+			</span>
+			{{if !$details['primaryPriceIsZero'] and \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}
+				<span class='cNexusPrice_tax ipsType_light'>{lang="nexus_tax_explain_val"}</span>
+			{{endif}}
+            {{if $details['initialTerm']}}
+				<span>{lang="package_initial_term" sprintf="$details['initialTerm']"}</span><br>
+			{{endif}}
+		</div>
+        {{if $details['initialTerm']}}
+		<div>
+			<div>
+				<span class="cNexusPrice">{$details['renewalPrice']}</span>
+				{{if \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}
+					<span class='cNexusPrice_tax ipsType_light'>{lang="nexus_tax_explain_val"}</span>
+				{{endif}}
+				<span>{lang="package_subsequent_term"}</span>
+			</div>
+		</div>
+		{{endif}}
+
+	{{endif}}
+</div>

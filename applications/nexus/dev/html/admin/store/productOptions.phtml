@@ -1,0 +1,30 @@
+<ips:template parameters="$input, $fields, $package" />
+<li class="ipsFieldRow ipsPad_half ipsClearfix" id="{$input->htmlId}" data-controller="nexus.admin.store.productoptions" data-url="{url="app=nexus&module=store&controller=packages&do=productoptions&package={$package->id}"}">
+	<div class="ipsFieldRow_title">
+		{lang="p_stock_dynamic_fields"}
+		<span class="ipsFieldRow_required">{lang="required"}</span>
+	</div>
+	<div class="ipsFieldRow_content">
+		<ul class="ipsField_fieldList">
+			{{foreach $fields as $field}}
+				<li>
+					<span class='ipsCustomInput'>
+						<input type="checkbox" id="elCheckbox_{$input->name}_{$field->id}" data-role="field" data-id="{$field->id}" {{if \in_array( $field->id, $input->value )}}checked{{endif}} >
+						<span></span>
+					</span>
+					<div class='ipsField_fieldList_content'>
+						<label for='elCheckbox_{$input->name}_{$field->id}' id='elField_{$input->name}_label'>{$field->_title}</label>
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+		<span class="ipsFieldRow_desc">{lang="p_stock_dynamic_fields_desc"}</span>
+
+		<div class="ipsJS_show ipsBox ipsSpacer_top" data-role='table'></div>
+	</div>
+	<br>
+	<br><br>	
+	<noscript>
+		<p class="ipsMessage ipsMessage_error">{lang="p_stock_dynamic_fields_noscript"}</p>
+	</noscript>
+</li>

@@ -1,0 +1,116 @@
+.ipsAlert,
+.ipsDialog > div,
+.ipsDialog .ipsDialog_loading{
+	background: var(--c0);
+}
+
+.ipsModal {
+	background: rgba(69,88,107,0.5);
+}
+
+.ipsDialog > div {
+	box-shadow: 0px 5px 35px rgba(69,88,107,0.4);
+	border-radius: 5px;
+	background: var(--c0);
+}
+
+		.ipsDarkMode .ipsModal{
+			background: rgba(0,0,0,0.6);
+		}
+		.ipsDarkMode .ipsDialog > div{
+			box-shadow: 0px 5px 35px rgba(0,0,0,0.4);
+		}
+
+.ipsDialog_title {
+	font-size: 23px;
+	color: var(--c8);
+}
+
+.ipsDialog_close{
+	color: inherit !important;
+}
+
+.ipsMenu {
+	background: var(--c1);
+	border-color: var(--c3);
+}
+
+	.ipsMenu_item > a, 
+	.ipsMenu_item > span {
+		color: var(--c5);
+	}
+
+	.ipsMenu.ipsMenu_topLeft:after,
+	.ipsMenu.ipsMenu_topRight:after,
+	.ipsMenu.ipsMenu_topCenter:after{
+		border-top-color: var(--c1);
+	}
+
+	.ipsMenu.ipsMenu_bottomRight:after,
+	.ipsMenu.ipsMenu_bottomLeft:after,
+	.ipsMenu.ipsMenu_bottomCenter:after{
+		border-bottom-color: var(--c1);
+	}
+
+
+.ipsDialog_content .ipsForm {
+	margin: 15px;
+}
+
+.pac-container {
+	z-index: 2000;
+}
+
+/* ACP Date pickers */
+.ui-datepicker {
+	background: var(--c1);
+}
+
+.ui-datepicker-header {
+	background: var(--dark);
+	color: #fff;
+	border-bottom-width: 0;
+}
+
+	.ipsDarkMode .ui-datepicker-header{
+		--input--shadow: transparent;
+	}
+	.ui-datepicker-title{
+		line-height: 1;
+	}
+		.ui-datepicker-title select{
+			margin: 5px;
+		}
+
+.ui-datepicker-prev:after, .ui-datepicker-next:after {
+	color: #fff;
+}
+.ui-datepicker th {
+	background: var(--c2);
+}
+
+.ui-datepicker td a{
+	border-radius: 4px;
+}
+
+.ui-datepicker td a:hover {
+	background-color: var(--c3);
+}
+
+.ui-datepicker-current-day {
+	background-color: transparent;
+	font-weight: bold;
+}
+	.ui-datepicker-current-day a{
+		background: var(--c2);
+	}
+
+	.ui-datepicker-title select,
+	.ui-datepicker-title option {
+		color: var(--c8);
+	}
+
+	.ipsDarkMode .ui-datepicker-title select,
+	.ipsDarkMode .ui-datepicker-title option {
+		color: inherit;
+	}

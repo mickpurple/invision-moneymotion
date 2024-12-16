@@ -1,0 +1,15 @@
+<ips:template parameters="" />
+<div class="ipsPageHeader ipsMargin_bottom ipsHeaderButtons ipsFlex ipsFlex-ai:center ipsFlex-jc:between ipsFlex-fw:wrap">
+    <h1 class="ipsType_pageTitle ipsFlex-flex:11 ipsType_break">{lang="gallery_title"}</h1>
+
+    {{if \IPS\gallery\Category::canOnAny('add')}}
+        <ul class="ipsToolList ipsToolList_horizontal ipsMargin_bottom:none ipsFlex-flex:01">
+            {template="categoryButtons" group="browse" params="\IPS\gallery\Category::canOnAny('add'), NULL, NULL"}
+        </ul>
+    {{endif}}
+</div>
+<div class='ipsBox ipsPadding'>
+    <ul class='cGalleryCats cGalleryCats--start'>
+    	{template="categoryRow" group="browse" params="NULL, NULL, \IPS\gallery\Category::roots()"}
+    </ul>
+</div>

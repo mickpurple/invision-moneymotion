@@ -1,0 +1,48 @@
+<ips:template parameters="" />
+<div class="ipsPad">
+	<a href="{url="app=nexus&module=support&controller=settings&tab=incomingemail&type="}" data-role="toggleView">&larr; {lang="ie_back"}</a>
+	<br><br>
+	<h2 class="ipsType_sectionHead">{lang="ie_piping"}</h2>
+	<br>
+	<ol>
+		<li>
+			<p>{lang="ie_piping_perm" sprintf="\IPS\ROOT_PATH . '/applications/core/interface/incomingemail/piping.php'"}</p>
+			{{if is_executable( \IPS\ROOT_PATH . '/applications/core/interface/incomingemail/piping.php' )}}
+				<p class="ipsType_success"><i class="fa fa-check"></i> {lang="ie_piping_perm_ok"}</p>
+			{{else}}
+				<p class="ipsType_warning"><i class="fa fa-times"></i> {lang="ie_piping_perm_err"}</p>
+			{{endif}}
+		</li>
+		<li>
+			<p><strong>{lang="ie_piping_cpanel"}</strong>
+			<ol type="a">
+				<li>{lang="ie_piping_cpanel_1"}</li>
+				<li>{lang="ie_piping_cpanel_2"}</li>
+				<li>{lang="ie_piping_cpanel_3"}</li>
+				<li>{lang="ie_piping_cpanel_4"}</li>
+				<li>{lang="ie_piping_cpanel_5"}</li>
+				<li>
+					{lang="ie_piping_cpanel_6"}
+					<pre>{expression="preg_replace( '#^.*/((public_html|htdocs|html)/.*)$#i', '$1', \IPS\ROOT_PATH . '/applications/core/interface/incomingemail/piping.php' )"} <mark>email@example.com</mark></pre>
+				</li>
+			</ol>
+			<br>
+			<div class="ipsGrid">
+				<div class="ipsGrid_span4">
+					<a href="{resource="incomingemail/cpanel1.png"}" data-ipsLightbox data-ipsLightbox-group="cpanelInstructions"><img src="{resource="incomingemail/cpanel1.png"}" class="ipsImage" /></a>
+				</div>
+				<div class="ipsGrid_span4">
+					<a href="{resource="incomingemail/cpanel2.png"}" data-ipsLightbox data-ipsLightbox-group="cpanelInstructions"><img src="{resource="incomingemail/cpanel2.png"}" class="ipsImage" /></a>
+				</div>
+				<div class="ipsGrid_span4">
+					<a href="{resource="incomingemail/cpanel3.png"}" data-ipsLightbox data-ipsLightbox-group="cpanelInstructions"><img src="{resource="incomingemail/cpanel3.png"}" class="ipsImage" /></a>
+				</div>
+			</div>
+			<p><strong>{lang="ie_piping_no_cpanel"}</strong>
+			<p>{lang="ie_piping_no_cpanel_1"}</p>
+			<pre>{expression="\IPS\ROOT_PATH"}/applications/core/interface/incomingemail/piping.php <mark>email@example.com</mark></pre>
+			<p>{lang="ie_piping_no_cpanel_2"}</p>
+		</li>
+		<li>{lang="ie_test"}</li>
+	</ol>
+</div>

@@ -1,0 +1,18 @@
+<ips:template parameters="$notification, $cronCommand, $webCronUrl" />
+<div class="ipsType_richText ipsType_normal">
+	{{if \IPS\Settings::i()->task_use_cron === 'cron'}}
+		<p>{lang="dashboard_tasks_cron_broken_desc_1"}</p>
+		<p>{lang="dashboard_tasks_cron_broken_desc_2"}</p>
+		<pre class="ipsType_code">{$cronCommand}</pre>
+	{{elseif \IPS\Settings::i()->task_use_cron === 'web'}}
+		<p>{lang="dashboard_tasks_web_broken_desc_1"}</p>
+		<p>{lang="dashboard_tasks_web_broken_desc_2"}</p>
+		<pre class="ipsType_code">{$webCronUrl}</pre>
+	{{else}}
+		<p>{lang="dashboard_tasks_not_enough_desc"}</p>
+	{{endif}}
+</div>
+<div class="ipsSpacer_top ipsSpacer_double">
+	<a href='{url="app=core&module=settings&controller=advanced&tab=settings&searchResult=task_use_cron"}' class="ipsButton ipsButton_primary ipsButton_verySmall">{lang="help_me_fix_this"}</a>
+	&nbsp; <span class="ipsType_small"><i class="fa fa-info-circle"></i> {lang="dashboard_tasks_fix_info" sprintf="$notification->id"}</span>
+</div>

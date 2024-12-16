@@ -1,0 +1,23 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+<div data-controller='gallery.front.submit.chooseCategory' data-preselected-album="{expression="\IPS\Request::i()->album"}" class='cGallerySubmit_chooseCategory'>
+	<form accept-charset='utf-8' class="ipsForm {$class}" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm data-role='categoryForm'>
+		<input type="hidden" name="{$id}_submitted" value="1">
+		{{foreach $hiddenValues as $k => $v}}
+			{{if \is_array($v)}}
+				{{foreach $v as $_k => $_v}}
+					<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+				{{endforeach}}
+			{{else}}
+				<input type="hidden" name="{$k}" value="{$v}">
+			{{endif}}
+		{{endforeach}}
+		<div class='ipsPadding cGallerySubmit_albumChoice ipsSpacer_top ipsSpacer_double'>
+			{$elements['']['image_category']->html()|raw}
+		</div>
+		<div class="ipsClearfix ipsPadding ipsBorder_top ipsType_center ipsJS_hide" data-role="continueCategory">
+			{{foreach $actionButtons as $button}}
+				{$button|raw}
+			{{endforeach}}
+		</div>
+	</form>
+</div>

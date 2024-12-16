@@ -1,0 +1,7 @@
+<ips:template parameters="" />
+{{if settings.mfa_required_groups != '*' and !\IPS\Member::loggedIn()->inGroup( explode( ',', settings.mfa_required_groups ) )}}
+{{$thisUrl = \IPS\Request::i()->url();}}
+<div class="ipsAreaBackground ipsType_center cOtherMethod ipsPad">
+	<a href='{$thisUrl->stripQueryString()}' class='ipsButton ipsButton_link ipsButton_fullWidth ipsButton_medium'>{lang="mfa_opt_out"}</a>
+</div>
+{{endif}}

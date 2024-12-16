@@ -1,0 +1,4 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $row}}
+	{template="replyContainer" group="support" params="$row->item(), $row"}
+{{endforeach}}

@@ -1,0 +1,77 @@
+<ips:template parameters="$standing" />
+<div id='elCustomerStanding' class="ipsSpacer_both">
+	{{foreach $standing as $k => $data}}
+		{{$positive = false;}}
+		{{if ( $data['thisval'] >= $data['avgval'] && $data['type'] != 'support' && $data['type'] != 'timetopay' ) || ( $data['thisval'] <= $data['avgval'] && $data['type'] == 'support' && $data['type'] != 'timetopay' )}}
+			{{$positive = true;}}
+		{{endif}}
+		<div class="ipsGrid_span3">
+			<div class="cCustomerStanding_value {{if $positive}}cCustomerStanding_positive{{else}}cCustomerStanding_negative{{endif}} ipsType_noBreak">
+				{$data['value']}
+				{{if $positive}}
+					<span class='cCustomerStanding_arrow ipsCursor_pointer' data-ipsHover data-ipsHover-width='250' data-ipsHover-content='#el{$data['type']}'>
+						{{if $data['type'] != 'support' and $data['type'] != 'timetopay'}}
+							<i class='fa fa-arrow-up'></i>
+						{{else}}
+							<i class='fa fa-arrow-down'></i>
+						{{endif}}
+					</span>
+				{{else}}
+					<span class='cCustomerStanding_arrow ipsCursor_pointer' data-ipsHover data-ipsHover-width='250' data-ipsHover-content='#el{$data['type']}'>
+						{{if $data['type'] != 'support' and $data['type'] != 'timetopay'}}
+							<i class='fa fa-arrow-down'></i>
+						{{else}}
+							<i class='fa fa-arrow-up'></i>
+						{{endif}}
+					</span>
+				{{endif}}
+				<div id='el{$data['type']}' class='ipsHide'>
+					<div class='ipsPad'>
+						{{if $positive}}
+							<p class='ipsType_reset ipsType_uppercase ipsType_center ipsType_medium ipsType_positive'>
+								<strong>
+									{expression="abs( \intval( $data['avgpct'] - $data['thispct'] ) )"}%
+	
+									{{if $data['type'] != 'support' && $data['type'] != 'timetopay'}}
+										{lang="above_average"}
+									{{else}}
+										{lang="below_average"}
+									{{endif}}
+								</strong>
+							</p>
+						{{else}}
+							<p class='ipsType_reset ipsType_uppercase ipsType_center ipsType_medium ipsType_negative'>
+								<strong>
+									{expression="abs( \intval( $data['avgpct'] - $data['thispct'] ) )"}%
+	
+									{{if $data['type'] != 'support' && $data['type'] != 'timetopay'}}
+										{lang="below_average"}
+									{{else}}
+										{lang="above_average"}
+									{{endif}}
+								</strong>
+							</p>
+						{{endif}}
+						<hr class='ipsHr'>
+	
+						<div class='ipsSpacer_top cCustomerStanding_progressIndicator'>
+							<p class='ipsType_reset cCustomerStanding_values ipsClearfix ipsType_small'>
+								<strong class='ipsPos_left'>{$data['lowest']}</strong>
+								<strong class='ipsPos_right'>{$data['highest']}</strong>
+							</p>
+							<div class='cCustomerStanding_progress'></div>
+							<div class='cCustomerStanding_markers'>
+								<span class='cCustomerStanding_markerAvg' style='left: {$data['avgpct']}%'>
+									<i class='fa fa-caret-up'></i>
+									<span>{lang="avg_short"}</span>
+								</span>
+								<span class='cCustomerStanding_markerThis' style='left: {$data['thispct']}%'><i class='fa fa-caret-up'></i></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<h3 class='ipsType_reset ipsType_minorHeading ipsTruncate ipsTruncate_line'>{$k}</h3>
+		</div>
+	{{endforeach}}
+</div>

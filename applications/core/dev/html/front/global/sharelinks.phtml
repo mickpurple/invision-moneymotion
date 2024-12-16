@@ -1,0 +1,12 @@
+<ips:template parameters="$item" />
+{{if \count( $item->sharelinks() ) }}
+	<ul class='ipsList_inline ipsList_noSpacing ipsClearfix' data-controller="core.front.core.sharelink">
+		{{foreach $item->sharelinks() as $sharelink }}
+			<li>{$sharelink|raw}</li>
+		{{endforeach}}
+	</ul>
+{{endif}}
+{{if $shareData = $item->webShareData()}}
+	<hr class='ipsHr'>
+	<button class='ipsHide ipsButton ipsButton_small ipsButton_light ipsButton_fullWidth ipsMargin_top:half' data-controller='core.front.core.webshare' data-role='webShare' data-webShareTitle='{$shareData['title']}' data-webShareText='{$shareData['text']}' data-webShareUrl='{$shareData['url']}'>{lang="more_share_options"}</button>
+{{endif}}

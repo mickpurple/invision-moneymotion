@@ -1,0 +1,240 @@
+<ips:template parameters="$featured, $new, $recentlyUpdatedAlbums, $recentComments" />
+<div class="ipsPageHeader ipsMargin_bottom ipsHeaderButtons ipsFlex ipsFlex-ai:center ipsFlex-jc:between ipsFlex-fw:wrap">
+	<h1 class="ipsType_pageTitle ipsFlex-flex:11 ipsType_break">{lang="gallery_title"}</h1>
+
+	{{if \IPS\gallery\Category::canOnAny('add')}}
+		<ul class="ipsToolList ipsToolList_horizontal ipsMargin_bottom:none ipsFlex-flex:01">
+			{template="categoryButtons" group="browse" params="\IPS\gallery\Category::canOnAny('add'), NULL, NULL"}
+		</ul>
+	{{endif}}
+</div>
+
+{{if !empty( $featured ) or !empty($recentComments)}}
+<div class='ipsColumns ipsColumns_collapseTablet ipsMargin_bottom ipsColumns--gallery-featured-carousel'{{if settings.gallery_nsfw}} data-controller="gallery.front.global.nsfw"{{endif}}>
+    {{if !empty( $featured )}}
+        <div class='ipsColumn ipsColumn_fluid'>
+            <div class='ipsPos_relative'>
+                <h2 class='ipsHide'>{lang="featured_images"}</h2>
+                <ol class='cGalleryCarousel cGalleryCarousel--wallpaper cGalleryCarousel--pull' id='gallery-carousel'>
+                    {{foreach $featured as $image}}
+                        <li class='cGalleryCarousel__item'>
+                            <div class='ipsImageBlock ipsImageBlock--contain'>
+                                <a href="{$image->url()->setQueryString( 'context', 'featured' )}" class='ipsImageBlock__main'>
+                                    {{if $image->media }}
+                                        <video loading="lazy"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{else}} preload="metadata"{{endif}}>
+                                            <source src="{file="$image->original_file_name" extension="gallery_Images"}{{if !$image->masked_file_name }}#t=1{{endif}}" type='{$image->file_type}' />
+                                        </video>
+                                        <div class='ipsImageBlock__video-icon'></div>
+                                    {{else}}
+                                        <img src='{file="$image->masked_file_name" extension="gallery_Images"}' alt="{$image->caption}" loading="lazy" />
+                                    {{endif}}
+                                </a>
+                                <div class='ipsImageBlock__header'>
+                                    {{if $image->hidden() === -1 || $image->hidden() === 1 || $image->mapped('pinned') || $image->mapped('featured')}}
+                                        <div>
+                                            {{if $image->hidden() === -1}}
+                                                <span class="ipsBadge ipsBadge_warning" data-ipsTooltip title='{$image->hiddenBlurb()}'><i class='fa fa-eye-slash'></i> {lang="hidden"}</span>
+                                            {{elseif $image->hidden() === 1}}
+                                                <span class="ipsBadge ipsBadge_warning"><i class='fa fa-warning'></i> {lang="pending_approval"}</span>
+                                            {{endif}}
+                                            {{if $image->mapped('featured')}}
+                                                <span class="ipsBadge ipsBadge_positive"><i class='fa fa-star'></i> {lang="featured"}</span>
+                                            {{endif}}
+                                        </div>
+                                    {{endif}}
+                                </div>
+                                <div class='ipsImageBlock__footer'>
+                                    <div class='ipsImageBlock__title'>
+                                        {{if $image->unread()}}
+                                            <span class='ipsItemStatus ipsItemStatus_small' data-ipsTooltip title='{{if $image->unread() === -1}}{lang="new"}{{else}}{lang="updated"}{{endif}}'><i class='fa fa-circle'></i></span>
+                                        {{endif}}
+                                        <a href="{$image->url()->setQueryString( 'context', 'featured' )}" tabindex='-1'>{$image->caption}</a>
+                                    </div>
+                                    <div>
+                                        {lang="byline_nodate_itemprop" htmlsprintf="$image->author()->link( $image->warningRef() )"}
+                                    </div>
+                                </div>
+                                {template="nsfwOverlay" app="gallery" location="front" group="global" params="$image"}
+                            </div>
+                        </li>
+                    {{endforeach}}
+                </ol>
+                {{if \count( $featured ) > 1}}
+                    <div class='cGalleryCarouselNav cGalleryCarouselNav--overlay' data-carousel-controls='gallery-carousel' data-controller="gallery.front.browse.carousel">
+                        <button class='cGalleryCarouselNav__button' data-carousel-arrow='prev' aria-label='Previous' role='button'>
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="10"><path d="M34.52 239.03L228.87 44.69c9.37-9.37 24.57-9.37 33.94 0l22.67 22.67c9.36 9.36 9.37 24.52.04 33.9L131.49 256l154.02 154.75c9.34 9.38 9.32 24.54-.04 33.9l-22.67 22.67c-9.37 9.37-24.57 9.37-33.94 0L34.52 272.97c-9.37-9.37-9.37-24.57 0-33.94z"/></svg>
+                        </button>
+                        <button class='cGalleryCarouselNav__button' data-carousel-arrow='next' aria-label='Next' role='button'>
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="10"><path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"/></svg>
+                        </button>
+                    </div>
+                {{endif}}
+            </div>
+        </div>
+    {{endif}}
+    {{if \count( $recentComments )}}
+        <div class='ipsColumn ipsColumn_veryWide'>
+            <div class='ipsBox ipsWidget{{if \count( $featured )}} ipsWidget--gallery-comments {{endif}}ipsResponsive_pull ipsFlex ipsFlex-fd:column'>
+                <h2 class='ipsType_reset ipsWidget_title ipsFlex-flex:00 ipsFlex ipsFlex-ai:center ipsFlex-jc:between ipsFlex-fw:wrap'>
+                    <span>{lang="gallery_recently_commented_images"}</span>
+                </h2>
+                <div class='ipsWidget_inner ipsPos_relative ipsFlex-flex:11'>
+                    <div {{if \count( $featured )}} class='cGalleryLatestComments'{{endif}}>
+                        <ul>
+                            {{foreach $recentComments as $image}}
+                            {{$lastComment = $image->comments( 1, 0, 'date', 'desc', NULL, TRUE );}}
+                            <li class='cGalleryLatestComments__item'>
+                                <div class='cGalleryLatestComments__thumb'>
+                                    <div class='ipsImageBlock'>
+                                        <a href="{$image->url()->setQueryString( 'context', 'new' )}" class='ipsImageBlock__main' data-ipsToolTip title="{$image->caption}">
+                                            {{if $image->media }}
+                                                <video loading="lazy"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}" preload="metadata"{{endif}}>
+                                                    <source src="{file="$image->original_file_name" extension="gallery_Images"}{{if !$image->masked_file_name }}#t=1{{endif}}" type='{$image->file_type}' />
+                                                </video>
+                                                <div class='ipsImageBlock__video-icon'></div>
+                                            {{else}}
+                                                <img src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}" loading="lazy" />
+                                            {{endif}}
+                                        </a>
+                                        {template="nsfwOverlay" app="gallery" location="front" group="global" params="$image, FALSE"}
+                                    </div>
+                                </div>
+                                <div class='cGalleryLatestComments__text'>
+                                    <a href="{$image->url()->setQueryString( 'context', 'new' )}">
+                                        <div class='ipsType_richText'>
+                                                {$lastComment->truncated(TRUE)|raw}
+                                        </div>
+                                    </a>
+                                    <div class='ipsType_blendLinks ipsType_light ipsType_small'>
+                                        {$image->lastCommenter()->link()|raw}
+                                        &middot; <a href='{$image->url( 'getLastComment' )}' title='{lang="get_last_post"}' class='ipsType_blendLinks'>{datetime="$image->mapped('last_comment')"}</a>
+                                    </div>
+                                </div>
+                            </li>
+                            {{endforeach}}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{endif}}
+</div>
+{{endif}}
+
+{{if settings.gallery_overview_show_categories}}
+    {{$clubNodes = settings.club_nodes_in_apps ? \IPS\gallery\Category::clubNodes() : array();}}
+    {{if $rootCategories = \IPS\gallery\Category::roots()}}
+        <div class="ipsBox ipsResponsive_pull ipsSpacer_bottom">
+            <h2 class='ipsType_sectionTitle ipsFlex ipsFlex-ai:center ipsFlex-jc:between ipsFlex-fw:wrap'>
+                <span class='ipsType_reset'>{{if $clubNodes}}{lang="community_image_categories"}{{else}}{lang="gallery_categories"}{{endif}}</span>
+                <span class='ipsType_small ipsType_light ipsType_blendLinks ipsType_semiBold'>
+                    <a href='{url="app=gallery&module=gallery&controller=browse&do=categories" seoTemplate="gallery_categories"}'>{lang="gallery_view_all_categories"}</a>
+                </span>
+            </h2>
+            <div class="ipsPadding">
+                {template="categoryGrid" group="browse" app="gallery" params="$rootCategories"}
+            </div>
+        </div>
+    {{endif}}
+
+    {{if settings.club_nodes_in_apps and $clubNodes = \IPS\gallery\Category::clubNodes()}}
+        <div class="ipsBox ipsResponsive_pull ipsSpacer_bottom">
+            {{if $rootCategories}}<h2 class="ipsType_sectionTitle">{lang="club_node_gallery"}</h2>{{endif}}
+            <div class="ipsPadding">
+                {template="categoryGrid" group="browse" app="gallery" params="$clubNodes"}
+            </div>
+        </div>
+    {{endif}}
+{{endif}}
+{{if \count( $recentlyUpdatedAlbums )}}
+	<div class='ipsBox ipsResponsive_pull ipsSpacer_bottom' {{if settings.gallery_nsfw}}data-controller="gallery.front.global.nsfw"{{endif}}>
+		<h2 class='ipsType_reset ipsType_sectionTitle ipsFlex ipsFlex-ai:center ipsFlex-jc:between ipsFlex-fw:wrap'>
+			<span>{lang="gallery_recently_updated_albums"}</span>
+		</h2>
+        <div class='ipsPadding'>
+            <ul class='cGalleryCats'>
+                {{foreach $recentlyUpdatedAlbums as $album}}
+	                <li class='cGalleryCat'>
+	                	<div class='ipsImageBlock'>
+							<a href='{$album->url()}' class='ipsImageBlock__main'>
+								{{if $album->asNode()->coverPhoto('masked')}}
+									<img src="{$album->asNode()->coverPhoto('masked')}" alt="{$album->name}" loading="lazy">
+								{{endif}}
+							</a>
+                            {template="nsfwOverlay" app="gallery" location="front" group="global" params="$album->asNode()->coverPhotoObject()"}
+						</div>
+						<h2 class='cGalleryCats__name'>
+							<a href='{$album->url()}'>{$album->name}</a>
+						</h2>
+						<ul class='cGalleryCats__stats'>
+							<li data-ipsTooltip title='{lang="num_images" pluralize="$album->count_imgs"}'><i class='fa fa-camera'></i> {$album->count_imgs}</li>
+                            {{if $album->use_comments && $album->comments > 0}}
+                            <li data-ipsTooltip title='{lang="gallery_album_num_comments_lc" pluralize="$album->comments"}'><i class='fa fa-comment'></i> {$album->comments}</li>
+                            {{endif}}
+                            {{if $album->allow_comments && $album->count_comments > 0}}
+                            <li data-ipsTooltip title='{lang="gallery_image_comments_s" pluralize="$album->count_comments"}'><i class='fa fa-comments-o'></i> {$album->count_comments}</li>
+                            {{endif}}
+						</ul>
+					</li>
+                {{endforeach}}
+            </ul>
+        </div>
+	</div>
+{{endif}}
+
+{{if !empty( $new )}}
+<div class='ipsBox ipsResponsive_pull'{{if settings.gallery_nsfw}} data-controller="gallery.front.global.nsfw"{{endif}}>
+	<h2 class='ipsType_sectionTitle ipsType_reset'>{lang="new_images"}</h2>
+	<div class='ipsPad_half'>
+		<ul class='iGalleryMasonry'>
+			{{foreach $new as $image}}
+          		{{$imageWidth=isset( $image->_dimensions['small'][0] ) ? $image->_dimensions['small'][0] : 0;}}
+          		{{$imageHeight=isset( $image->_dimensions['small'][1] ) ? $image->_dimensions['small'][1] : 0;}}
+				<li class='iGalleryMasonry__item' {{if $imageWidth && $imageHeight}}style='--ratio:{$imageWidth}/{$imageHeight}'{{endif}}>
+					<div class='ipsImageBlock ipsImageBlock--hover'>
+						<a href="{$image->url()->setQueryString( 'context', 'new' )}" class='ipsImageBlock__main'>
+							{{if $image->media }}
+								<video loading="lazy"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{else}} preload="metadata"{{endif}}>
+									<source src="{file="$image->original_file_name" extension="gallery_Images"}{{if !$image->masked_file_name }}#t=1{{endif}}" type='{$image->file_type}' />
+								</video>
+								<div class='ipsImageBlock__video-icon'></div>
+							{{else}}
+								<img src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}" loading="lazy" />
+							{{endif}}
+						</a>
+						<div class='ipsImageBlock__header'>
+							{{if $image->hidden() === -1 || $image->hidden() === 1 || $image->mapped('pinned') || $image->mapped('featured')}}
+								<div>
+									{{if $image->hidden() === -1}}
+										<span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{$image->hiddenBlurb()}'><i class='fa fa-eye-slash'></i></span>
+									{{elseif $image->hidden() === 1}}
+										<span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa fa-warning'></i></span>
+									{{endif}}
+									{{if $image->mapped('pinned')}}
+										<span class="ipsBadge ipsBadge_icon ipsBadge_positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa fa-thumb-tack'></i></span>
+									{{endif}}
+									{{if $image->mapped('featured')}}
+										<span class="ipsBadge ipsBadge_positive"><i class='fa fa-star'></i> {lang="featured"}</span>
+									{{endif}}
+								</div>
+							{{endif}}
+						</div>
+						<div class='ipsImageBlock__footer'>
+							<div class='ipsImageBlock__title'>
+								{{if $image->unread()}}
+									<span class='ipsItemStatus ipsItemStatus_small' data-ipsTooltip title='{{if $image->unread() === -1}}{lang="new"}{{else}}{lang="updated"}{{endif}}'><i class='fa fa-circle'></i></span>
+								{{endif}}
+								<a href="{$image->url()->setQueryString( 'context', 'new' )}" tabindex='-1'>{$image->caption}</a>
+							</div>
+							<div>
+								{lang="byline_nodate_itemprop" htmlsprintf="$image->author()->link( $image->warningRef() )"}
+							</div>
+						</div>
+                        {template="nsfwOverlay" app="gallery" location="front" group="global" params="$image"}
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+	</div>
+</div>
+{{endif}}

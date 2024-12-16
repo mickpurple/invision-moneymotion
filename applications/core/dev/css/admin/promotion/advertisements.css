@@ -1,0 +1,23 @@
+.ips{expression="mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"} img {
+	max-width: 300px;
+	max-height: 100px;
+}
+
+.ips{expression="mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"}Preview {
+	border: 0px;
+}
+[data-pagecontroller="advertisements"] [data-title="Preview"] {
+	white-space: normal;
+}
+
+.ips{expression="mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"} .ips{expression="mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"}_large,
+.ips{expression="mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"} .ips{expression="mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"}_medium,
+.ips{expression="mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"} .ips{expression="mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"}_small {
+	display: block !important;
+	background: transparent !important;
+	margin: 0 !important;
+}
+
+.ips{expression="mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"}_tag {
+	display: none !important;
+}

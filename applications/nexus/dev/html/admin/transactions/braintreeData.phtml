@@ -1,0 +1,180 @@
+<ips:template parameters="$response=NULL, $error=NULL" />
+{{if isset( $response->riskData )}}
+	<div class="ipsSpacer_top ipsSpacer_bottom">
+		<p class='ipsType_normal ipsType_reset'>
+			<i class="fa fa-shield"></i> {lang="braintree_risk_level"} {$response->riskData->decision}
+		</p>
+	</div>
+{{endif}}
+{{if isset( $response->paymentInstrumentType )}}
+	<div class="ipsSpacer_bottom">
+		{{if $response->paymentInstrumentType === 'paypal_account'}}
+			<p class='ipsType_reset ipsType_normal'>
+				<i class="fa fa-paypal" data-ipsTooltip title="{lang="braintree_type_paypal"}"></i> {$response->paypalDetails->payerEmail} <span class="ipsType_small">({$response->paypalDetails->payerFirstName} {$response->paypalDetails->payerLastName})</span>
+			</p>
+			{{if $response->paypalDetails->payerStatus}}
+				<p class='ipsType_normal ipsType_reset'>
+					{lang="paypal_payer_status" sprintf=" $response->paypalDetails->payerStatus"}
+				</p>
+			{{endif}}
+			{{if $response->paypalDetails->sellerProtectionStatus}}
+				<p class='ipsType_normal ipsType_reset'>
+					{lang="paypal_seller_protection_status" sprintf=" $response->paypalDetails->sellerProtectionStatus"}
+				</p>
+			{{endif}}
+		{{elseif $response->paymentInstrumentType === 'venmo_account'}}
+			<p class='ipsType_reset ipsType_normal'>
+				{$response->venmoAccount['sourceDescription']}
+			</p>
+		{{elseif $response->paymentInstrumentType === 'credit_card'}}
+			<p class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+				{{if $response->creditCardDetails->cardType == 'Visa'}}
+					<i class="fa fa-cc-visa" data-ipsTooltip title="{lang="card_type_visa"}"></i>
+				{{elseif $response->creditCardDetails->cardType == 'MasterCard'}}
+					<i class="fa fa-cc-mastercard" data-ipsTooltip title="{lang="card_type_mastercard"}"></i>
+				{{elseif $response->creditCardDetails->cardType == 'Discover'}}
+					<i class="fa fa-cc-discover" data-ipsTooltip title="{lang="card_type_discover"}"></i>
+				{{elseif $response->creditCardDetails->cardType == 'American Express'}}
+					<i class="fa fa-cc-amex" data-ipsTooltip title="{lang="card_type_american_express"}"></i>
+				{{elseif $response->creditCardDetails->cardType == 'JCB'}}
+					<i class="fa fa-cc-jcb" data-ipsTooltip title="{lang="card_type_jcb"}"></i>
+				{{else}}
+					<i class="fa fa-credit-card"></i>
+				{{endif}}
+				&middot;&middot;&middot;&middot;{$response->creditCardDetails->last4}
+				&nbsp;
+				<span class="ipsType_small">
+					{lang="card_expires"} {$response->creditCardDetails->expirationDate}
+					{{if $response->creditCardDetails->cardholderName}}
+						&nbsp;
+						{lang="card_holder_name"} {$response->creditCardDetails->cardholderName}
+					{{endif}}
+					{{if $response->creditCardDetails->countryOfIssuance and $response->creditCardDetails->countryOfIssuance !== 'Unknown'}}
+						&nbsp;
+						{lang="card_origin"} {lang="country-{$response->creditCardDetails->countryOfIssuance}"}
+					{{endif}}
+				</span>
+			</p>
+			{{foreach array( 'cvvResponseCode', 'avsStreetAddressResponseCode', 'avsPostalCodeResponseCode' ) as $k}}
+				{{if $response->$k}}
+					<p class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+						{{if $response->$k === 'M'}}
+							<span class="ipsType_success"><i class="fa fa-check"></i>
+						{{elseif $response->$k === 'N'}}
+							<span class="ipsType_warning"><i class="fa fa-exclamation-triangle"></i>
+						{{else}}
+							<span class="ipsType_issue"><i class="fa fa-info-circle"></i>
+						{{endif}}
+						{lang="braintree_{$k}"}{lang="braintree_avscvv_{$response->$k}"}</span>
+					</p>
+				{{endif}}
+			{{endforeach}}
+
+			{{if $response->threeDSecureInfo}}
+				{{if $response->threeDSecureInfo->liabilityShifted}}
+					<span class="ipsType_success"><i class="fa fa-check"></i> {lang="braintree_3ds_pass"}</span>
+				{{elseif $response->threeDSecureInfo->liabilityShiftPossible}}
+					<span class="ipsType_warning"><i class="fa fa-exclamation-triangle"></i> {lang="braintree_3ds_fail"}</span>
+				{{else}}
+					<i class="fa fa-info-circle"></i> {lang="braintree_3ds_not_checked"}
+				{{endif}}
+				&nbsp;<span class="ipsType_small ipsType_light">({lang="braintree_3ds_{$response->threeDSecureInfo->status}"})</span>
+			{{else}}
+				<i class="fa fa-info-circle"></i> {lang="braintree_3ds_not_checked"}
+			{{endif}}
+		{{elseif $response->paymentInstrumentType === 'apple_pay_card'}}
+			<p class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+				<i class="fa fa-apple"></i> {lang="stripe_tokenization_apple_pay"}
+			</p>
+			<p class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+				{{if str_replace( 'Apple Pay - ', '', $response->applePayCardDetails->cardType ) == 'Visa'}}
+					<i class="fa fa-cc-visa" data-ipsTooltip title="{lang="card_type_visa"}"></i>
+				{{elseif str_replace( 'Apple Pay - ', '', $response->applePayCardDetails->cardType ) == 'MasterCard'}}
+					<i class="fa fa-cc-mastercard" data-ipsTooltip title="{lang="card_type_mastercard"}"></i>
+				{{elseif str_replace( 'Apple Pay - ', '', $response->applePayCardDetails->cardType ) == 'Discover'}}
+					<i class="fa fa-cc-discover" data-ipsTooltip title="{lang="card_type_discover"}"></i>
+				{{elseif str_replace( 'Apple Pay - ', '', $response->applePayCardDetails->cardType ) == 'American Express'}}
+					<i class="fa fa-cc-amex" data-ipsTooltip title="{lang="card_type_american_express"}"></i>
+				{{elseif str_replace( 'Apple Pay - ', '', $response->applePayCardDetails->cardType ) == 'JCB'}}
+					<i class="fa fa-cc-jcb" data-ipsTooltip title="{lang="card_type_jcb"}"></i>
+				{{else}}
+					<i class="fa fa-credit-card"></i>
+				{{endif}}
+				&middot;&middot;&middot;&middot;{$response->applePayCardDetails->last4}
+				&nbsp;
+				<span class="ipsType_small">
+					{lang="card_expires"} {expression="str_pad( $response->applePayCardDetails->expirationMonth, 2, '0', STR_PAD_LEFT )"}/{$response->applePayCardDetails->expirationYear}
+					{{if $response->applePayCardDetails->cardholderName}}
+						&nbsp;
+						{lang="card_holder_name"} {$response->applePayCardDetails->cardholderName}
+					{{endif}}
+					{{if $response->applePayCardDetails->countryOfIssuance and $response->applePayCardDetails->countryOfIssuance !== 'Unknown'}}
+						&nbsp;
+						{lang="card_origin"} {lang="country-{$response->applePayCardDetails->countryOfIssuance}"}
+					{{endif}}
+				</span>
+			</p>
+			{{foreach array( 'avsStreetAddressResponseCode', 'avsPostalCodeResponseCode' ) as $k}}
+				{{if $response->$k}}
+					<p class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+						{{if $response->$k === 'M'}}
+							<span class="ipsType_success"><i class="fa fa-check"></i>
+						{{elseif $response->$k === 'N'}}
+							<span class="ipsType_warning"><i class="fa fa-exclamation-triangle"></i>
+						{{else}}
+							<span class="ipsType_issue"><i class="fa fa-info-circle"></i>
+						{{endif}}
+						{lang="braintree_{$k}"}{lang="braintree_avscvv_{$response->$k}"}</span>
+					</p>
+				{{endif}}
+			{{endforeach}}
+		{{elseif $response->paymentInstrumentType === 'android_pay_card'}}
+			<p class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+				<i class="fa fa-google"></i> {lang="stripe_tokenization_android_pay"}
+			</p>
+			<p class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+				{{if $response->androidPayCardDetails->cardType == 'Visa'}}
+					<i class="fa fa-cc-visa" data-ipsTooltip title="{lang="card_type_visa"}"></i>
+				{{elseif $response->androidPayCardDetails->cardType == 'MasterCard'}}
+					<i class="fa fa-cc-mastercard" data-ipsTooltip title="{lang="card_type_mastercard"}"></i>
+				{{elseif $response->androidPayCardDetails->cardType == 'Discover'}}
+					<i class="fa fa-cc-discover" data-ipsTooltip title="{lang="card_type_discover"}"></i>
+				{{elseif $response->androidPayCardDetails->cardType == 'American Express'}}
+					<i class="fa fa-cc-amex" data-ipsTooltip title="{lang="card_type_american_express"}"></i>
+				{{elseif $response->androidPayCardDetails->cardType == 'JCB'}}
+					<i class="fa fa-cc-jcb" data-ipsTooltip title="{lang="card_type_jcb"}"></i>
+				{{else}}
+					<i class="fa fa-credit-card"></i>
+				{{endif}}
+				&middot;&middot;&middot;&middot;{$response->androidPayCardDetails->last4}
+				&nbsp;
+				<span class="ipsType_small">
+					{lang="card_expires"} {expression="str_pad( $response->androidPayCardDetails->expirationMonth, 2, '0', STR_PAD_LEFT )"}/{$response->androidPayCardDetails->expirationYear}
+					{{if $response->androidPayCardDetails->countryOfIssuance and $response->androidPayCardDetails->countryOfIssuance !== 'Unknown'}}
+						&nbsp;
+						{lang="card_origin"} {lang="country-{$response->androidPayCardDetails->countryOfIssuance}"}
+					{{endif}}
+				</span>
+			</p>
+			{{foreach array( 'avsStreetAddressResponseCode', 'avsPostalCodeResponseCode' ) as $k}}
+				{{if $response->$k}}
+					<p class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+						{{if $response->$k === 'M'}}
+							<span class="ipsType_success"><i class="fa fa-check"></i>
+						{{elseif $response->$k === 'N'}}
+							<span class="ipsType_warning"><i class="fa fa-exclamation-triangle"></i>
+						{{else}}
+							<span class="ipsType_issue"><i class="fa fa-info-circle"></i>
+						{{endif}}
+						{lang="braintree_{$k}"}{lang="braintree_avscvv_{$response->$k}"}</span>
+					</p>
+				{{endif}}
+			{{endforeach}}
+		{{endif}}
+	</div>
+{{endif}}
+{{if $error}}
+	<p class='ipsMessage ipsMessage_error'>
+		{lang="braintree_details_error"}
+	</p>
+{{endif}}

@@ -1,0 +1,42 @@
+@media screen and (max-width: 767px) {
+
+	.ipsApp_admin .ipsTabs {
+		background: #e0e0e0;
+		background: var(--c3);
+	}
+
+		.ipsApp_admin .ipsTabs .ipsTabs_activeItem {
+			font-size: 14px;
+			font-weight: bold;
+		}
+
+		.ipsTabs [data-action='expandTabs']{
+			color: var(--c9);
+		}
+
+	.ipsTabs:target [role="tablist"], .ipsTabs.ipsTabs_showMenu [role="tablist"]{
+		background: var(--c0);
+	}
+
+	.ipsApp_admin .ipsTabs_item {
+		border-top: 0;
+	}
+	html[dir="ltr"] .ipsApp_admin .ipsTabs_item {
+		border-right: 0;
+	}
+	html[dir="rtl"] .ipsApp_admin .ipsTabs_item {
+		border-left: 0;
+	}
+
+	.ipsApp_admin .acpFormTabContent {
+		border-top: 0;
+		background: #fff;
+		background: var(--c0);
+		padding: 10px;
+	}
+
+	.acpFormTabBar .ipsTabs_item:not( .ipsTabs_activeItem ) {
+		color: #333;
+		color: var(--c5) !important;
+	}
+}

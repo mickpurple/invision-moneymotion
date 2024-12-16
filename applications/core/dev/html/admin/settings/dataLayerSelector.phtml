@@ -1,0 +1,17 @@
+<ips:template parameters="$items, $tab, $itemKey, $head, $activeKey='', $pre=true" />
+
+<div class="ipsPadding_bottom:half">
+    <h2 class="ipsPadding_left ipsMargin_bottom:half">
+        {$head}
+    </h2>
+    <ul class="ipsList_reset" id="dataLayerSelector">
+      {{foreach $items as $key => $item}}
+        <li class="ipsPadding_left {{if $key === $activeKey}}ipsButton_active{{endif}} listItem">
+            <a href='{url="app=core&module=settings&controller=dataLayer&tab={$tab}&{$itemKey}={$key}"}'
+               class='ipsOnlineStatus ipsOnlineStatus_{expression="($item['enabled'] ?? 1) ? 'online' : 'offline'"}' >
+                <span data-ipstooltip title="{$item['short']}" class="ipsType_monospace" style="padding:4px 0px;" >{$item['formatted_name']|raw}</span>
+            </a>
+        </li>
+      {{endforeach}}
+    </ul>
+</div>

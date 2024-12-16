@@ -1,0 +1,62 @@
+<ips:template parameters="$method, $done, $error, $setup, $availableMethods, $url=NULL" />
+<div id="elVerify">
+	<div class="ipsPad ipsType_normal ipsType_center">
+        {{if $method == 'phone'}}
+            {{if $done}}
+                {lang="verify_call_auth_done"}
+            {{else}}
+                {lang="verify_call_auth"}
+            {{endif}}
+        {{elseif $done}}
+            {lang="verify_{$method}_auth_done"}
+        {{else}}
+            {lang="verify_{$method}_auth"}
+        {{endif}}
+	</div>
+	{{if $done}}
+		<ul class="ipsList_reset ipsPad ipsClearfix ipsAreaBackground">
+            <li class="ipsFieldRow ipsClearfix ">
+				<div class="ipsFieldRow_content cVerify_container">
+					<input type="text" name="verify_auth_code" value="" class="{{if request.verify_auth_code}}ipsField_error{{endif}}" autocomplete="one-time-code" >
+					{{if request.verify_auth_code}}
+						<p class="ipsType_warning">{lang="$error"}</p>
+					{{endif}}
+                </div>
+            </li>
+			<li>
+				<button type='submit' class='ipsButton ipsButton_primary ipsButton_fullWidth ipsButton_medium ipsSpacer_bottom'>
+					<i class='fa fa-lock'></i> &nbsp;{lang="verify_submit_code"}
+				</button>
+			</li>
+			{{if $setup}}
+				<li>
+					<a href="{$url->csrf()->setQueryString( '_new', '1' )}" class='ipsButton ipsButton_link ipsButton_medium ipsButton_fullWidth'>{lang="verify_change_number"}</a>
+				</li>
+			{{endif}}
+		</ul>
+	{{else}}
+		<div class="ipsPad ipsAreaBackground">
+			{{if \in_array( 'phone', $availableMethods )}}
+				<div class="ipsMargin_bottom">
+					<a href="{$url->csrf()->setQueryString( 'verify_method', 'phone' )}" class='ipsButton ipsButton_primary ipsButton_fullWidth ipsButton_medium'>
+						<i class='fa fa-phone'></i>&nbsp; {lang="verify_submit_call"}
+					</a>
+				</div>
+			{{endif}}
+			{{if \in_array( 'sms', $availableMethods )}}
+                <div class="ipsMargin_bottom">
+					<a href="{$url->csrf()->setQueryString( 'verify_method', 'sms' )}" value="sms" class='ipsButton ipsButton_primary ipsButton_fullWidth ipsButton_medium'>
+						<i class='fa fa-commenting'></i>&nbsp; {lang="verify_submit_sms"}
+					</a>
+				</div>
+			{{endif}}
+            {{if \in_array( 'whatsapp', $availableMethods )}}
+            <div class="ipsMargin_bottom">
+                <a href="{$url->csrf()->setQueryString( 'verify_method', 'whatsapp' )}" value="sms" class='ipsButton ipsButton_primary ipsButton_fullWidth ipsButton_medium'>
+                    <i class='fa fa-comment-o'></i>&nbsp; {lang="verify_submit_whatsapp"}
+                </a>
+            </div>
+            {{endif}}
+		</div>
+	{{endif}}
+</div>

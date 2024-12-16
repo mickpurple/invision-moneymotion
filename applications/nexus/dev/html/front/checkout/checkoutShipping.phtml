@@ -1,0 +1,10 @@
+<ips:template parameters="$form, $invoice" />
+
+<div class='ipsColumns ipsColumns_collapsePhone ipsSpacer_top ipsSpacer_double'>
+	<div class='ipsColumn ipsColumn_fluid'>
+		{$form|raw}
+	</div>
+	<div class='ipsColumn ipsColumn_wide'>
+		{template="checkoutOrderSummary" group="checkout" app="nexus" params="$invoice->summary()"}
+	</div>
+</div>

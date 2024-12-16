@@ -1,0 +1,9 @@
+<ips:template parameters="$member" />
+<div class="ipsType_richText ipsType_normal">
+	<p>{lang="dashboard_support_account_desc"}</p>
+</div>
+<div class="ipsSpacer_top">
+	<a href="{$member->acpUrl()}" class="ipsButton ipsButton_primary ipsButton_verySmall">{lang="view_support_account"}</a>
+	&nbsp;
+	<a href="{$member->acpUrl()->setQueryString('do', 'delete')}" data-confirm class="ipsButton ipsButton_negative ipsButton_verySmall">{lang="delete"}</a>
+</div>

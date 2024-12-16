@@ -1,0 +1,82 @@
+<ips:template parameters="$entry, $primary=false, $table=false" />
+<article class='cBlog_grid_item ipsClear ipsClearfix ipsBox ipsResponsive_pull ipsSpacer_bottom {{if $entry->hidden() OR $entry->status === 'draft'}}ipsModerated{{endif}}'>
+	{{if $table and $table->canModerate()}}
+		{{$idField = $entry::$databaseColumnId;}}
+		<input type='checkbox' data-role='moderation' name="moderate[{$entry->$idField}]" data-actions="{expression="implode( ' ', $table->multimodActions( $entry ) )"}" data-state='{{if $entry->tableStates()}}{$entry->tableStates()}{{endif}}'>
+	{{endif}}
+	<div class='cBlog_grid_item__image'
+		{{if $entry->cover_photo}}
+			style='background-image: url("{file="$entry->cover_photo" extension="blog_Entries"}")'
+		{{else}}
+			style='background-image: url("{resource="pattern.png" app="core" location="global"}"); background-color: {$entry->coverPhotoBackgroundColor()}'
+		{{endif}}
+	>
+		{{if !\IPS\Request::i()->id}}
+			<div class='cBlog_grid_catBadge'><a href="{$entry->container()->url()}">{$entry->container()->_title}</a></div>
+		{{elseif $entry->category_id}}
+			<div class="cBlog_grid_catBadge"><a href="{$entry->category()->url()}">{$entry->category()->name}</a></div>
+		{{endif}}
+	</div>
+	<div class='cBlog_grid_item__body ipsPadding'>
+		<div>
+			<h2 class='cBlog_grid_item__title ipsType_pageTitle ipsContained_container'>
+				{{if $entry->prefix()}}
+					<span>{template="prefix" group="global" app="core" params="$entry->prefix( TRUE ), $entry->prefix()"}</span>
+				{{endif}}
+				{{if $entry->isFutureDate() || $entry->mapped('pinned') || $entry->mapped('featured') || $entry->hidden() === -1 || $entry->hidden() === 1 || $entry->status === 'draft'}}
+					{{if $entry->isFutureDate()}}
+					<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{$entry->futureDateBlurb()}'><i class='fa fa-clock-o'></i></span></span>
+                    {{endif}}
+					{{if $entry->hidden() === -1}}
+					<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{$entry->hiddenBlurb()}'><i class='fa fa-eye-slash'></i></span></span>
+					{{elseif $entry->hidden() === 1}}
+					<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa fa-warning'></i></span></span>
+					{{endif}}
+					{{if $entry->mapped('pinned')}}
+					<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa fa-thumb-tack'></i></span></span>
+					{{endif}}
+					{{if $entry->mapped('featured')}}
+					<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="featured"}'><i class='fa fa-star'></i></span></span>
+					{{endif}}
+					{{if $entry->status === 'draft'}}
+					<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{lang="unpublished"}'><i class='fa fa-pencil-square-o'></i></span></span>
+					{{endif}}
+				{{endif}}
+				
+				<span class='ipsType_break ipsContained'>
+					{{if $entry->unread()}}
+					<a href='{$entry->url('getNewComment')}'><span class='ipsItemStatus' data-ipsTooltip title="{lang="unread_blog"}"><i class="fa fa-circle"></i></span></a>&nbsp;
+					{{endif}}
+					<a href="{$entry->url()}" title="{lang="read_more_about" sprintf="$entry->name"}" data-role="newsTitle">{wordbreak="$entry->name"}</a>
+				</span>
+			</h2>
+			<section class='cBlog_grid_item__snippet ipsType_normal ipsType_richText ipsType_break ipsSpacer_bottom' data-ipsTruncate data-ipsTruncate-size='4 lines' data-ipsTruncate-type='remove'>
+				{$entry->truncated(TRUE)|raw}
+			</section>
+		</div>
+
+		<div>
+			<hr class='ipsHr'>
+			<div class='cBlog_grid_item__stats'>
+				<div class='ipsPhotoPanel ipsPhotoPanel_notPhone ipsPhotoPanel_tiny'>
+					{template="userPhoto" app="core" params="$entry->author(), 'tiny'" group="global"}
+					<div> 				
+						<p class='ipsType_reset'>
+							{{if $entry->category_id}}
+								{lang="entry_name_with_cat" htmlsprintf="$entry->author()->link(),$entry->category()->link()"}
+							{{else}}
+								<a href="{$entry->author()->url()}">{$entry->author()->name}</a>
+							{{endif}}
+						</p>
+						<p class='ipsType_reset'>
+							{datetime="$entry->date"}
+						</p>
+					</div>
+				</div>
+				<div class='cBlog_grid_item__comments {{if $entry->num_comments == 0}}ipsType_light ipsFaded{{endif}}'>
+					<a href='{$entry->url()}#comments' title='{lang="view_comments"}'><i class='fa fa-comment'></i> {$entry->num_comments}</a>
+				</div>
+			</div>
+		</div>
+	</div>	
+</article>

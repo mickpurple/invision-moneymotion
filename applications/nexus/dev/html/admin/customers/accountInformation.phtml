@@ -1,0 +1,53 @@
+<ips:template parameters="$customer, $tabs, $activeTabKey, $activeTabContents, $activeSubscription" />
+
+<div class='ipsBox ipsSpacer_bottom'>
+	<div id='acpPageHeader' class='cNexusSupportHeader ipsType_center'>
+		{template="userPhoto" group="global" app="core" params="$customer, 'medium'"}
+		<div>
+			<h1 class='ipsType_pageTitle ipsSpacer_top'>{$customer->cm_name}</h1>
+			<p class="ipsType_reset ipsType_sectionHead">{$customer->email}</p>
+			<p class='ipsType_reset ipsType_medium ipsSpacer_top ipsSpacer_half ipsType_light'>{lang="customer_since" htmlsprintf="$customer->joined->html()"}</p>
+			{{if $activeSubscription}}
+				<p class="ipsType_reset ipsType_center ipsType_positive ipsType_medium ipsSpacer_top ipsSpacer_half">
+					{{if member.hasAcpRestriction( 'nexus', 'customers', 'purchases_view' ) and $activeSubscription->purchase}}
+						<a href="{$activeSubscription->purchase->acpUrl()}" class="ipsType_blendLinks">
+					{{endif}}
+					<i class="fa fa-certificate"></i> &nbsp; {lang="nexus_subs_subscriber" sprintf="$activeSubscription->package->_title"}
+					{{if member.hasAcpRestriction( 'nexus', 'customers', 'purchases_view' ) and $activeSubscription->purchase}}
+					</a>
+					{{endif}}
+				</p>
+			{{endif}}
+		</div>
+
+		<hr class='ipsHr'>
+
+		<ul class='ipsList_reset'>
+			{{if \IPS\Member::loggedIn()->hasAcpRestriction( 'nexus', 'payments', 'invoices_add' )}}
+				<li class='ipsSpacer_bottom ipsSpacer_half'><a href='{url="app=nexus&module=payments&controller=invoices&do=generate&member={$customer->member_id}&_new=1"}' class='ipsButton ipsButton_primary ipsButton_fullWidth ipsButton_large'>{lang="add_invoice"}</a></li>
+			{{endif}}
+			<li><a href='{url="app=nexus&module=support&controller=requests&do=create&member={$customer->member_id}"}&_new=1' class='ipsButton ipsButton_primary ipsButton_fullWidth ipsButton_large'>{lang="customer_new_request"}</a></li>
+		</ul>
+	</div>
+</div>
+
+<div class='ipsBox'>
+	<div class='ipsTabs ipsTabs_stretch' id='elCustomerTabs' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_content_elCustomerTabs'>
+		<a href="#elCustomerTabs" data-action='expandTabs'><i class='fa fa-caret-down'></i></a>
+		<ul role='tablist'>
+			{{foreach $tabs as $k => $tab}}
+				<li>
+					<a href='{$customer->acpUrl()->setQueryString( array( 'do' => 'view', 'blockKey' => 'nexus_AccountInformation', 'block[nexus_AccountInformation]' => $k ) )}' class='ipsTabs_item ipsType_center  {{if $activeTabKey == $k}}ipsTabs_activeItem{{endif}}' id='customer_tab_{$k}' data-ipsTooltip title='{lang="customer_tab_{$k}"}'>
+						<i class='fa fa-{$tab['icon']}'></i> <span class='ipsResponsive_showPhone ipsResponsive_inline'>&nbsp;&nbsp;{lang="customer_tab_{$k}"}</span>
+						{{if $tab['count']}}<span class='ipsNotificationCount'>{$tab['count']}</span>{{endif}}
+					</a>
+				</li>
+			{{endforeach}}
+		</ul>
+	</div>
+	<div id='ipsTabs_content_elCustomerTabs' class='ipsTabs_panels acpFormTabContent'>
+		<div id='ipsTabs_elCustomerTabs_customer_tab_{$activeTabKey}_panel' class='ipsTabs_panel' aria-labelledby='customer_tab_{$activeTabKey}' aria-hidden='false'>
+			{$activeTabContents|raw}
+		</div>
+	</div>
+</div>

@@ -1,0 +1,42 @@
+<ips:template parameters="$alert, $url" />
+<div id='elAlert' class='ipsModal'>
+	<div class='ipsBox'>
+		<form action="{url="app=core&module=system&controller=alerts&do=dismiss&id={$alert->id}" seoTemplate="alert"}" method="post" accept-charset='utf-8' data-ipsForm class="ipsForm ipsForm_fullWidth">
+			<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+            <input type="hidden" name="url" value="{$url}">
+
+            <h4 class='ipsDialog_title'>{{if $alert->anonymous}}<i class="fa fa-bullhorn"></i>{{endif}} {$alert->title}</h4>
+            {{if $alert->author()->member_id and ! $alert->anonymous}}
+                <p class='ipsPadding_left:half ipsType_reset ipsType_medium ipsType_light ipsMargin_top:half'>
+                    {template="userPhoto" app="core" group="global" params="$alert->author(), 'tiny'"}
+                    {lang="byline_nodate" htmlsprintf="$alert->author()->link()"}
+                </p>
+            {{endif}}
+            <hr class="ipsHr">
+            <div class='ipsPadding ipsType_normal ipsType_break ipsType_richText'>
+                {$alert->content|raw}
+            </div>
+            {{if $alert->reply === 2 and $alert->author()->member_id and ! $alert->anonymous and ! member.canUseMessenger()}}
+            <hr class="ipsHr">
+            <div class="ipsPadding:half ipsType_light ipsType_small">
+                <span class="ipsBadge ipsBadge_icon ipsBadge_negative ipsMargin_right:half"><i class="fa fa-info"></i></span> {lang="alert_must_reply_modal_but_no_messenger" sprintf="$alert->author()->name"}
+            </div>
+            {{elseif $alert->reply == 2 and $alert->author()->member_id and ! $alert->anonymous}}
+            <hr class="ipsHr">
+            <div class="ipsPadding:half ipsType_light ipsType_small">
+                <span class="ipsBadge ipsBadge_icon ipsBadge_negative ipsMargin_right:half"><i class="fa fa-info"></i></span> {lang="alert_must_reply_modal" sprintf="$alert->author()->name"}
+            </div>
+            {{endif}}
+            <div class='ipsPadding:half ipsAreaBackground_light'>
+                <div class='ipsFlex ipsFlex-ai:center ipsFlex-jc:end ipsGap:2'>
+                    {{if ( $alert->reply !== 2 or !$alert->author()->member_id ) or ( $alert->reply === 2 and ! member.canUseMessenger() ) }}
+                        <a class="ipsButton ipsButton_light ipsButton_verySmall" href="{url="app=core&module=system&controller=alerts&do=dismiss&id={$alert->id}&ref={$url}" seoTemplate="alert" csrf="true"}">{lang="alert_dismiss"}</a>
+                    {{endif}}
+                    {{if !$alert->anonymous and $alert->reply and $alert->author()->member_id and member.canUseMessenger()}}
+                        <a href='{url="app=core&module=messaging&controller=messenger&do=compose&to={$alert->member_id}&title={$alert->title}&alert={$alert->id}" seoTemplate="messenger_compose"}' data-ipsDialog data-ipsDialog-title='{lang="alert_modal_title" sprintf="$alert->title"}' data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage="{lang="message_sent"}" data-ipsDialog-forceReload class='ipsButton ipsButton_primary ipsButton_verySmall' onclick="$('#elAlert').remove()">{lang="reply"}</a>
+                    {{endif}}
+                </div>
+            </div>
+		</form>
+	</div>
+</div>

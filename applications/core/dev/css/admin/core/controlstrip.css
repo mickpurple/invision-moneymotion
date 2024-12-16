@@ -1,0 +1,106 @@
+.ipsControlStrip {
+	display: inline-flex;
+	float: right;
+	position: relative;
+	z-index: 1;
+}
+html[dir="rtl"] .ipsControlStrip {
+	float: left;
+}
+
+html[dir="ltr"] .ipsControlStrip li {
+	margin-right: 4px;
+}
+html[dir="rtl"] .ipsControlStrip li {
+	margin-left: 4px;
+}
+
+.ipsControlStrip a {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: inherit;
+	font-size: 16px;
+	width: 30px;
+	height: 30px;
+	border-radius: 5px;
+	position: relative;
+	z-index: 0;
+}
+
+	.ipsControlStrip a::before{
+		content: '';
+		position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+		background: currentColor;
+		border-radius: inherit;
+		z-index: -1;
+		opacity: 0;
+	}
+
+		.ipsControlStrip .ipsControlStrip_disabled:before {
+			background: transparent;
+		}
+
+	.ipsControlStrip a:not(.ipsControlStrip_disabled):hover {
+		color: #fff;
+	}
+
+		.ipsControlStrip a:not(.ipsControlStrip_disabled):hover::before{
+			opacity: 1 !important;
+			background: #215e98;
+			background: var(--primary);
+		}
+
+.ipsControlStrip .ipsControlStrip_item {
+	display: none;
+}
+
+html[dir="ltr"] .ipsControlStrip li:last-child {
+	margin-right: 0;
+}
+html[dir="rtl"] .ipsControlStrip li:last-child {
+	margin-left: 0;
+}
+
+/* Relationships with other css modules */
+/*
+.ipsTable tr .ipsControlStrip a,
+.ipsTree_row .ipsControlStrip a {
+	opacity: 0.7;
+}
+*/
+
+.ipsTable tr:hover .ipsControlStrip a::before,
+.ipsTree_row:hover .ipsControlStrip a::before {
+	opacity: .08;
+}
+
+.ipsTree_row.ipsTree_open .ipsControlStrip a:not( :hover ):not( :active ) {
+	
+}
+
+/* Show text option */
+.ipsControlStrip.ipsControlStrip_showText a {
+	width: auto;
+	padding: 0 7px;
+}
+
+.ipsControlStrip.ipsControlStrip_showText .ipsControlStrip_icon {
+	vertical-align: middle;
+}
+
+.ipsControlStrip .ipsControlStrip_disabled .ipsControlStrip_icon  {
+	opacity: 0.5;
+}
+
+.ipsControlStrip.ipsControlStrip_showText .ipsControlStrip_item {
+	display: inline-block;
+	font-size: 12px;
+}
+
+html[dir="ltr"] .ipsControlStrip.ipsControlStrip_showText .ipsControlStrip_item {
+	margin-left: 3px;
+}
+html[dir="rtl"] .ipsControlStrip.ipsControlStrip_showText .ipsControlStrip_item {
+	margin-right: 3px;
+}

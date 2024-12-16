@@ -1,0 +1,13 @@
+<ips:template parameters="$conditions, $results, $warning" />
+<div class="ipsSpacer_top ipsSpacer_half">
+	{{for $i = 0; $i < \count( $conditions ); $i++}}
+		{$conditions[ $i ]}{{if $i != ( \count( $conditions ) - 1 )}}{lang="f_blurb_join"}<br>{{endif}}
+	{{endfor;}}
+	<br>
+	{{for $i = 0; $i < \count( $results ); $i++}}
+		{$results[ $i ]}{{if $i != ( \count( $results ) - 1 )}}{lang="f_blurb_join"}<br>{{endif}}
+	{{endfor;}}
+</div>
+{{if $warning}}
+	<div class="ipsType_warning ipsSpacer_top ipsSpacer_half"><i class="fa fa-exclamation-circle"></i> {lang="fraud_rule_conflict" sprintf="$warning->_title"}</div>
+{{endif}}

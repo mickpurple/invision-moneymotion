@@ -1,0 +1,123 @@
+/* Additional styles that apply to posts */
+/* Author responses to reviews */
+.ipsReviewResponse {
+	margin-top: var(--sp-4);
+	border-left: 2px solid rgb( var(--theme-area_background) );
+}
+
+html[dir="ltr"] .ipsReviewResponse {
+	margin-left: var(--sp-4);
+}
+html[dir="rtl"] .ipsReviewResponse {
+	margin-right: var(--sp-4);
+}
+
+.cMemberNewBadge .fa {
+	color: gold;
+}
+
+
+.cAuthorPane {
+	text-align: center;
+	padding: var(--sp-5) !important;
+}
+
+	.cAuthorPane_photo {
+		margin: var(--sp-3) 0 var(--sp-2) 0;
+		display: flex;
+		justify-content: center;
+	}
+
+		.cAuthorPane_photoWrap{
+			position: relative;
+			flex: 0 0 auto;
+			min-width: 0;
+		}
+
+	.ipsApp .cAuthorPane_author {
+		display: inline-block;
+		font-size: {fontsize="large"};
+		line-height: 1.2;
+		word-wrap: initial;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-moz-hyphens: initial;
+		margin: 0 0 -5px 0;
+	}
+		
+		.cAuthorPane_badge {
+			position: absolute;
+			top: 0;
+			right: -4px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 1em; height: 1em;
+			font-size: 26px;
+			color: rgb( var(--theme-area_background_reset) );
+		}
+		
+			.cAuthorPane_badge:not( .cAuthorPane_badge--rank ) {
+				background: rgb( var(--theme-mentions) );
+				border: 2px solid rgb( var(--theme-area_background_reset) );
+				border-radius: 50%;
+			}
+
+			.cAuthorPane_badge::before {
+				font-family: 'FontAwesome';
+				font-size: .5em;
+			}
+			
+			.cAuthorPane_badge--new::before {
+				content: "\f256";
+			}
+			
+			.cAuthorPane_badge--moderator::before {
+				content: "\f132";
+			}
+			
+			.cAuthorPane_badge--anon {
+				position: relative;
+				left: 0;
+				bottom: 0;
+				display: inline-block;
+				line-height: calc(50%);
+				font-weight: normal;
+				text-align: center;
+			}
+			
+			.cAuthorPane_badge_small {
+				font-size: 20px;
+				border-width: 1px;
+			}
+
+			.cAuthorPane_badge--anon::before {
+				content: "\f06e";
+			}
+			
+			.cAuthorPane_badge--rank {
+				top: auto;
+				bottom: 0;
+				right: auto;
+				left: -10px;
+				width: 1.4em; height: 1.4em;
+			}
+
+	.cAuthorPane_info .ipsRepBadge {
+		font-size: inherit;
+	}
+
+	.cAuthorPane .cAuthorGroupIcon {
+		max-width: 100%;
+		margin-top: var(--sp-2);
+	}
+
+
+	.cAuthorPane_stats--split {
+		flex-wrap: wrap;
+		padding: 0 var(--sp-3);
+	}
+
+		.cAuthorPane_stats--split > li {
+			flex-basis: 50%;
+		}

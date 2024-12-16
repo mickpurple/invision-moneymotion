@@ -1,0 +1,28 @@
+<ips:template parameters="$nearme, $mapMarkers" />
+
+<section class='ipsBox ipsMargin_bottom' data-controller='calendar.front.overview.nearMe' {{if settings.googlemaps AND !settings.mapbox}}data-nearme-use-google data-googlemaps-api-key='{setting="google_maps_api_key"}'{{endif}}>
+
+	<div style="display:flex;justify-content: space-between;align-items: center;">
+		<h2 class='ipsType_sectionTitle'>{lang="events_happening_near_you"}</h2>
+
+		<ul class="ipsList_reset">
+
+			<li class='ipsFieldRow ipsFieldRow_checkbox' style="margin-right:15px;">
+				<span class='ipsCustomInput'>
+					<input type='checkbox' id='useCurrentLocation'> 
+					<span></span>
+				</span>
+				<div class='ipsFieldRow_content'>
+					<label for='useCurrentLocation'>{lang="events_search_use_location"}</label>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class='ipsPadding ipsAreaBackground_light ipsRadius:bl ipsRadius:br'>
+		<p class='ipsType_reset ipsType_light ipsType_small ipsMargin_bottom'>{lang="showing_events_near_you"} <a href='{url="app=calendar&do=search&form_submitted=1&lat=0&lon=0"}' data-role='nearMeLink' data-action='moreNearMe'>{lang="see_more_events_near_you"} <i class='fa fa-angle-right'></i></a></p>
+		<div class='nearMe ipsJS_hide' data-role='locationEvents'>
+			{template="nearMeContent" group="events" app="calendar" params="$nearme, $mapMarkers"}
+		</div>
+	</div>
+</section>

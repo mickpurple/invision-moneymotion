@@ -1,0 +1,63 @@
+<ips:template parameters="$entry, $table" />
+
+<article class='cBlogView_entry {{if $entry->hidden()}}ipsModerated{{endif}}' data-controller="core.front.core.lightboxedImages">
+	<header class='ipsPhotoPanel ipsPhotoPanel_mini ipsPhotoPanel_notPhone'>
+		{template="userPhoto" app="core" params="$entry->author(), 'mini'" group="global"}
+		<div>
+			<h2 class='ipsType_sectionHead ipsType_blendLinks ipsContained_container'>
+				{{if $entry->isFutureDate() || $entry->mapped('pinned') || $entry->mapped('featured') || $entry->hidden() === -1 || $entry->hidden() === 1}}
+					{{if $entry->isFutureDate() and $entry->status !== 'draft'}}
+						<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{$entry->futureDateBlurb()}'><i class='fa fa-clock-o'></i></span></span>
+                    {{endif}}
+					{{if $entry->hidden() === 1}}
+						<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa fa-warning'></i></span></span>
+					{{endif}}
+					{{if $entry->mapped('pinned')}}
+						<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa fa-thumb-tack'></i></span></span>
+					{{endif}}
+					{{if $entry->mapped('featured')}}
+						<span><span class="ipsBadge ipsBadge_icon ipsBadge_small ipsBadge_positive" data-ipsTooltip title='{lang="featured"}'><i class='fa fa-star'></i></span></span>
+					{{endif}}
+				{{endif}}
+				
+				{{if $entry->prefix()}}
+					<span>{template="prefix" group="global" app="core" params="$entry->prefix( TRUE ), $entry->prefix()"}</span>
+				{{endif}}
+				<span class='ipsContained ipsType_break'>
+					<a href="{$entry->url( "getPrefComment" )}" title="{lang="read_more_about" sprintf="$entry->name"} {{if $entry->canEdit()}}{lang="click_hold_edit"}{{endif}}" {{if $entry->canEdit()}}data-role="editableTitle"{{endif}}>
+						{{if $entry->unread()}}
+							<span class='ipsItemStatus' data-ipsTooltip title="{lang="unread_blog"}"><i class="fa fa-circle"></i></span>
+						{{endif}}
+						{$entry->name}
+					</a>
+				</span>
+			</h2>
+			<p class='ipsType_light ipsType_reset ipsType_blendLinks'>
+				{lang="byline" htmlsprintf="$entry->author()->link()"}{datetime="$entry->date"}
+			</p>
+			{{if $entry->category_id}}
+				<br>
+				<span class="ipsBadge ipsBadge_neutral">{$entry->category()->name}</span>
+			{{endif}}
+			{{if \IPS\Settings::i()->blog_enable_rating}}
+				{template="rating" app="core" params="'large', $entry->averageRating(), 5, $entry->memberRating()" group="global"}
+			{{endif}}	
+		</div>
+	</header>
+
+	<section class='ipsType_normal ipsType_richText ipsType_break ipsSpacer_both' data-ipsTruncate data-ipsTruncate-size='4 lines' data-ipsTruncate-type='remove'>
+		{$entry->truncated()|raw}
+	</section>
+
+	<ul class='ipsList_inline'>
+		{{if $table->canModerate()}}
+			<li class='ipsPos_left'>
+				{{$idField = $entry::$databaseColumnId;}}
+				<input type='checkbox' data-role='moderation' name="moderate[{$entry->$idField}]" data-actions="{expression="implode( ' ', $table->multimodActions( $entry ) )"}" data-state='{{if $entry->tableStates()}}{$entry->tableStates()}{{endif}}'>
+			</li>
+		{{endif}}
+		<li><strong><a href='{$entry->url( "getPrefComment" )}' title="{lang="read_more_about" sprintf="$entry->name"}">{lang="read_more"}</a></strong></li>
+		<li><a href='{$entry->url()}#comments' title='{lang="view_comments"}' class='ipsType_light'>{lang="num_comments" pluralize="$entry->num_comments"}</a></li>
+		<li class='ipsType_light'>{lang="num_views_with_number" pluralize="$entry->views"}</li>
+	</ul>		
+</article>

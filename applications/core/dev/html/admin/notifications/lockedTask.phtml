@@ -1,0 +1,54 @@
+<ips:template parameters="$task, $description" />
+<div class="ipsType_richText ipsType_normal">
+	<p>{lang="dashboard_tasks_broken_desc"}</p>
+</div>
+<ul class="ipsDataList ipsDataList_reducedSpacing ipsSpacer_top">
+	<li class="ipsDataItem ipsType_break">
+		<span class="ipsDataItem_generic ipsDataItem_size5 ipsType_break"><strong>{lang="task_manager_app"}</strong></span>
+		<div class="ipsDataItem_generic">
+			<div class="ipsType_break ipsContained">
+				{{if $task->app}}
+					{expression="\IPS\Application::load( $task->app )->_title"}
+				{{else}}
+					{expression="\IPS\Plugin::load( $task->plugin )->_title"}
+				{{endif}}
+			</div>
+		</div>
+	</li>
+	<li class="ipsDataItem ipsType_break">
+		<span class="ipsDataItem_generic ipsDataItem_size5 ipsType_break"><strong>{lang="task_manager_key"}</strong></span>
+		<div class="ipsDataItem_generic">
+			<div class="ipsType_break ipsContained">
+				{$task->key}
+				{{if $description}}
+					<br>
+					<span class="ipsType_light">{lang="$description"}</span>
+				{{endif}}
+			</div>
+		</div>
+	</li>
+	<li class="ipsDataItem ipsType_break">
+		<span class="ipsDataItem_generic ipsDataItem_size5 ipsType_break"><strong>{lang="task_manager_last_run"}</strong></span>
+		<div class="ipsDataItem_generic">
+			<div class="ipsType_break ipsContained">
+				{{if $task->last_run}}
+					{datetime="$task->last_run"}
+				{{else}}
+					<em>{lang="never"}</em>
+				{{endif}}
+			</div>
+		</div>
+	</li>
+</ul>
+<div class="ipsType_richText ipsType_normal ipsSpacer_top">
+	{{if $task->app and \in_array( $task->app, \IPS\IPS::$ipsApps )}}
+		<p>{lang="dashboard_tasks_broken_desc_firstparty"}</p>
+	{{else}}
+		<p>{lang="dashboard_tasks_broken_desc_thirdparty"}</p>
+	{{endif}}
+</div>
+<div class="ipsSpacer_top ipsSpacer_double">
+	<a href="{url="app=core&module=settings&controller=advanced&do=runTask&id={$task->id}" csrf="true"}" class="ipsButton ipsButton_primary ipsButton_verySmall">{lang="task_manager_run"}</a>
+	&nbsp;
+	<a href="{url="app=core&module=settings&controller=advanced&do=taskLogs&id={$task->id}"}" class="ipsButton ipsButton_light ipsButton_verySmall">{lang="task_manager_logs"}</a>
+</div>

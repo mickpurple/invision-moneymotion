@@ -1,0 +1,43 @@
+<ips:template parameters="$comment, $id, $commentLang='__defart_comment'" />
+{{if isset( $comment['comment'] )}}
+	{{$idField = $comment['comment']::$databaseColumnId;}}
+	<div class='ipsBox ipsBox--child ipsPadding ipsClearfix ipsComment_recommended ipsSpacer_bottom' data-commentID='{$id}'>
+		{{if \IPS\IPS::classUsesTrait( $comment['comment'], 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+			<div class='ipsPos_right'>{template="reactionOverview" group="global" app="core" params="$comment['comment']"}</div>
+		{{endif}}
+		<span class='ipsComment_recommendedFlag'><i class='fa fa-star'></i><span class='ipsResponsive_hidePhone'> {lang="recommended"}</span></span>
+		<div class='ipsComment_header ipsPhotoPanel ipsPhotoPanel_mini ipsSpacer_top'>
+			{template="userPhoto" app="core" group="global" params="$comment['comment']->author(), 'mini', $comment['comment']->warningRef()"}
+			<div>
+				<h3 class='ipsComment_author ipsType_blendLinks'>
+					<strong class='ipsType_normal'>{template="userLink" app="core" group="global" params="$comment['comment']->author(), $comment['comment']->warningRef()"}</strong>
+					{template="reputationBadge" group="global" app="core" params="$comment['comment']->author()"}
+				</h3>
+				<p class='ipsComment_meta ipsType_light ipsType_small'>
+					<a href='{$comment['comment']->url()}' class='ipsType_blendLinks'>{$comment['comment']->dateLine()|raw}</a>
+					{{if $comment['comment']->editLine()}}
+						({lang="edited_lc"})
+					{{endif}}
+				</p>
+			</div>
+		</div>
+
+		<div class='ipsType_richText ipsType_normal' data-ipsTruncate data-ipsTruncate-type='remove' data-ipsTruncate-size='2 lines'>{$comment['comment']->truncated( TRUE )|raw}</div>
+
+		{{if $comment['note']}}
+			<div class='ipsComment_recommendedNote ipsType_medium'>
+				<p class='ipsType_reset ipsType_richText'>{$comment['note']}</p>
+				{{if isset( $comment['featured_by'] )}}
+					<p class='ipsType_reset ipsType_light'>{lang="recommended_by" htmlsprintf="$comment['featured_by']->link()"}</p>
+				{{endif}}
+			</div>
+		{{elseif isset( $comment['featured_by'] )}}
+			{lang="recommended_by" htmlsprintf="$comment['featured_by']->link()"}
+		{{endif}}
+
+		<hr class='ipsHr'>
+		<div>
+			<a href='{$comment['comment']->url()}' data-action='goToComment' class='ipsButton ipsButton_link ipsButton_verySmall ipsButton_fullWidth'>{lang="go_to_this_comment" sprintf="\IPS\Member::loggedIn()->language()->get( $commentLang )"} <i class='fa fa-angle-right'></i></a>
+		</div>
+	</div>
+{{endif}}
