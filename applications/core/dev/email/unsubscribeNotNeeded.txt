@@ -1,2 +1,0 @@
-<ips:template parameters="$member, $email" />
-{$email->language->addToStack("unsubscribe_not_needed", FALSE)}

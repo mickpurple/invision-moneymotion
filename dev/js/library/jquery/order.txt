@@ -1,3 +1,0 @@
-jquery.js
-jquery-migrate.js
-jquery.transform.js

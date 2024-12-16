@@ -1,8 +1,0 @@
-<ips:template parameters="$container" />
-
-<div class='ipsType_center'>
-	<p class='ipsType_large'>{{if \IPS\Request::i()->cat}}{lang="no_entries_in_cat"}{{else}}{lang="no_entries"}{{endif}}</p>
-	{{if $container->can('add')}}
-		<a href='{url="app=blog&module=blogs&controller=submit&id={$container->_id}" seoTemplate="blog_submit"}{{if \IPS\Request::i()->cat}}&cat={request="cat"}{{endif}}' class='ipsButton ipsButton_primary ipsButton_medium'>{lang="submit_entry"}</a>
-	{{endif}}
-</div>

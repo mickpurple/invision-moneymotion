@@ -1,2 +1,0 @@
-<ips:template parameters="$entry, $email" />
-{$email->language->addToStack("x_created_entry_in", FALSE, array( 'htmlsprintf' => array( $entry->author()->name, $entry->container()->getTitleForLanguage( $email->language ) ) ) )}: {$entry->title} ({$entry->url()})

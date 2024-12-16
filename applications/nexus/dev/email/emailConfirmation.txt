@@ -1,9 +1,0 @@
-<ips:template parameters="$request, $email" />
-
-{$email->language->addToStack("support_confirm_header", FALSE)}
-
-{{if $request->member}}
-{$email->language->addToStack("view_support_request", FALSE)}: {$request->url()}
-{{endif}}
-
-{$email->language->addToStack("support_reply_email_id", FALSE, array( 'htmlsprintf' => array( '[SR' . $request->id . '.' . $request->email_key . ']' ) ) )}

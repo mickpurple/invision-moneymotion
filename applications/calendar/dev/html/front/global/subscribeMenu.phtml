@@ -1,8 +1,0 @@
-<ips:template parameters="$thisCalendar, $downloadLinks" />
-{{if $downloadLinks}}
-    <ul class='ipsMenu ipsMenu_auto ipsHide' id='elCalendarSettings_menu'>
-        <li class='ipsMenu_title'>{{if $thisCalendar}}{lang="with_calendar" sprintf="$thisCalendar->_title"}{{else}}{lang="with_all_calendars"}{{endif}}</li>
-        <li class='ipsMenu_item'><a href='{{if $thisCalendar}}{$downloadLinks['iCalCalendar']}{{else}}{$downloadLinks['iCalAll']}{{endif}}'><i class='fa fa-download'></i> {lang="download_webcal"}</a></li>
-        <li class='ipsMenu_item'><a href='{expression="str_replace( array( 'http://', 'https://' ), 'webcal://', $thisCalendar ? $downloadLinks['iCalCalendar'] : $downloadLinks['iCalAll'] )"}'><i class='fa fa-calendar'></i> {lang="subscribe_webcal"}</a></li>
-    </ul>
-{{endif}}

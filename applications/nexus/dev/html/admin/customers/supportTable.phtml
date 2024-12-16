@@ -1,9 +1,0 @@
-<ips:template parameters="$table, $headers, $rows, $quickSearch" />
-
-{{if \count( $rows )}}
-	<table class='ipsTable ipsTable_responsive {{foreach $table->classes as $class}}{$class} {{endforeach}}' data-role="table" data-ipsKeyNav data-ipsKeyNav-observe='e d return'>
-		{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
-	</table>
-{{else}}
-	<p class='ipsType_reset ipsType_normal cCustomerOther_list ipsType_light ipsPad'>{lang="no_support_requests"}</p>
-{{endif}}
