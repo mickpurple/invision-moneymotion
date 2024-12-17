@@ -1,0 +1,19 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+
+<div data-role="tablePagination" {{if $table->pages <= 1}}class='ipsHide'{{endif}}>
+    {template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+</div>
+
+{{if \count( $rows )}}
+<ol class='ipsDataList ipsClear {{foreach $table->classes as $class}}{$class} {{endforeach}}' id='elTable_{$table->uniqueId}' data-role="tableRows">
+    {template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+</ol>
+{{else}}
+<div class='ipsType_center ipsPad'>
+    <p class='ipsType_large'>{lang="no_rows_in_table"}</p>
+</div>
+{{endif}}
+
+<div class="ipsButtonBar ipsPad_half ipsClearfix ipsClear {{if $table->pages <= 1}}ipsHide{{endif}}" data-role="tablePagination">
+    {template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+</div>

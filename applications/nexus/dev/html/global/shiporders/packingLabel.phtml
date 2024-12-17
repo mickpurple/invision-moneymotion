@@ -1,0 +1,7 @@
+<ips:template parameters="$shipment" />
+
+{{$data = $shipment->data;}}
+<div id='elShippingLabel'>
+	<strong>{$data['cm_first_name']} {$data['cm_last_name']}</strong><br>
+	{$shipment->address()->toString("<br>")|raw}
+</div>

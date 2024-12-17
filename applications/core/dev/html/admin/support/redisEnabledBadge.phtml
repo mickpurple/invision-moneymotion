@@ -1,0 +1,11 @@
+<ips:template parameters="$status" />
+
+{{if $status === TRUE}}
+<span class='ipsBadge ipsBadge_positive'>
+	{lang="enabled"}
+</span>
+{{else}}
+<span class='ipsBadge ipsBadge_negative'>
+	{lang="disabled"}
+</span>
+{{endif}}

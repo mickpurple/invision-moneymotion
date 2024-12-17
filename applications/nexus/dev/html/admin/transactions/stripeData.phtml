@@ -1,0 +1,81 @@
+<ips:template parameters="$response=NULL, $error=NULL" />
+{{if isset( $response['outcome'] )}}
+	<div class="ipsSpacer_top ipsSpacer_bottom">
+		<p class='ipsType_normal ipsType_reset'>
+			<i class="fa fa-shield"></i> {lang="stripe_risk_level" sprintf="$response['outcome']['risk_level']"}
+		</p>
+	</div>
+{{endif}}
+{{if isset( $response['source']['card'] )}}
+	<div class="ipsSpacer_bottom">
+		<p class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+			{{if isset( $response['source']['card']['tokenization_method'] )}}
+				{{if $response['source']['card']['tokenization_method'] == 'apple_pay'}}
+					<i class="fa fa-apple"></i> {lang="stripe_tokenization_apple_pay"}
+				{{elseif $response['source']['card']['tokenization_method'] == 'android_pay'}}
+					<i class="fa fa-google"></i> {lang="stripe_tokenization_android_pay"}
+				{{else}}
+					{lang="stripe_tokenization_other"} {$response['source']['card']['tokenization_method']}
+				{{endif}}
+				&nbsp;
+			{{endif}}
+			{{if $response['source']['card']['brand'] == 'Visa' or $response['source']['card']['brand'] == 'visa'}}
+				<i class="fa fa-cc-visa" data-ipsTooltip title="{lang="card_type_visa"}"></i>
+			{{elseif $response['source']['card']['brand'] == 'MasterCard' or $response['source']['card']['brand'] == 'mastercard'}}
+				<i class="fa fa-cc-mastercard" data-ipsTooltip title="{lang="card_type_mastercard"}"></i>
+			{{elseif $response['source']['card']['brand'] == 'Discover' or $response['source']['card']['brand'] == 'discover'}}
+				<i class="fa fa-cc-discover" data-ipsTooltip title="{lang="card_type_discover"}"></i>
+			{{elseif $response['source']['card']['brand'] == 'American Express' or $response['source']['card']['brand'] == 'amex'}}
+				<i class="fa fa-cc-amex" data-ipsTooltip title="{lang="card_type_american_express"}"></i>
+			{{elseif $response['source']['card']['brand'] == 'Diners Club' or $response['source']['card']['brand'] == 'diners'}}
+				<i class="fa fa-cc-diners-club" data-ipsTooltip title="{lang="card_type_diners_club"}"></i>
+			{{elseif $response['source']['card']['brand'] == 'JCB' or $response['source']['card']['brand'] == 'jcb'}}
+				<i class="fa fa-cc-jcb" data-ipsTooltip title="{lang="card_type_jcb"}"></i>
+			{{else}}
+				<i class="fa fa-credit-card"></i>
+			{{endif}}
+			&middot;&middot;&middot;&middot;{$response['source']['card']['last4']}
+			&nbsp;
+			<span class="ipsType_small">
+				{lang="card_expires"} {expression="str_pad( $response['source']['card']['exp_month'], 2, '0', STR_PAD_LEFT )"}/{$response['source']['card']['exp_year']}
+				&nbsp;
+				{lang="card_origin"} {lang="country-{$response['source']['card']['country']}"}
+			</span>
+		</p>
+		{{foreach array( 'cvc_check', 'address_line1_check', 'address_postal_code_check' ) as $k}}
+			<p class='ipsType_reset ipsType_normal ipsTruncate ipsTruncate_line'>
+				{{if $response['source']['card'][ $k ] == 'pass'}}
+					<span class="ipsType_success"><i class="fa fa-check"></i> {lang="stripe_{$k}_pass"}</span>
+				{{elseif $response['source']['card'][ $k ] == 'fail'}}
+					<span class="ipsType_warning"><i class="fa fa-exclamation-triangle"></i> {lang="stripe_{$k}_fail"}</span>
+				{{else}}
+					<span class="ipsType_issue"><i class="fa fa-info-circle"></i> {{if $response['source']['card'][ $k ]}}{lang="stripe_{$k}_{$response['source']['card'][ $k ]}"}{{else}}{lang="stripe_{$k}_unchecked"}{{endif}}</span>
+				{{endif}}
+			</p>
+		{{endforeach}}
+		{{if isset( $response['source']['three_d_secure'] )}}
+			{{if isset( $response['source']['three_d_secure']['authenticated'] ) and $response['source']['three_d_secure']['authenticated']}}
+				<span class="ipsType_success"><i class="fa fa-check"></i> {lang="stripe_3ds_pass"}</span>
+			{{else}}
+				<span class="ipsType_warning"><i class="fa fa-exclamation-triangle"></i> {lang="stripe_3ds_fail"}</span>
+			{{endif}}
+		{{elseif isset( $response['source']['card'] ) and isset( $response['source']['card']['three_d_secure'] ) and \is_array( $response['source']['card']['three_d_secure'] )}}
+			{{if isset( $response['source']['card']['three_d_secure']['result'] ) and $response['source']['card']['three_d_secure']['result'] == 'authenticated'}}
+				<span class="ipsType_success"><i class="fa fa-check"></i> {lang="stripe_3ds_pass_version" sprintf="$response['source']['card']['three_d_secure']['version']"}</span>
+			{{else}}
+				<span class="ipsType_warning"><i class="fa fa-exclamation-triangle"></i> {lang="stripe_3ds_fail_version" sprintf="$response['source']['card']['three_d_secure']['version']"}</span>
+			{{endif}}
+		{{else}}
+			{{if !isset( $response['card']['three_d_secure'] ) or $response['card']['three_d_secure'] == 'not_supported'}}
+				<span class="ipsType_neutral"><i class="fa fa-info-circle"></i> {lang="stripe_3ds_not_supported"}</span>
+			{{else}}
+				<i class="fa fa-info-circle"></i> {lang="stripe_3ds_not_checked"}
+			{{endif}}
+		{{endif}}
+	</div>
+{{endif}}
+{{if $error}}
+	<p class='ipsMessage ipsMessage_error'>
+		{lang="stripe_details_error"}
+	</p>
+{{endif}}

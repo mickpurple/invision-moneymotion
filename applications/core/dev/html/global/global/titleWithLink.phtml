@@ -1,0 +1,9 @@
+<ips:template parameters="$title, $link=NULL, $text='more_info', $hovertitle=NULL, $parsed=FALSE" />
+
+{{if $link===NULL}}
+    <strong>{$title}</strong>
+{{else}}
+    <a data-ipstooltip  {{if  $hovertitle !== NULL}} _title='{{if !$parsed}}{lang="$hovertitle"}{{else}}{$hovertitle}{{endif}}' {{endif}} href='{$link}'>
+        <span class='ipsType ipsType_bold'>{$title}</span> <i class="fa fa-external-link ipsType ipsType_light ipsType_small"></i>
+    </a>
+{{endif}}

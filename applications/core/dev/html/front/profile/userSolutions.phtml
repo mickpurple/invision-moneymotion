@@ -1,0 +1,44 @@
+<ips:template parameters="$member, $types, $currentType, $table, $solutions" />
+{{if !\IPS\Request::i()->isAjax()}}
+<div data-controller='core.front.profile.main'>
+	{template="profileHeader" app="core" location="front" group="profile" params="$member, true"}
+	<div data-role="profileContent" class="ipsSpacer_top">
+{{endif}}
+		<div class="ipsColumns ipsColumns_collapsePhone ipsSpacer_top">
+			<aside class="ipsColumn ipsColumn_wide">
+				<div class='cProfileSidebarBlock ipsMargin_bottom'>
+					<div class='cProfileRepScore ipsPad_half cProfileSolutions'>
+						<h2 class='ipsType_minorHeading'>{lang="profile_solutions"}</h2>
+						<span class='cProfileRepScore_points'>{number="$solutions"}</span>
+					</div>
+				</div>
+				{{if \count( $types ) > 1}}
+					<div class='ipsPadding:half ipsBox'>
+						<div class="ipsSideMenu" data-ipsTabBar data-ipsTabBar-contentArea='#elUserSolutions' data-ipsTabBar-itemselector=".ipsSideMenu_item" data-ipsTabBar-activeClass="ipsSideMenu_itemActive" data-ipsSideMenu>
+							<h3 class="ipsSideMenu_mainTitle ipsAreaBackground_light ipsType_medium">
+								<a href="#user_solutions" class="ipsPad_double" data-action="openSideMenu"><i class="fa fa-bars"></i> &nbsp;{lang="user_content_type"}&nbsp;<i class="fa fa-caret-down"></i></a>
+							</h3>
+							<div>
+								<ul class="ipsSideMenu_list">
+								{{foreach $types as $key => $type}}
+									<li><a href="{url="app=core&module=members&controller=profile&id={$member->member_id}&do=solutions&type={$key}&change_section=1" seoTemplate="profile_solutions" seoTitle="$member->members_seo_name"}" class="ipsSideMenu_item {{if $currentType == $key}}ipsSideMenu_itemActive{{endif}}">{lang="{$type::$title}_pl"}</a></li>
+								{{endforeach}}
+								</ul>
+							</div>
+						</div>
+					</div>
+				{{endif}}
+			</aside>
+			<section class="ipsColumn ipsColumn_fluid">
+				<div class='ipsBox'>
+					<h2 class='ipsType_sectionTitle ipsType_reset'>{lang="profile_solutions"}</h2>
+					<div id='elUserSolutions'>
+						{template="userSolutionsSection" group="profile" app="core" params="$table"}
+					</div>
+				</div>
+			</section>
+		</div>
+{{if !\IPS\Request::i()->isAjax()}}
+	</div>
+</div>
+{{endif}}	

@@ -1,0 +1,59 @@
+<ips:template parameters="$device, $apps, $oauthClients" />
+<ul class="ipsDataList ipsType_normal">
+	<li class="ipsDataItem">
+		<span class="ipsDataItem_generic ipsDataItem_size5"><strong>{lang="device_table_user_agent"}</strong></span>
+		<span class="ipsDataItem_generic">
+			{$device->userAgent()}<br>
+			<code class="ipsType_small">{$device->user_agent}</code>
+		</span>
+	</li>
+	{{foreach $apps as $accessToken}}
+		<li class="ipsDataItem">
+			<span class="ipsDataItem_generic ipsDataItem_size5"><strong>{$oauthClients[ $accessToken['client_id'] ]->_title}</strong></span>
+			<span class="ipsDataItem_generic">
+				{{if $accessToken['issue_user_agent']}}
+					<div class="ipsSpacer_bottom">
+						<code class="ipsType_small">{$accessToken['issue_user_agent']}</code>
+					</div>
+				{{endif}}
+				{template="oauthStatus" group="api" params="$accessToken, $oauthClients[ $accessToken['client_id'] ]->use_refresh_tokens"}
+				<span class="ipsType_small ipsType_light">
+					&nbsp;&nbsp;&nbsp;
+					{lang="oauth_authorization_issued"}: {datetime="$accessToken['issued']"}
+					{{if $accessToken['access_token_expires']}}
+						&middot;
+						{lang="oauth_authorization_access_token_expires"}: {datetime="$accessToken['access_token_expires']"}
+					{{endif}}
+					{{if $accessToken['refresh_token_expires']}}
+						&middot;
+						{lang="oauth_refresh_token_expires"}: {datetime="$accessToken['refresh_token_expires']"}
+					{{endif}}
+				</span>
+				{{if $accessToken['scope']}}
+					<div class="ipsSpacer_top">
+						{lang="oauth_authorization_scope"}: {expression="implode( ', ', json_decode( $accessToken['scope'] ) )"}
+					</div>
+				{{endif}}
+			</span>
+		</li>
+	{{endforeach}}
+	<li class="ipsDataItem">
+		<span class="ipsDataItem_generic ipsDataItem_size5"><strong>{lang="device_table_login_key"}</strong></span>
+		<span class="ipsDataItem_generic">
+			{template="deviceAuthorization" group="members" params="(bool) $device->login_key, TRUE, $device->anonymous"}<br>
+			<span class="ipsType_small ipsType_light">{lang="device_table_login_key_info"}</span>
+		</span>
+	</li>
+	<li class="ipsDataItem">
+		<span class="ipsDataItem_generic ipsDataItem_size5"><strong>{lang="device_table_login_handler"}</strong></span>
+		<span class="ipsDataItem_generic">
+			{template="deviceHandler" group="members" params="$device->login_handler"}
+		</span>
+	</li>
+	<li class="ipsDataItem">
+		<span class="ipsDataItem_generic ipsDataItem_size5"><strong>{lang="device_table_last_seen"}</strong></span>
+		<span class="ipsDataItem_generic">
+			{datetime="$device->last_seen"}
+		</span>
+	</li>
+</ul>

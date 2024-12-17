@@ -1,0 +1,21 @@
+<ips:template parameters="$mr, $e" />
+<div class="ipsPad">
+	<div class="ipsSpacer_bottom">
+		<h2 class='ipsType_sectionHead'>{lang="upgrade_delta_query_fail_title"}</h2>
+	</div>
+	<p class="ipsType_normal ipsType_reset ipsSpacer_bottom">
+		{{if \IPS\CIC}}
+			{lang="upgrade_delta_query_fail_cic"}
+		{{else}}
+			{lang="upgrade_delta_query_fail_nocic"}
+		{{endif}}
+	</p>
+	<div class="ipsMessage ipsMessage_error">{$e->getMessage()}</div>
+	<div class="ipsCode ipsSpacer_bottom" data-ipsCopy>
+		<code class="prettyprint lang-sql" data-role="copyTarget">{expression="\IPS\Db::_replaceBinds( $e->query, $e->binds )"}</code>
+		<button type="button" class="ipsButton ipsButton_light ipsButton_veryVerySmall ipsPos_right ipsHide" data-role="copyButton" data-clipboard-text="{expression="\IPS\Db::_replaceBinds( $e->query, $e->binds )"}">{lang="copy"}</button>
+	</div>	
+</div>
+<div class="ipsAreaBackground_light ipsClearfix ipsPad ipsType_center" data-role="querySuccessButtons">
+	<a href="{url="app=core&module=system&controller=upgrade&mr={$mr}&query_has_been_ran=1"}" class="ipsButton ipsButton_primary" data-action="redirectContinue">{lang="continue_anyway"}</a>
+</div>

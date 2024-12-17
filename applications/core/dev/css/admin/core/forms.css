@@ -1,0 +1,460 @@
+/* ACP Form styles */
+
+.ipsDarkMode{
+	--input-success__background-color: #295a3a;
+	--input-success__border-color: #527b60;
+	--input-error__background-color: #5a2929;
+	--input-error__border-color: #7b5252;
+}
+
+.ipsApp select,
+.ipsApp select:not([multiple]),
+.ipsCustomInput > span,
+.ipsApp .ipsField_autocomplete, .ipsApp textarea, .ipsApp input[type="text"], .ipsApp input[type="password"], .ipsApp input[type="datetime"], .ipsApp input[type="datetime-local"], .ipsApp input[type="date"], .ipsApp input[type="month"], .ipsApp input[type="time"], .ipsApp input[type="week"], .ipsApp input[type="number"], .ipsApp input[type="email"], .ipsApp input[type="url"], .ipsApp input[type="search"], .ipsApp input[type="tel"], .ipsApp .ipsField_dummy, .ipsField__checkboxOverflow--active {
+	border-radius: 4px;
+	padding: 11px;
+	color: inherit;
+	box-shadow: rgba(44, 95, 140, 0.08) 0px 3px 4px -1px;
+	box-shadow: var(--input--shadow) 0px 3px 4px -1px;
+	background-color: var(--input--background);
+	border-color: var(--input--border);
+}
+
+.ipsDarkMode .ipsMatrixHeader .ipsCustomInput > span{
+	background: var(--c4);
+}
+
+.ipsCustomInput > span{
+	padding: 0;
+}
+
+/* Select menus */
+.ipsApp select{
+	padding: 5px;
+}
+	.ipsApp select option{
+		padding: 4px;
+	}
+
+/*.ipsApp select:not([multiple]){
+	height: auto;
+	background-image: url( "{resource="select_dropdown_rtl.png" app="core" location="global"}" ), linear-gradient(to bottom, rgba(242,242,242,0) 0%,rgba(242,242,242,0) 100%);
+	padding-right: 30px;
+}*/
+
+.ipsDarkMode input::placeholder {
+	color: inherit;
+	opacity: 0.4;
+}
+
+html[dir="rtl"] .ipsApp select:not([multiple]){
+	padding: 11px;
+	padding-left: 30px;
+}
+
+/* Disabled */
+.ipsApp textarea[disabled], .ipsApp input[type="text"][disabled], .ipsApp input[type="password"][disabled],
+.ipsApp input[type="datetime"][disabled], .ipsApp input[type="datetime-local"][disabled],
+.ipsApp input[type="date"][disabled], .ipsApp input[type="month"][disabled], .ipsApp input[type="time"][disabled],
+.ipsApp input[type="week"][disabled], .ipsApp input[type="number"][disabled], .ipsApp input[type="email"][disabled],
+.ipsApp input[type="url"][disabled], .ipsApp input[type="search"][disabled], .ipsApp input[type="tel"][disabled],
+.ipsApp input[type="color"][disabled], .ipsApp .ipsField_autocompleteDisabled {
+	background-color: var(--c2);
+}
+
+/* Select trees */
+.ipsSelectTree{
+	min-height: 40px;
+	background: #fff;
+	background: var(--input--background);
+	border-color: rgba(24, 45, 70, 0.22);
+	border-radius: 4px;
+	padding: 10px 25px 10px 10px;
+	color: inherit;
+	box-shadow: rgba(44, 95, 140, 0.08) 0px 3px 4px -1px;
+	box-shadow: var(--input--shadow) 0px 3px 4px -1px;
+	border-color: var(--input--border);
+}
+
+	html[dir='rtl'] .ipsSelectTree{
+		padding: 10px 10px 10px 25px;
+	}
+
+	.ipsSelectTree_placeholder{
+		color: var(--c6);
+	}
+
+	.ipsSelectTree_expand{
+		line-height: 40px;
+		width: 32px;
+		color: var(--c6);
+	}
+
+	.ipsSelectTree_nodes{
+		background: inherit;
+	}
+
+	.ipsSelectTree.ipsSelectTree_active{
+		border-color: #3480bb;
+		border-color: var(--primary);
+	}
+
+	.ipsSelectTree_active.ipsSelectTree_bottom{
+		border-radius: 4px 4px 0 0;
+	}
+
+	.ipsSelectTree_active.ipsSelectTree_top{
+		border-radius: 0 0 4px 4px;	
+	}
+
+	.ipsSelectTree_nodes{
+		border-color: inherit;
+	}
+
+		.ipsSelectTree_nodes.ipsSelectTree_bottom{
+			border-radius: 0 0 4px 4px;
+		}
+		.ipsSelectTree_nodes.ipsSelectTree_top{
+			border-radius: 4px 4px 0 0;
+		}
+
+	.ipsSelectTree_nodes [data-role="nodeList"]{
+		border-color: #edf1f8;
+		border-color: var(--c3);
+		background: var(--c0);
+		border-radius: 4px;
+		padding: 4px;
+	}
+
+		.ipsSelectTree_nodes [data-role="nodeList"] li,
+		html[dir="ltr"] .ipsSelectTree_nodes [data-role="nodeList"] li [data-role="childWrapper"],
+		html[dir="rtl"] .ipsSelectTree_nodes [data-role="nodeList"] li [data-role="childWrapper"],
+		.ipsSelectTree_nodes [data-role="nodeList"] li [data-role="childWrapper"]{
+			border-width: 0;
+		}
+
+		.ipsSelectTree_nodes [data-role="nodeList"] li .ipsSelectTree_item{
+			border-radius: 4px;
+		}
+
+		.ipsSelectTree_nodes [data-role="nodeList"] li .ipsSelectTree_item:not(.ipsSelectTree_itemDisabled):hover{
+			background: #edf1f8;
+			background: var(--c2);
+		}
+
+		.ipsSelectTree_itemDisabled > [data-role="nodeTitle"]{
+			color: inherit;
+		}
+
+		.ipsSelectTree_itemDisabled{
+			opacity: .5;
+		}
+			.ipsSelectTree_itemDisabled .ipsSelectTree_itemDisabled{
+				opacity: 1;
+			}
+
+		.ipsSelectTree_selected,
+		.ipsSelectTree_nodes [data-role="nodeList"] li .ipsSelectTree_item:not( .ipsSelectTree_itemDisabled ).ipsSelectTree_selected:hover{
+			background: #3b6c99;
+			background: var(--primary);
+		}
+
+
+.ipsForm_group,
+html[dir="ltr"] .ipsForm_group > .ipsForm_groupContent,
+html[dir="rtl"] .ipsForm_group > .ipsForm_groupContent{
+	border-color: var(--c1);
+}
+
+
+/* RESET FORM STYLES */
+.ipsFieldRow.ipsPad_half {
+	padding: 3px;
+}
+.ipsWidthHeight {
+	background: white;
+	border: black dashed 1px;
+	margin-bottom: 10px;
+}
+/* jQuery UI doesn't support resizing RTL */
+html[dir="rtl"] .ipsWidthHeight {
+	display: none;
+}
+
+.ui-icon-gripsmall-diagonal-se {
+	background: url( "{resource="resizable.png" app="core" location="global"}" );
+}
+
+.ui-resizable {
+	position: relative;
+}
+.ui-resizable-handle {
+	position: absolute;
+	font-size: 0.1px;
+	display: block;
+}
+.ui-resizable-se {
+	cursor: nwse-resize;
+	width: 12px;
+	height: 12px;
+	right: 0px;
+	bottom: 0px;
+}
+
+html[dir] .ipsForm_horizontal .ipsFieldRow > .ipsFieldRow_label, 
+html[dir] .ipsForm_horizontal .ipsFieldRow > .ipsFieldRow_title,
+html[dir] .ipsForm_horizontal .ipsFieldRow:not( .ipsFieldRow_checkbox ) .ipsFieldRow_content {
+	padding: 10px;
+}
+
+html[dir] .ipsForm_horizontal .ipsFieldRow > .ipsFieldRow_label, 
+html[dir] .ipsForm_horizontal .ipsFieldRow > .ipsFieldRow_title,
+html[dir] .ipsForm_vertical .ipsFieldRow > .ipsFieldRow_label, 
+html[dir] .ipsForm_vertical .ipsFieldRow > .ipsFieldRow_title {
+	float: none;
+	min-width: 340px;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+	html[dir] .ipsForm_horizontal .ipsFieldRow > .ipsFieldRow_label, 
+	html[dir] .ipsForm_horizontal .ipsFieldRow > .ipsFieldRow_title {
+		margin-bottom: 0;
+	}
+
+html[dir] .ipsForm_horizontal .ipsFieldRow:not( .ipsFieldRow_yesNo ) > .ipsFieldRow_label,
+html[dir] .ipsForm_horizontal .ipsFieldRow:not( .ipsFieldRow_yesNo ) > .ipsFieldRow_title {
+	padding-top: 19px;
+}
+
+html[dir="ltr"] .ipsApp .ipsForm_horizontal .ipsFieldRow:not( .ipsFieldRow_checkbox ) .ipsFieldRow_content {
+	margin-left: 0;
+	width: 100%;
+	padding-left: 13px;
+}
+
+html[dir="rtl"] .ipsApp .ipsForm_horizontal .ipsFieldRow:not( .ipsFieldRow_checkbox ) .ipsFieldRow_content {
+	margin-right: 0;
+	width: 100%;
+	padding-left: 13px;
+}
+
+/* FLEXBOX FORMS */
+.ipsForm_horizontal .ipsFieldRow {
+	display: flex;
+}
+
+	.ipsForm_horizontal .ipsFieldRow.ipsFieldRow_noFlex {
+		display: block;
+	}
+
+.ipsFieldRow [data-ipsMatrix] {
+	width: 100%;
+}
+
+/* GENERAL FORM STYLING */
+.ipsForm_horizontal .ipsFieldRow > .ipsFieldRow_label,
+.ipsForm_horizontal .ipsFieldRow > .ipsFieldRow_title {
+	width: 340px;
+}
+
+html[dir="ltr"] .ipsForm_horizontal .ipsFieldRow:not( .ipsFieldRow_checkbox ) .ipsFieldRow_content {
+	margin-left: 345px;
+}
+html[dir="rtl"] .ipsForm_horizontal .ipsFieldRow:not( .ipsFieldRow_checkbox ) .ipsFieldRow_content {
+	margin-right: 345px;
+}
+
+.ipsFieldRow_section {
+	background-color: #f5f7fb;
+	background-color: var(--c2);
+	margin: 0;
+	font-size: 16px;
+	font-weight: 500;
+	color: inherit;
+}
+
+.ipsForm > .ipsFieldRow:not( :last-child ) {
+	border-bottom: 1px solid rgba(0,0,0,0.05);
+	border-bottom-color: var(--c2);
+	margin-bottom: 0;
+}
+
+html[dir="ltr"] .ipsFieldRow_required {
+	margin-left: 0;
+}
+
+.ipsDarkMode .ipsFieldRow_required {
+	color: #ff8080;
+}
+
+.ipsApp textarea.ipsField_short,
+.ipsApp input[type="text"].ipsField_short,
+.ipsApp input[type="password"].ipsField_short,
+.ipsApp input[type="datetime"].ipsField_short,
+.ipsApp input[type="datetime-local"].ipsField_short,
+.ipsApp input[type="month"].ipsField_short,
+.ipsApp input[type="time"].ipsField_short,
+.ipsApp input[type="week"].ipsField_short,
+.ipsApp input[type="number"].ipsField_short,
+.ipsApp input[type="email"].ipsField_short,
+.ipsApp input[type="url"].ipsField_short,
+.ipsApp input[type="search"].ipsField_short,
+.ipsApp input[type="tel"].ipsField_short,
+.ipsApp input[type="color"].ipsField_short,
+.ipsApp select.ipsField_short {
+	width: 100px;
+	max-width: 100px;
+}
+
+	.ipsApp input[type="date"].ipsField_short {
+		width: 150px;
+		max-width: 150px;
+	}
+	
+	/* Image edit dialog number input is too small, so make it a little larger */
+	.ipsApp .ipsDialog input[type="number"].ipsField_short {
+		width: 150px;
+		max-width: 150px;
+	}
+
+
+.ipsFieldRow_content .ipsType_warning {
+	display: block;
+}
+
+.ipsFieldRow .cCopyNode {
+	line-height: 20px;
+}
+
+/*
+html[dir] .ipsFieldRow > .ipsFieldRow_label, 
+html[dir] .ipsFieldRow > .ipsFieldRow_title {
+	color: #000;
+}
+*/
+
+.ipsFieldRow_desc {
+	color: #587898;
+	color: var(--text-soft);
+	font-size: inherit;
+	margin-top: .7em;
+}
+
+	.ipsFieldRow_desc a{
+		text-decoration: underline;
+	}
+
+/* Highlighted search result */
+.ipsDarkMode .ipsFieldRow_searchResult {
+	background-color: #393d22;
+	border: 1px solid #555e35;
+	color: #f8e5d4;
+}
+
+	.ipsDarkMode .ipsFieldRow.ipsFieldRow_searchResult .ipsFieldRow_desc{
+		color: #c3b899;
+	}
+
+		.ipsDarkMode .ipsFieldRow_searchResult .ipsFieldRow_desc a{
+			color: inherit;
+		}	
+
+.ipsField_fieldList_content label ~ .ipsFieldRow_desc {
+	margin-top: 0;
+}
+
+/* STACKS */
+.ipsField_stackItem .ipsField_stackDelete {
+	background: #323232;
+	background: var(--c8);
+	color: #fff;
+	color: var(--c2);
+	width: 19px;
+	height: 19px;
+	border-radius: 19px;
+	line-height: 17px;
+	top: 5px;
+}
+
+/* Toggles */
+.ipsToggle.ipsToggle_on{
+	background: #56bf5c;
+}
+
+.ipsToggle.ipsToggle_off {
+    background: #dadee3;
+    background: var(--c4);
+    filter: none;
+}
+
+	.ipsApp .ipsToggle:focus,
+	.ipsApp .ipsCustomInput input:focus + span{
+		box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0px 5px 7px rgba(0, 0, 0, 0.2);
+		border-color: rgba(0,0,0,0.5);
+	}
+
+/* Checkbox and radio */
+	/* Active styles */
+	.ipsCustomInput input:active:not( :checked ):not( :disabled ) + span,
+	.ipsCustomInput input:active:checked:not( :disabled ) + span {
+		background: var(--primary);
+	}
+
+	/* Checked styles */
+	.ipsCustomInput input:checked + span {
+		border-color: var(--primary);
+		background-color: var(--primary);
+	}
+
+/* Drop zones */
+.ipsAttachment_dropZone{
+	background: rgba(57, 101, 139, 0.05);
+	border-radius: 5px;
+}
+
+
+/* Draggable inputs */
+.ipsField_stackDrag{
+	cursor: move;
+}
+
+.ipsField_stackItem{
+	margin-bottom: 10px;
+}
+
+.ipsField_stackItem .ipsField_stackDrag,
+.ipsField_stackItem .ipsField_stackDelete:not(.ipsJS_hide){
+	top: 50%;
+	transform: translateY(-50%);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	line-height: 1;
+	border-width: 0;
+	padding: 0;
+}
+
+.ipsField_stackItem_keyValue{
+	padding: 0;
+}
+
+html[dir="ltr"] .ipsField_stackItem_keyValue{
+	margin: 0;
+}
+
+/* Progress bars */
+.ipsAttachment_progress{
+	background-color: var(--c0);
+	border-color: transparent;
+	box-shadow: inset var(--c3) 0px 0px 0px 1px;
+}
+
+	.ipsAttachment_progress > span{
+		background-color: var(--c6);
+	}
+
+/* Warning messages in forms can sometimes use .ipsType_richText. This fixes their color */
+.ipsMessage.ipsType_richText{
+	color: #fff;
+}

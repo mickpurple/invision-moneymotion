@@ -1,0 +1,64 @@
+<ips:template parameters="$event, $attendees" />
+<!-- Don't use IDs here, this template is called twice in view -->
+{{if \IPS\Member::loggedIn()->member_id AND ( isset( $attendees[0][ \IPS\Member::loggedIn()->member_id ] ) OR isset( $attendees[1][ \IPS\Member::loggedIn()->member_id ] ) OR ( isset( $attendees[2][ \IPS\Member::loggedIn()->member_id ] ) ) AND \count( $attendees[1] ) < $event->rsvp_limit )}}
+	<div class='{{if isset( $attendees[1][ \IPS\Member::loggedIn()->member_id ] )}}ipsAreaBackground_positive{{elseif isset( $attendees[0][ \IPS\Member::loggedIn()->member_id ] )}}ipsAreaBackground_negative{{else}}ipsAreaBackground_reset{{endif}} ipsPadding'>
+		<p class='ipsType_large ipsType_center ipsType_reset'>
+			<strong>
+				{{if isset( $attendees[1][ \IPS\Member::loggedIn()->member_id ] )}}
+					<span><i class='fa fa-check-circle'></i> {{if $event->hasPassed()}}{lang="you_were_going"}{{else}}{lang="you_are_going"}{{endif}}</span>
+				{{elseif isset( $attendees[0][ \IPS\Member::loggedIn()->member_id ] )}}
+					<span>{{if $event->hasPassed()}}{lang="you_werent_going"}{{else}}{lang="you_arent_going"}{{endif}}</span>
+				{{else}}
+					{{if !$event->hasPassed() OR !\IPS\Settings::i()->calendar_block_past_changes}}
+						{lang="confirm_attendance"}
+					{{else}}
+						{lang="no_rsvp_past_event"}
+					{{endif}}
+				{{endif}}
+			</strong>
+		</p>
+		{{if !$event->hasPassed() OR !\IPS\Settings::i()->calendar_block_past_changes}}
+		<ul class="ipsToolList ipsToolList_vertical ipsSpacer_top ipsSpacer_half">
+			{{if isset( $attendees[2][ \IPS\Member::loggedIn()->member_id ] )}}
+				<li>
+					<a href='{$event->url('rsvp')->setQueryString( 'action', 'yes' )->csrf()}' class='ipsButton ipsButton_primary ipsButton_fullWidth ipsButton_verySmall'>{lang="rsvp_attend_event"}</a>
+				</li>
+				<li>
+					<a href='{$event->url('rsvp')->setQueryString( 'action', 'no' )->csrf()}' class='ipsButton ipsButton_link ipsButton_fullWidth ipsButton_verySmall'>{lang="rsvp_notgoing_event"}</a>
+				</li>
+			{{elseif isset( $attendees[0][ \IPS\Member::loggedIn()->member_id ] )}}
+				<li class='ipsType_center'>
+					<a href='{$event->url('rsvp')->setQueryString( 'action', 'leave' )->csrf()}' class='ipsType_blendLinks ipsType_noUnderline ipsFaded'>{lang="rsvp_change"}</a>
+				</li>
+			{{else}}
+				<li class='ipsType_center'>
+					<a href='{$event->url('rsvp')->setQueryString( 'action', 'leave' )->csrf()}' class='ipsType_blendLinks ipsType_noUnderline ipsFaded'>{lang="rsvp_leave_event"}</a>
+				</li>
+			{{endif}}
+		</ul>
+		{{endif}}
+	</div>
+{{elseif $event->can('rsvp')}}
+	<div class='ipsPadding'>
+		{{if $event->hasPassed() AND \IPS\Settings::i()->calendar_block_past_changes}}
+			<div class='ipsMessage ipsMessage_info'>{lang="no_rsvp_past_event"}</div>
+		{{elseif $event->rsvp_limit > 0 AND \count($attendees[1]) >= $event->rsvp_limit}}
+			<div class='ipsMessage ipsMessage_info'>{lang="rsvp_limit_reached"}</div>
+		{{else}}
+			{{if $event->rsvp_limit > 0}}<div class='ipsMessage ipsMessage_info ipsMargin_bottom'>{lang="rsvp_limit_info" pluralize="\count($attendees[1])" sprintf="$event->rsvp_limit"}</div>{{endif}}
+			<div class='ipsFlex ipsFlex-ai:center ipsFlex-fw:wrap ipsGap:2'>
+				<div class='ipsFlex-flex:11' style='flex-basis:100%'>
+					<a href='{$event->url('rsvp')->setQueryString( 'action', 'yes' )->csrf()}' class='ipsButton ipsButton_primary ipsButton_fullWidth ipsButton_small'><i class="fa fa-check" aria-hidden="true"></i>&nbsp; {{if $event->hasPassed()}}{lang="rsvp_attended_past_event"}{{else}}{lang="rsvp_attend_event"}{{endif}}</a>
+				</div>
+				{{if $event->rsvp_limit == -1 AND !$event->hasPassed()}}
+					<div class='ipsFlex-flex:11'>
+						<a href='{$event->url('rsvp')->setQueryString( 'action', 'maybe' )->csrf()}' class='ipsButton ipsButton_light ipsButton_fullWidth ipsButton_small'><i class="fa fa-question" aria-hidden="true"></i>&nbsp; {lang="rsvp_maybe_event"}</a>
+					</div>
+				{{endif}}
+				<div class='ipsFlex-flex:11'>
+					<a href='{$event->url('rsvp')->setQueryString( 'action', 'no' )->csrf()}' class='ipsButton ipsButton_light ipsButton_fullWidth ipsButton_small'><i class="fa fa-times" aria-hidden="true"></i>&nbsp; {{if $event->hasPassed()}}{lang="rsvp_notattended_past_event"}{{else}}{lang="rsvp_notgoing_event"}{{endif}}</a>
+				</div>
+			</div>
+		{{endif}}
+	</div>
+{{endif}}

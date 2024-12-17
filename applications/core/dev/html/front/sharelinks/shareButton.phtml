@@ -1,0 +1,26 @@
+<ips:template parameters="$item, $size = 'verySmall', $type = 'link'" />
+{{$id = mt_rand();}}
+{{if \count( $item->sharelinks() ) }}
+    <a href='#elShareItem_{$id}_menu' id='elShareItem_{$id}' data-ipsMenu class='ipsShareButton ipsButton ipsButton_{$size} ipsButton_{$type} {{if $type == 'link'}}ipsButton_link--light{{endif}}'>
+        <span><i class='fa fa-share-alt'></i></span> &nbsp;{lang="share"}
+    </a>
+
+    <div class='ipsPadding ipsMenu ipsMenu_normal ipsHide' id='elShareItem_{$id}_menu' data-controller="core.front.core.sharelink">
+        {{$url = $item->url();}}
+        {{if \IPS\Settings::i()->ref_on}}
+        	{{$url = $url->setQueryString( array( '_rid' => \IPS\Member::loggedIn()->member_id  ) );}}
+        {{endif}}
+        <span data-ipsCopy data-ipsCopy-flashmessage>
+            <a href="{$url}" class="ipsButton ipsButton_light ipsButton_small ipsButton_fullWidth" data-role="copyButton" data-clipboard-text="{$url}" data-ipstooltip title='{lang="copy_share_link"}'><i class="fa fa-clone"></i> {$url}</a>
+        </span>
+        <ul class='ipsShareLinks ipsMargin_top:half'>
+            {{foreach $item->sharelinks() as $sharelink }}
+                <li>{$sharelink|raw}</li>
+            {{endforeach}}
+        </ul>
+        {{if $shareData = $item->webShareData()}}
+            <hr class='ipsHr'>
+            <button class='ipsHide ipsButton ipsButton_verySmall ipsButton_light ipsButton_fullWidth ipsMargin_top:half' data-controller='core.front.core.webshare' data-role='webShare' data-webShareTitle='{$shareData['title']}' data-webShareText='{$shareData['text']}' data-webShareUrl='{$shareData['url']}'>{lang="more_share_options"}</button>
+        {{endif}}
+    </div>
+{{endif}}

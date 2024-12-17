@@ -1,0 +1,4 @@
+<ips:template parameters="$status" />
+<span class="ipsBadge ipsBadge_style{{if $status == \IPS\nexus\Shipping\Order::STATUS_SHIPPED}}4{{elseif $status == \IPS\nexus\Shipping\Order::STATUS_CANCELED}}5{{else}}1{{endif}}">
+	{lang="sstatus_{$status}"}
+</span>

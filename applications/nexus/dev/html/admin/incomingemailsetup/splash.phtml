@@ -1,0 +1,36 @@
+<ips:template parameters="$filters" />
+<div class="ipsPad">
+	<h2 class="ipsType_sectionHead">{lang="incoming_email_setup"}</h2>
+	<p>{lang="ie_splash_intro"}</p>
+	<p>{lang="ie_splash_methods"}</p>
+	<br><br>
+	<div class="ipsGrid">
+		<div class="ipsGrid_span4 ipsType_center">
+			<strong class="ipsType_veryLarge">{lang="ie_piping"}</strong>
+			<br>
+			<p>{lang="ie_piping_desc"}</p>
+			<br>
+			<a href="{url="app=nexus&module=support&controller=settings&tab=incomingemail&type=piping"}" data-role="toggleView" class="ipsButton ipsButton_primary">{lang="ie_piping_use"}</a>
+		</div>
+		<div class="ipsGrid_span4 ipsType_center">
+			<strong class="ipsType_veryLarge">{lang="ie_pop3"}</strong>
+			<br>
+			<p>{lang="ie_pop3_desc"}</p>
+			<br>
+			<a href="{url="app=nexus&module=support&controller=settings&tab=incomingemail&type=pop3"}" data-role="toggleView" class="ipsButton ipsButton_primary">{lang="ie_pop3_use"}</a>
+		</div>
+		<div class="ipsGrid_span4 ipsType_center">
+			<strong class="ipsType_veryLarge">{lang="ie_sendgrid"}</strong>
+			<br>
+			<p>{lang="ie_sendgrid_desc"}</p>
+			<br>
+			<a href="{url="app=nexus&module=support&controller=settings&tab=incomingemail&type=sendgrid"}" data-role="toggleView" class="ipsButton ipsButton_primary">{lang="ie_sendgrid_use"}</a>
+		</div>
+	</div>
+	<br><br>
+	<hr class="ipsHr">
+	<br>
+	<h2 class="ipsType_sectionHead">{lang="incoming_email_filters"}</h2>
+	<br><br>
+	{$filters|raw}
+</div>

@@ -1,0 +1,16 @@
+<ips:template parameters="$comment, $image" />
+
+<div class='ipsFlex ipsFlex-ai:center sm:ipsFlex-ai:start sm:ipsMargin_top:double'>
+	<div class='ipsFlex-flex:00 ipsMargin_right sm:ipsMargin_right:half'>
+		{template="thumbImage" group="global" app="core" params="$image->small_file_name, $image->caption, 'small', '', 'view_this', $image->url(), 'gallery_Images'"}
+	</div>
+	<div class='ipsType_break'>
+		<h3 class='ipsType_sectionHead'><a href='{$image->url()}' title='{lang="view_this_image" sprintf="$image->caption"}'>{$image->caption}</a></h3>
+		<p class='ipsType_normal ipsType_light ipsType_blendLinks ipsType_reset'>{lang="in"} <a href='{$image->container()->url()}'>{$image->container()->_title}</a></p>
+		{{if $image->container()->allow_rating}}
+			{template="rating" group="global" location="front" app="core" params="'large', $image->rating"} &nbsp;&nbsp;
+		{{endif}}
+
+		<span class='ipsType_medium ipsType_reset'>{{if $image->container()->allow_comments}}&nbsp;&nbsp;{{if !$image->comments}}<span class='ipsType_light'>{{endif}}<i class='fa fa-comment'></i> {$image->comments}{{endif}}{{if !$image->comments}}</span>{{endif}}</span>
+	</div>
+</div>

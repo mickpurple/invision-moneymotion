@@ -1,0 +1,53 @@
+<ips:template parameters="$blog, $showCover=true" />
+
+{{if $showCover}}
+<div id='elBlogHeader'>
+	{$blog->coverPhoto()|raw}
+</div>
+{{endif}}
+<div id='elBlogHeaderStats' class='ipsPad'>
+	<div>
+		<div class='ipsPos_right ipsResponsive_noFloat ipsResponsive_hidePhone'>
+		{template="follow" app="core" group="global" params="'blog', 'blog', $blog->_id, \IPS\blog\Entry::containerFollowerCount( $blog )"}
+		</div>
+		<ul class='ipsGrid cBlockView_stats'>
+			{{if $showCover}}
+				<li class='ipsGrid_span4'>
+					<strong class='ipsType_minorHeading'>{lang="blog_entries" pluralize="$blog->_items"}</strong><br>
+					<strong class='ipsType_normal'>{number="$blog->_items"}</strong>
+				</li>
+				<li class='ipsGrid_span4'>
+					<strong class='ipsType_minorHeading'>{lang="blog_comments" pluralize="$blog->_comments"}</strong><br>
+					<strong class='ipsType_normal'>{number="$blog->_comments"}</strong>
+				</li>
+				<li class='ipsGrid_span4' id='elBlogViews'>
+                    <strong class='ipsType_minorHeading'>{lang="blog_views" pluralize="$blog->num_views"}</strong><br>
+                    {{if \IPS\Application::appIsEnabled('cloud') and \IPS\Member::loggedIn()->modPermission('can_view_moderation_log')}}
+                        {{$url = "app=cloud&module=analytics&controller=analytics&contentClass=" . get_class($blog) . "&contentId=" . $blog->id;}}
+                        <strong class='ipsType_normal ipsType_blendLinks'><a href='{url="$url"}' data-ipsDialog data-ipsDialog-title='{lang="analytics"}' data-ipsTooltip title='{lang="analytics"}'>{number="$blog->num_views"}</a></strong>
+                    {{else}}
+					    <strong class='ipsType_normal'>{number="$blog->num_views"}</strong>
+                    {{endif}}
+				</li>
+			{{else}}
+				<li class='ipsGrid_span12'>
+					{template="coverPhotoOverlay" app="blog" group="view" location="front" params="$blog"}
+				</li>
+			{{endif}}
+		</ul>
+	</div>
+	{{if !( $blog->owner() instanceof \IPS\Member ) and \count( $blog->contributors() ) AND $showCover}}
+		<div class='cBlogContributors ipsClearfix ipsResponsive_hidePhone'>
+			<h2 class='ipsType_minorHeading'>{lang="contributors_to_this"}</h2>
+			<ul class='cBlogView_contributors'>
+				{{foreach  $blog->contributors() as $idx => $contributor}}
+					<li class=''>
+						<span data-ipsTooltip title='{$contributor['member']->name}'>
+							{template="userPhoto" group="global" app="core" params="$contributor['member'], 'mini'"}<span class='ipsNotificationCount'>{$contributor['contributions']}</span>
+						</span>
+					</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	{{endif}}
+</div>

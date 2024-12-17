@@ -1,0 +1,79 @@
+<ips:template parameters="$calendars, $date, $events, $tomorrow, $yesterday, $today, $thisCalendar, $jump" />
+
+<div class='ipsBox'>
+	<div class='ipsPager cCalendarNav ipsPadding ipsAreaBackground_light ipsBorder_bottom lg:ipsPos_sticky'>
+		<div class='ipsPager_prev'>
+			<a href="{{if $thisCalendar}}{url="app=calendar&module=calendar&controller=view&id={$thisCalendar->_id}&y={$yesterday->year}&m={$yesterday->mon}&d={$yesterday->mday}" seoTemplate="calendar_calday" seoTitle="$thisCalendar->title_seo"}{{else}}{url="app=calendar&module=calendar&controller=view&y={$yesterday->year}&m={$yesterday->mon}&d={$yesterday->mday}" seoTemplate="calendar_day"}{{endif}}" title='{lang="cal_month_day" sprintf="$yesterday->monthName, $yesterday->mday, $yesterday->year"}' rel='prev nofollow' data-action='changeView'>
+				<span class='ipsPager_type ipsType_normal'>{lang="cal_month_day_noyear" sprintf="$yesterday->monthName, $yesterday->mday"}</span>
+				<span class='ipsPager_title ipsType_light'>{$yesterday->year}</span>
+			</a>
+		</div>
+		<div class='ipsPager_center cCalendarNav' data-role='calendarNav'>
+			<h1 class='ipsType_pageTitle ipsType_center'>{lang="cal_month_day" sprintf="$date->monthName, $date->mday, $date->year"}</h1>
+		</div>
+		<div class='ipsPager_next'>
+			<a href="{{if $thisCalendar}}{url="app=calendar&module=calendar&controller=view&id={$thisCalendar->_id}&y={$tomorrow->year}&m={$tomorrow->mon}&d={$tomorrow->mday}" seoTemplate="calendar_calday" seoTitle="$thisCalendar->title_seo"}{{else}}{url="app=calendar&module=calendar&controller=view&y={$tomorrow->year}&m={$tomorrow->mon}&d={$tomorrow->mday}" seoTemplate="calendar_day"}{{endif}}" title='{lang="cal_month_day" sprintf="$tomorrow->monthName, $tomorrow->mday, $tomorrow->year"}' rel='next nofollow' data-action='changeView'>
+				<span class='ipsPager_type ipsType_normal'>{lang="cal_month_day_noyear" sprintf="$tomorrow->monthName, $tomorrow->mday"}</span>
+				<span class='ipsPager_title ipsType_light'>{$tomorrow->year}</span>
+			</a>
+		</div>
+	</div>
+
+	<div class='ipsPadding sm:ipsPadding:half'>
+
+		<div class='ipsBox ipsBox--child'>
+			<h2 class='ipsType_sectionTitle ipsType_reset'>{lang="events_happening_today"}</h2>
+			{{if $events['count'] > 0}}
+				<ol class='cCalendarDay ipsDataList'>
+					{{if isset( $events['allDay'] ) && \count( $events['allDay'] )}}
+						<li class='ipsDataItem cCalendarDay_allDay'>
+							<div class='ipsDataItem_generic ipsDataItem_size5 cCalendarDay_hour cCalendarDay_allDay ipsAreaBackground_light ipsPad'>
+								<h2 class='ipsType_reset'>{lang="day_view_all_day"}</h2>
+							</div>
+							<div class='ipsDataItem_main ipsPad'>
+								<div class='cCalendarDay_eventList' data-ipsPatchwork data-ipsPatchwork-minColSize='300' data-ipsPatchwork-maxColSize='500'>
+									<div data-role='patchworkList'>
+										{{foreach $events['allDay'] as $event}}
+											<div data-role='patchworkItem'>
+												{template="eventBlock" app="calendar" group="view" params="$event, $date, true"}
+											</div>
+										{{endforeach}}
+									</div>
+								</div>
+							</div>
+						</li>
+					{{endif}}
+
+					{{foreach $events as $hour => $hourEvents}}
+						{{if !empty( $hourEvents ) && $hour !== 'allDay' && $hour !== 'count'}}
+							<li class='ipsDataItem'>
+								<div class='ipsDataItem_generic ipsDataItem_size5 cCalendarDay_hour ipsAreaBackground_light ipsPad'>
+									<h2 class='ipsType_reset'>
+										{{if \IPS\calendar\Date::usesAmPm()}}
+											{expression="\IPS\calendar\Date::getTwelveHour( $hour )"}<br><span>{expression="\IPS\calendar\Date::getAmPm( $hour )"}</span>
+										{{else}}
+											{$hour}<br><span>:00</span>
+										{{endif}}
+									</h2>
+								</div>
+								<div class='ipsDataItem_main ipsAreaBackground_light ipsPad'>
+									<div class='cCalendarDay_eventList' data-ipsPatchwork data-ipsPatchwork-minColSize='300' data-ipsPatchwork-maxColSize='500'>
+										<div data-role='patchworkList'>
+											{{foreach $hourEvents as $idx => $event}}
+												<div data-role='patchworkItem'>
+													{template="eventBlock" app="calendar" group="view" params="$event, $date, true"}
+												</div>
+											{{endforeach}}
+										</div>
+									</div>
+								</div>
+							</li>
+						{{endif}}
+					{{endforeach}}
+				</ol>
+			{{else}}
+				<div class='ipsPad ipsAreaBackground_light ipsSpacer_bottom'><span class='ipsType_light ipsType_large'>{lang="no_events_today"}</span></div>
+			{{endif}}
+		</div>
+	</div>
+</div>

@@ -1,0 +1,90 @@
+<ips:template parameters="$disabledApps, $disabledPlugins, $restoredDefaultTheme, $restoredEditor, $disabledAds" />
+<p>{lang="support_third_party_instruction"}</p>
+<ul class="ipsDataList ipsSpacer_top" data-role="disabledInformation">
+	{{if \count( $disabledApps )}}
+		<li class="ipsDataItem">
+			<div class="ipsDataItem_icon ipsType_warning ipsPos_top ipsType_large"><i class="fa fa-exclamation-triangle"></i></div>
+			<div class="ipsDataItem_generic ipsType_warning">
+				<div data-role="disabledMessage">{lang="support_third_party_apps" pluralize="\count( $disabledApps )"}</div>
+				<div data-role="enabledMessage" class='ipsHide'>{lang="support_third_party_apps_reenabled" pluralize="\count( $disabledApps )"}</div>
+				{{$disabledApps = implode( ',', array_keys( $disabledApps ) );}}
+				<a href="{url="app=core&module=support&controller=support&do=thirdparty" csrf="true"}" class="ipsButton ipsButton_negative ipsButton_verySmall ipsSpacer_top ipsSpacer_half" data-action="enableThirdPartyPart" data-type="apps">{lang="support_third_party_apps_enable"}</a>
+				<a href="{url="app=core&module=applications&controller=applications"}" target="_blank" rel="noopener" class="ipsButton ipsButton_negative ipsButton_verySmall ipsSpacer_top ipsSpacer_half">{lang="support_third_party_apps_link"}</a>
+			</div>
+		</li>
+	{{else}}
+		<li class="ipsDataItem">
+			<div class="ipsDataItem_icon ipsType_success ipsPos_top ipsType_large"><i class="fa fa-check"></i></div>
+			<div class="ipsDataItem_generic ipsType_success">{lang="support_third_party_no_apps"}</div>
+		</li>
+	{{endif}}
+	{{if \count( $disabledPlugins )}}
+		<li class="ipsDataItem">
+			<div class="ipsDataItem_icon ipsType_warning ipsPos_top ipsType_large"><i class="fa fa-exclamation-triangle"></i></div>
+			<div class="ipsDataItem_generic ipsType_warning">
+				<div data-role="disabledMessage">{lang="support_third_party_plugins" pluralize="\count( $disabledPlugins )"}</div>
+				<div data-role="enabledMessage" class='ipsHide'>{lang="support_third_party_plugins_reenabled" pluralize="\count( $disabledPlugins )"}</div>
+				{{$diabledPlugins = implode( ',', array_keys( $disabledPlugins ) );}}
+				<a href="{url="app=core&module=support&controller=support&do=thirdparty" csrf="true"}" class="ipsButton ipsButton_negative ipsButton_verySmall ipsSpacer_top ipsSpacer_half" data-action="enableThirdPartyPart" data-type="plugins">{lang="support_third_party_plugins_enable"}</a>
+				<a href="{url="app=core&module=applications&controller=plugins"}" target="_blank" rel="noopener" class="ipsButton ipsButton_negative ipsButton_verySmall ipsSpacer_top ipsSpacer_half">{lang="support_third_party_plugins_link"}</a>
+			</div>
+		</li>
+	{{else}}
+		<li class="ipsDataItem">
+			<div class="ipsDataItem_icon ipsType_success ipsPos_top ipsType_large"><i class="fa fa-check"></i></div>
+			<div class="ipsDataItem_generic ipsType_success">{lang="support_third_party_no_plugins"}</div>
+		</li>
+	{{endif}}
+	{{if $restoredDefaultTheme}}
+		<li class="ipsDataItem">
+			<div class="ipsDataItem_icon ipsType_warning ipsPos_top ipsType_large"><i class="fa fa-exclamation-triangle"></i></div>
+			<div class="ipsDataItem_generic ipsType_warning">
+				<div data-role="disabledMessage">
+					{lang="support_third_party_theme"}
+					<p>{lang="support_third_party_theme_desc"}</p>
+				</div>
+				<div data-role="enabledMessage" class="ipsHide">{lang="support_third_party_theme_reenabled"}</div>
+				<a href="{url="app=core&module=support&controller=support&do=thirdparty" csrf="true"}" class="ipsButton ipsButton_negative ipsButton_verySmall ipsSpacer_top ipsSpacer_half" data-action="enableThirdPartyPart" data-type="theme">{lang="support_third_party_theme_enable"}</a>
+				<a href="{url="app=core&module=customization&controller=themes"}" target="_blank" rel="noopener" class="ipsButton ipsButton_negative ipsButton_verySmall ipsSpacer_top ipsSpacer_half">{lang="support_third_party_theme_link"}</a>
+			</div>
+		</li>
+	{{else}}
+		<li class="ipsDataItem">
+			<div class="ipsDataItem_icon ipsType_success ipsPos_top ipsType_large"><i class="fa fa-check"></i></div>
+			<div class="ipsDataItem_generic ipsType_success">{lang="support_third_party_no_theme"}</div>
+		</li>
+	{{endif}}
+	{{if $restoredEditor}}
+		<li class="ipsDataItem">
+			<div class="ipsDataItem_icon ipsType_warning ipsPos_top ipsType_large"><i class="fa fa-exclamation-triangle"></i></div>
+			<div class="ipsDataItem_generic ipsType_warning">
+				<div data-role="disabledMessage">{lang="support_third_party_editor"}</div>
+				<div data-role="enabledMessage" class="ipsHide">{lang="support_third_party_editor_reenabled"}</div>
+				<a href="{url="app=core&module=support&controller=support&do=thirdparty" csrf="true"}" class="ipsButton ipsButton_negative ipsButton_verySmall ipsSpacer_top ipsSpacer_half" data-action="enableThirdPartyPart" data-type="editor">{lang="support_third_party_editor_enable"}</a>
+				<a href="{url="app=core&module=editor&controller=toolbar"}" target="_blank" rel="noopener" class="ipsButton ipsButton_negative ipsButton_verySmall ipsSpacer_top ipsSpacer_half">{lang="support_third_party_editor_link"}</a>
+			</div>
+		</li>
+	{{else}}
+		<li class="ipsDataItem">
+			<div class="ipsDataItem_icon ipsType_success ipsPos_top ipsType_large"><i class="fa fa-check"></i></div>
+			<div class="ipsDataItem_generic ipsType_success">{lang="support_third_party_no_editor"}</div>
+		</li>
+	{{endif}}
+	{{if \count( $disabledAds )}}
+		<li class="ipsDataItem">
+			<div class="ipsDataItem_icon ipsType_warning ipsPos_top ipsType_large"><i class="fa fa-exclamation-triangle"></i></div>
+			<div class="ipsDataItem_generic ipsType_warning">
+				<div data-role="disabledMessage">{lang="support_third_party_ads" pluralize="\count( $disabledAds )"}</div>
+				<div data-role="enabledMessage" class="ipsHide">{lang="support_third_party_ads_reenabled" pluralize="\count( $disabledAds )"}</div>
+				{{$disabledAds = implode( ',', $disabledAds );}}
+				<a href="{url="app=core&module=support&controller=support&do=thirdparty" csrf="true"}" class="ipsButton ipsButton_negative ipsButton_verySmall ipsSpacer_top ipsSpacer_half" data-action="enableThirdPartyPart" data-type="ads">{lang="support_third_party_ads_enable"}</a>
+				<a href="{url="app=core&module=promotion&controller=advertisements"}" target="_blank" rel="noopener" class="ipsButton ipsButton_negative ipsButton_verySmall ipsSpacer_top ipsSpacer_half">{lang="support_third_party_ads_link"}</a>
+			</div>
+		</li>
+	{{else}}
+		<li class="ipsDataItem">
+			<div class="ipsDataItem_icon ipsType_success ipsPos_top ipsType_large"><i class="fa fa-check"></i></div>
+			<div class="ipsDataItem_generic ipsType_success">{lang="support_third_party_no_ads"}</div>
+		</li>
+	{{endif}}
+</ul>

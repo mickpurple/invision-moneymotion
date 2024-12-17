@@ -1,0 +1,13 @@
+<ips:template parameters="$comment" />
+{{$blurb = $comment->recognizedBlurb();}}
+<!--Content Recognized -->
+<div class="ipsType_reset ipsPad ipsAreaBackground_light ipsClearfix ipsPhotoPanel ipsPhotoPanel_mini">
+	{template="userPhoto" group="global" app="core" params="$comment->recognized->_given_by, 'mini'"}
+	<div>
+		<strong class='ipsType_normal'>{$blurb['main']}</strong>
+		{{if $blurb['message']}}<p>&quot;<em>{$blurb['message']|raw}</em>&quot;</p>{{endif}}
+		<p class='ipsType_light'>
+			{$blurb['awards']|raw}
+		</p>
+	</div>
+</div>

@@ -1,0 +1,62 @@
+<ips:template parameters="$entry" />
+<div class='ipsBox ipsResponsive_pull'>
+	<div data-controller='core.front.core.commentFeed, core.front.core.ignoredComments' {{if settings.auto_polling_enabled}}data-autoPoll{{endif}} data-baseURL='{$entry->url()}' data-feedID='entry-{$entry->id}' id='comments'>
+		<div class='ipsPadding'>
+			<h2 class='ipsType_sectionHead' data-role="comment_count">{lang="num_comments_uc" pluralize="$entry->num_comments"}</h2>
+			<hr class='ipsHr'>
+
+			{template="featuredComments" group="global" app="core" params="$entry->featuredComments(), $entry->url()->setQueryString( 'recommended', 'comments' )"}
+			{template="commentMultimodHeader" app="core" group="global" params="$entry, '#comments'"}
+			{{if $entry->commentPageCount() > 1}}
+				{$entry->commentPagination( array('tab') )|raw}
+				<br><br>
+			{{endif}}
+			
+			<div data-role='commentFeed' data-controller='core.front.core.moderation'>
+				{{if \count( $entry->comments( NULL, NULL, 'date', 'asc', NULL, NULL, NULL, NULL, FALSE, isset( \IPS\Request::i()->showDeleted ) ) )}}
+					<form action="{$entry->url()->csrf()->setQueryString( 'do', 'multimodComment' )->setPage('page',\IPS\Request::i()->page)}" method="post" data-ipsPageAction data-role='moderationTools'>
+						{{$commentCount=0; $timeLastRead = $entry->timeLastRead(); $lined = FALSE;}}
+						{{foreach $entry->comments( NULL, NULL, 'date', 'asc', NULL, NULL, NULL, NULL, FALSE, isset( \IPS\Request::i()->showDeleted ) ) as $comment}}
+							{{if !$lined and $timeLastRead and $timeLastRead->getTimestamp() < $comment->mapped('date')}}
+								{{if $lined = TRUE and $commentCount}}
+									<hr class="ipsCommentUnreadSeperator">
+								{{endif}}
+							{{endif}}
+							{{$commentCount++;}}
+							<a id="findComment-{$comment->id}"></a>
+							<a id="comment-{$comment->id}"></a>
+							{$comment->html()|raw}
+						{{endforeach}}
+						{template="commentMultimod" app="core" group="global" params="$entry"}
+					</form>
+				{{else}}
+					<p class='ipsType_normal ipsType_light ipsType_reset' data-role='noComments'>{lang="no_comments"}</p>
+				{{endif}}
+			</div>
+			{{if $entry->commentPageCount() > 1}}
+				<hr class='ipsHr'>
+				{$entry->commentPagination( array('tab') )|raw}
+			{{endif}}
+			{{if $entry->commentForm() || $entry->locked() || \IPS\Member::loggedin()->restrict_post || \IPS\Member::loggedIn()->members_bitoptions['unacknowledged_warnings'] || !\IPS\Member::loggedIn()->checkPostsPerDay()}}
+				<div class='ipsAreaBackground ipsPad ipsClear ipsSpacer_top' data-role='replyArea'>
+					{{if $entry->commentForm()}}
+						{{if $entry->locked()}}
+							<p class='ipsType_reset ipsType_warning ipsComposeArea_warning ipsSpacer_bottom ipsSpacer_half'><i class='fa fa-info-circle'></i> {lang="blog_entry_locked_can_comment"}</p>
+						{{endif}}
+						{$entry->commentForm()|raw}
+					{{else}}
+						{{if $entry->locked()}}
+							{template="commentUnavailable" group="forms" location="front" app="core" params="'blog_entry_locked_cannot_comment'"}
+						{{elseif \IPS\Member::loggedin()->restrict_post}}
+							{template="commentUnavailable" group="forms" location="front" app="core" params="'restricted_cannot_comment', \IPS\Member::loggedIn()->warnings(5,NULL,'rpa'), \IPS\Member::loggedIn()->restrict_post"}
+						{{elseif \IPS\Member::loggedIn()->members_bitoptions['unacknowledged_warnings']}}
+							{template="commentUnavailable" group="forms" location="front" app="core" params="'unacknowledged_warning_cannot_post', \IPS\Member::loggedIn()->warnings( 1, FALSE )"}
+						{{elseif !\IPS\Member::loggedIn()->checkPostsPerDay()}}
+							{template="commentUnavailable" group="forms" location="front" app="core" params="'member_exceeded_posts_per_day'"}
+						{{endif}}
+					{{endif}}
+				</div>
+			{{endif}}
+		</div>
+	</div>
+</div>

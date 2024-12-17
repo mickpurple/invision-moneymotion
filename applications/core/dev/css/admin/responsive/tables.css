@@ -1,0 +1,37 @@
+/* DESKTOP, ACP-SPECIFIC */
+.acpBlock .ipsTable.ipsTable_responsive td {
+	white-space: normal;
+	word-wrap: break-word;
+	max-width: 350px;
+}
+
+/* TABLETS */
+@media screen and (max-width: 979px) {
+	.ipsTable td.ipsTable_wrap, .ipsTable td.ipsMatrix_rowTitle {
+			white-space: normal;
+			word-wrap: break-word;
+			max-width: 250px;
+		}
+	[data-role="tableRows"] [data-title="Key"] {
+			white-space: normal;
+			word-wrap: break-word;
+			max-width: 150px;
+	}
+}
+
+/* PHONES */
+@media screen and (max-width: 767px) {
+	.acpTable_search {
+		float: none;
+		width: 100% !important;
+		max-width: 100% !important;
+	}
+	.ipsDarkMode .ipsTable.ipsTable_responsive.ipsMatrix .ipsMatrix_subHeader{
+		background: var(--c3);
+		color: var(--c9);
+	}
+	.ipsDarkMode .ipsTable.ipsTable_responsive.ipsMatrix .ipsMatrix_rowTitle {
+		background: var(--c1) !important;
+		color: var(--c9);
+	}
+}

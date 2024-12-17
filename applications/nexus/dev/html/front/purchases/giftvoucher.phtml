@@ -1,0 +1,44 @@
+<ips:template parameters="$purchase, $data" />
+{{if $data['method'] === 'print'}}
+	<p class='ipsMessage ipsMessage_info'>
+		{lang="gift_voucher_pending_print"}
+	</p>
+	<a href="{$purchase->url()->setQueryString( 'do', 'extra' )}" class='ipsButton ipsButton_primary ipsButton_medium'>{lang="print_giftvoucher"}</a>
+{{else}}
+	<p class='ipsMessage ipsMessage_info'>
+		{lang="gift_voucher_pending_email"}
+	</p>
+{{endif}}
+
+<ul class='ipsDataList ipsSpacer_top'>
+	<li class='ipsDataItem'>
+		<strong class='ipsDataItem_generic ipsDataItem_size4 ipsType_right'>
+			To
+		</strong>
+		<span class='ipsDataItem_main'>
+			{$data['recipient_name']}{{if $data['recipient_email']}} ({$data['recipient_email']}){{endif}}
+		</span>
+	</li>
+	<li class='ipsDataItem'>
+		<strong class='ipsDataItem_generic ipsDataItem_size4 ipsType_right'>
+			Amount
+		</strong>
+		<span class='ipsDataItem_main'>
+			{money="$data['amount']" currency="$data['currency']"}
+		</span>
+	</li>
+	<li class='ipsDataItem'>
+		<strong class='ipsDataItem_generic ipsDataItem_size4 ipsType_right'>
+			Message
+		</strong>
+		<div class='ipsDataItem_main'>
+			<div class='ipsType_break ipsContained'>
+				{{if $data['message']}}
+					{$data['message']}
+				{{else}}
+					<em class='ipsType_light'>No message</em>
+				{{endif}}
+			</div>
+		</div>
+	</li>
+</ul>

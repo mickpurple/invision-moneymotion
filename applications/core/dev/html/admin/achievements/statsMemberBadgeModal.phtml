@@ -1,0 +1,20 @@
+<ips:template parameters="$results" />
+<div class="ipsPad">
+	<table class="ipsTable ipsTable_responsive ipsTable_zebra " data-role="table">
+		<thead>
+			<tr class="ipsAreaBackground">
+				<th>{lang="stats_badge_member_badge"}</th>
+				<th>{lang="stats_badge_member_date"}</th>
+			</tr>
+		</thead>
+		<tbody>
+{{foreach $results as $row}}
+		<tr class="ipsClearfix">
+			<td class=" ipsTable_wrap ipsTable_primary ">
+				{$row['badge']->html('ipsDimension:3')|raw} {$row['badge']->_title}
+			</td>
+			<td>{datetime="$row['datetime']"}</td>
+		</tr>
+{{endforeach}}
+</tbody>
+</table>

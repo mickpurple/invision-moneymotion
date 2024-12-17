@@ -1,0 +1,187 @@
+<ips:template parameters="$results, $pagination, $groupByDepartment, $tracked, $participatedIn, $full=TRUE" />
+
+{{$multimod = implode( ' ', array_merge( array_map( function( $department ) { return "department_{$department->id}"; }, \IPS\nexus\Support\Department::roots() ), array_map( function( $severity ) { return "severity_{$severity->id}"; }, \IPS\nexus\Support\Severity::roots() ), array_map( function( $status ) { return "status_{$status->id}"; }, \IPS\nexus\Support\Status::roots() ), array_map( function( $id ) { return "staff_{$id}"; }, array_keys( \IPS\nexus\Support\Request::staff() ) ), array( 'staff_0', 'delete' ) ) );}}
+
+{{if !\count( $results )}}
+	{{if request.module === 'customers' && request.controller === 'view'}}
+		<div class='ipsPad_half ipsType_light'>
+			{lang="no_support_requests"}
+		</div>
+	{{else}}
+		<div class='ipsPad_double ipsType_center'>
+			<span class='ipsBadge ipsBadge_style5 ipsBadge_veryLarge'>
+				<i class='fa fa-thumbs-up'></i>
+			</span>
+
+			<p class='ipsType_reset ipsType_large ipsSpacer_top'>
+				<strong>{lang="motivate_title"}</strong>
+			</p>
+			<p class='ipsType_reset ipsType_normal ipsType_light'>
+				{lang="motivate_desc"}
+			</p>
+		</div>
+	{{endif}}
+{{else}}
+	<table class="ipsTable cNexusSupportTable {{if !$full}}cNexusSupportTable_condensed{{endif}}" data-role="resultsTable">
+		{{if $full}}
+			<thead>
+				<tr>
+					<th class='ipsType_noBreak'>&nbsp;</th>
+					<th class='ipsType_noBreak'>{lang="request"}</th>
+					<th class='ipsType_noBreak'>{lang="r_status"}</th>
+					<th class='ipsType_noBreak ipsResponsive_hideTablet'>{lang="r_staff"}</th>
+					<th class='ipsType_noBreak ipsResponsive_hideTablet'>{lang="request_started_by"}</th>
+					<th class='ipsType_noBreak'>{lang="r_last_reply_by"}</th>
+					<th class='ipsType_noBreak'>&nbsp;</th>
+					<th class='ipsType_noBreak'>&nbsp;</th>
+				</tr>
+			</thead>
+		{{endif}}
+		<tbody>
+			{{$lastDepartment = NULL;}}
+			{{foreach $results as $request}}
+				{{if $groupByDepartment and $request->department->id != $lastDepartment}}
+					<tr>
+						<td colspan="8" class="ipsAreaBackground">
+							<strong>{$request->department->_title}</strong>
+						</td>
+					</tr>
+					{{$lastDepartment = $request->department->id;}}
+				{{endif}}
+				{{$color = ( $request->severity and $request->severity->color != '000' ) ? $request->severity->color : FALSE;}}
+				<tr class="ipsClearfix cNexusSupportTable_row" {{if $color}}style='border-color: #{$color}; background: {hextorgb="$color" opacity="0.075"}'{{endif}}>
+					<td class="ipsType_center cNexusSupportTable_icon {{if !$groupByDepartment}}ipsPos_top{{endif}}">
+						{{if $request->unread()}}
+							<a href="{$request->acpUrl()->setQueryString( 'do', 'getNewComment' )}" title="{lang="support_go_to_unread"}" data-ipsTooltip>
+								<span class='ipsItemStatus'>
+									<i class="fa {{if array_key_exists( $request->id, $tracked )}}fa-bookmark{{elseif \in_array( $request->id, $participatedIn )}}fa-star{{else}}fa-circle{{endif}}"></i>
+								</span>
+							</a>
+						{{else}}
+							{{if array_key_exists( $request->id, $tracked )}}
+								<span class='ipsItemStatus ipsItemStatus_read ipsItemStatus_posted'>
+									<i class="fa fa-bookmark"></i>
+								</span>
+							{{elseif \in_array( $request->id, $participatedIn )}}
+								<span class='ipsItemStatus ipsItemStatus_read ipsItemStatus_posted'>
+									<i class="fa fa-star"></i>
+								</span>
+							{{else}}
+								&nbsp;
+							{{endif}}
+						{{endif}}
+					</td>
+					<td class="cNexusSupportTable_body ipsTable_wrap {{if !$groupByDepartment}}ipsPos_top{{endif}}">
+						{{if $color}}
+							{template="severity" group="support" params="$request->severity" app="nexus"}
+						{{endif}}
+						<span class='ipsType_normal ipsType_blendLinks'>
+							{template="link" group="support" params="$request, TRUE" app="nexus"}
+						</span>
+						{{if !$groupByDepartment and $full}}
+							<p class='ipsType_medium ipsType_reset ipsResponsive_hidePhone'>
+								<span class="ipsType_light">{lang="in_department" sprintf="$request->department->_title"}</span>
+							</p>
+						{{endif}}
+						<div class="{{if $full}}ipsResponsive_showPhone ipsResponsive_hideDesktop ipsResponsive_hideTablet{{endif}}">
+							<p class="ipsType_medium ipsType_reset">
+								{{if !$groupByDepartment}}
+									{lang="in_department" sprintf="$request->department->_title"}
+								{{endif}}
+								{{if $request->staff}}
+									{{if !$groupByDepartment}}
+									&nbsp;
+									{{endif}}
+									<strong class="ipsType_success">
+										{lang="assigned_to_x" sprintf="$request->staff->name"}
+									</strong>
+								{{endif}}
+							</p>
+							<p class="ipsType_medium ipsType_reset ipsType_light ipsType_blendLinks">
+								{lang="request_last_by"} {template="userLink" group="global" params="\IPS\Member::load( $request->last_reply_by )" app="nexus"} {datetime="$request->last_reply"}
+							</p>
+						</div>
+					</td>
+					<td class="cNexusSupportTable_status">
+						{template="status" group="support" params="$request->status" app="nexus"}
+					</td>
+					<td class="cNexusSupportTable_assignedTo ipsResponsive_hideTablet">
+						{{if $request->staff}}
+							<strong class="ipsType_success">
+								{$request->staff->name}
+							</strong>
+						{{endif}}
+					</td>
+					<td class="cNexusSupportTable_customer ipsType_blendLinks ipsResponsive_hideTablet">
+						{{if $request->author()->member_id}}
+							{template="userLink" group="global" params="$request->author()" app="nexus"}
+						{{else}}
+							{$request->email}
+						{{endif}}
+						<p class='ipsType_reset ipsType_light ipsType_medium'>{datetime="$request->started"}</p>
+					</td>
+					<td class="cNexusSupportTable_customer ipsType_blendLinks">
+						{template="userLink" group="global" params="\IPS\Member::load( $request->last_reply_by )" app="nexus"}
+						<p class='ipsType_reset ipsType_light ipsType_medium'>{datetime="$request->last_reply"}</p>
+					</td>
+					<td class='cNexusSupportTable_replies'>
+						<span class='ipsCommentCount'>{number="$request->replies - 1"}</span>
+					</td>
+					{{if $full}}
+						<td class='cNexusSupportTable_multimod'>
+							<span class='ipsCustomInput'>
+								<input type="checkbox" name="multimod[{$request->id}]" value="1" data-role="moderation" data-actions="{$multimod} {{if array_key_exists( $request->id, $tracked )}}{{if $tracked[ $request->id ]}}track_on{{else}}track_notify{{endif}} track_off{{else}}track_on track_notify{{endif}}" data-state="{{if $request->unread()}}unread{{else}}read{{endif}} {{if array_key_exists( $request->id, $tracked )}}tracking{{else}}not_tracking{{endif}} status_{$request->status->id}">
+								<span></span>
+							</span>
+						</td>
+					{{endif}}
+				</tr>
+			{{endforeach}}
+		</tbody>
+		{{if $full}}
+			<tfoot class="ipsClearfix ipsAreaBackground ipsJS_hide" data-role="pageActionOptions">
+				<tr>
+					<td colspan="8">
+						<div class="ipsPos_right">
+							<select name="modaction" data-role="moderationAction">
+								<optgroup label="{lang="action_status"}" data-icon='tag' data-action='status'>
+									{{foreach \IPS\nexus\Support\Status::roots() as $status}}
+										<option value='status_{$status->id}'>{$status->_title}</option>
+									{{endforeach}}
+								</optgroup>
+								{{if \count( \IPS\nexus\Support\Severity::roots() ) > 1}}
+									<optgroup label="{lang="action_severity"}" data-icon='exclamation' data-action='severity'>
+										{{foreach \IPS\nexus\Support\Severity::roots() as $severity}}
+											<option value='severity_{$severity->id}'>{$severity->_title}</option>
+										{{endforeach}}
+									</optgroup>
+								{{endif}}
+								<optgroup label="{lang="action_department"}" data-icon='folder' data-action='department'>
+									{{foreach \IPS\nexus\Support\Department::roots() as $department}}
+										<option value='department_{$department->id}'>{$department->_title}</option>
+									{{endforeach}}
+								</optgroup>
+								<optgroup label="{lang="action_staff"}" data-icon='user' data-action='staff'>
+									{{foreach \IPS\nexus\Support\Request::staff() as $id => $name}}
+										<option value='staff_{$id}'>{$name}</option>
+									{{endforeach}}
+									<option value='staff_0'>{lang="unassigned"}</option>
+								</optgroup>
+								<optgroup label="{lang="tracking"}" data-icon='bookmark' data-action='tracking'>
+									<option value='track_off'>{lang="not_tracking"}</option>
+									<option value='track_on'>{lang="tracking_no_notify"}</option>
+									<option value='track_notify'>{lang="tracking_notify"}</option>
+								</optgroup>
+								{{if \IPS\Member::loggedIn()->hasAcpRestriction( 'nexus', 'support', 'requests_delete' )}}
+									<option value="delete" data-icon="trash">{lang="delete"}</option>
+								{{endif}}
+							</select>
+							<button type="submit" class="ipsButton ipsButton_alternate ipsButton_verySmall">{lang="submit"}</button>
+						</div>
+					</td>
+				</tr>
+			</tfoot>
+		{{endif}}
+	</table>
+	{$pagination|raw}
+{{endif}}

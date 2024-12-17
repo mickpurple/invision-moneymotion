@@ -1,0 +1,29 @@
+<ips:template parameters="$users, $notification, $more" />
+<div class="ipsGrid ipsGrid_collapsePhone">
+	{{foreach $users as $user}}
+		<div class='ipsGrid_span4 ipsBox ipsSpacer_bottom'>
+			<div class='ipsClearfix'>
+				<div class='ipsDataItem_main ipsPhotoPanel ipsPhotoPanel_mini ipsClearfix'>
+					{template="userPhoto" app="core" group="global" params="$user, 'mini'"}
+					<div>			
+						<h4 class='ipsType_reset ipsType_large'><strong><a href='{$user->acpUrl()}'>{$user->name}</a></strong> <span class='ipsType_light ipsType_unbold ipsType_small'>({$user->email})</span></h4>
+						<ul class='ipsList_reset ipsType_medium'>
+							<li><strong>{lang="ip_address"}</strong> {$user->ip_address}</li>
+							<li><strong>{lang="block_awaiting_registered"}</strong> {datetime="$user->joined"}</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	{{endforeach}}
+	{{if $more > 1}}
+		<div class='ipsGrid_span4 ipsSpacer_bottom ipsType_center'>
+			<div class='ipsClearfix ipsSpacer_top ipsSpacer_double'>
+				<h4 class='ipsType_reset ipsType_large'><strong><a href='{url="app=core&module=members&controller=members"}'>{lang="acp_notification_NewRegComplete_more" pluralize="$more"}</a></strong></h4>
+			</div>
+		</div>
+	{{endif}}
+</div>
+<div class="ipsType_light">
+	<span class="ipsType_small"><i class="fa fa-info-circle"></i> {lang="acp_notification_NewRegComplete_desc" sprintf="$notification->id"}</span>
+</div>

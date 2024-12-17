@@ -1,0 +1,108 @@
+<ips:template parameters="$request" />
+
+<div class='ipsColumns ipsColumns_collapsePhone'>
+	<div class='ipsColumn ipsColumn_fluid'>
+		<div class='ipsPageHeader ipsBox'>
+			<div class='ipsPadding ipsAreaBackground_light ipsBorder_bottom'>
+				<h1 class='ipsType_pageTitle ipsType_break'>{$request->title} &nbsp;<span class='ipsType_large ipsType_light ipsType_unbold'>#{$request->id}</span></h1>
+			</div>
+			<div class='ipsPadding'>
+				<div class='ipsGrid ipsGrid_collapsePhone ipsType_normal' data-ipsGrid data-ipsGrid-equalHeights="row">
+					<div class='ipsGrid_span4'>
+						<h3 class='ipsType_sectionHead'>{lang="status"}</h3><br>
+						{template="status" group="support" location="admin" params="$request->status"}
+						
+						{{if $setStatuses = \IPS\nexus\Support\Status::publicSetStatuses( $request )}}
+							&nbsp;&nbsp;
+							<a href='#elStatusMenu_menu' class='ipsType_small' data-ipsMenu id='elStatusMenu'>{lang="change"} <i class='fa fa-caret-down'></i></a>
+							<ul class='ipsHide ipsMenu ipsMenu_auto' id='elStatusMenu_menu'>
+								{{foreach $setStatuses as $id => $set}}
+									<li class='ipsMenu_item'>
+										<a href="{$request->url()->setQueryString( 'setStatus', $id )->csrf()}">{$set}</a>
+									</li>
+								{{endforeach}}
+							</ul>
+						{{endif}}
+					</div>
+					{{if settings.nexus_severities}}
+						<div class='ipsGrid_span4'>
+							<h3 class='ipsType_sectionHead'>{lang="r_severity"}</h3><br>
+							{template="severity" group="support" location="admin" params="$request->severity"} {{if !member.cm_no_sev and \count( \IPS\nexus\Support\Severity::roots( NULL, NULL, array( array( 'sev_public=1' ), array( "sev_departments='*' OR " . \IPS\Db::i()->findInSet( 'sev_departments', array( $request->department->id ) ) ) ) ) ) > 1}}<a href="{$request->url('severity')}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="change_severity"}'>{lang="change"} <i class='fa fa-caret-down'></i></a>{{endif}}
+						</div>
+					{{endif}}
+					<div class='ipsGrid_span4'>
+						<h3 class='ipsType_sectionHead'>{lang="department"}</h3><br>
+						{template="department" group="support" location="admin" params="$request->department"}
+					</div>
+					{{if $customFields = $request->department->customFields()}}
+						{{$customFieldValues = $request->cfields;}}
+						{{foreach $customFields as $field}}
+							{{if isset( $customFieldValues[ $field->id ] ) and $customFieldValues[ $field->id ]}}
+								<div class='ipsGrid_span4 ipsSpacer_top'>
+									<h3 class='ipsType_sectionHead'>{$field->_title}</h3><br>
+									{$field->displayValue( $customFieldValues[ $field->id ] )|raw}
+								</div>
+							{{endif}}
+						{{endforeach}}
+					{{endif}}
+				</div>
+
+				{{if $request->purchase}}
+					<hr class='ipsHr'>
+					<div class='cNexusSupportMessage_purchase'>
+						<div class='ipsColumns ipsColumns_collapsePhone'>
+							<div class='ipsColumn ipsColumn_narrow'>
+								{{if $image = $request->purchase->image()}}
+									<span class='cNexusPurchase_image ipsThumb ipsThumb_small' style='background-image: url( "{expression="str_replace( array( '(', ')' ), array( '\(', '\)' ), $image->url )"}" );'>&nbsp;</span>
+								{{else}}
+									<span class='ipsThumb ipsThumb_small ipsNoThumb {{if $request->purchase->type == 'giftvoucher'}}ipsNoThumb_gift{{else}}ipsNoThumb_product{{endif}}'>&nbsp;</span>
+								{{endif}}
+							</div>
+							<div class='ipsColumn ipsColumn_fluid'>
+								<h3 class='ipsType_minorHeading'>{lang="request_is_for"}</h3>
+								<span class='ipsType_sectionHead'>{$request->purchase->_title}</span>
+								<ul class='ipsList_inline ipsType_normal ipsSpacer_top ipsSpacer_half'>
+									<li>
+										<strong>{lang="ps_start"}:</strong> {$request->purchase->start->localeDate()}
+									</li>
+									{{if $request->purchase->expire}}
+										<li>
+											<strong>{lang="ps_expire"}:</strong> {$request->purchase->expire->localeDate()}
+										</li>
+									{{endif}}
+								</ul>
+							</div>
+						</div>
+					</div>
+				{{endif}}
+			</div>
+		</div>
+
+		<div class='ipsSpacer_top ipsBox' data-controller='core.front.core.commentFeed' data-baseURL='{$request->url()}' data-feedID='messages-{$request->id}'>
+			<h2 class='ipsType_sectionTitle ipsType_reset'>{lang="support_responses"}</h2>
+			{{if $request->commentPageCount() > 1}}
+				<div class='ipsButtonBar ipsPad_half ipsClearfix ipsClear'>
+					{$request->commentPagination()|raw}
+				</div>
+			{{endif}}
+			<div class='ipsAreaBackground_light ipsPad'>
+				<div data-role='commentFeed'>
+					{{foreach $request->comments( NULL, NULL, 'date', 'asc', NULL, FALSE ) as $reply}}
+						<a name='comment-{$reply->id}'></a>
+						{$reply->html()|raw}
+					{{endforeach}}
+				</div>
+				{{if $request->commentPageCount() > 1}}
+					{$request->commentPagination()|raw}
+					<br><br>
+				{{endif}}
+				{{if $request->canComment()}}
+					<div class='ipsBox ipsBox_transparent ipsAreaBackground ipsPad cNexusSupportMessage_replyArea' data-role='replyArea'>
+						<h3 class='ipsType_sectionHead ipsSpacer_bottom'>{lang="respond_to_ticket"}</h3>
+						{$request->commentForm()|raw}
+					</div>
+				{{endif}}
+			</div>
+		</div>
+	</div>
+</div>

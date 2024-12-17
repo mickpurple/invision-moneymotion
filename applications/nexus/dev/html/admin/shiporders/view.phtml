@@ -1,0 +1,114 @@
+<ips:template parameters="$shipment, $easyPost" />
+<div class="ipsMessage {{if $shipment->status == \IPS\nexus\Shipping\Order::STATUS_SHIPPED}}ipsMessage_success{{elseif $shipment->status == \IPS\nexus\Shipping\Order::STATUS_CANCELED}}ipsMessage_error{{else}}ipsMessage_info{{endif}}">
+	{lang="sstatus_{$shipment->status}_desc"}<br>
+	{lang="shipment_ordered" sprintf="$shipment->date"}
+	{{if $shipment->shipped_date}}
+		&middot;
+		{{if $shipment->service and !$shipment->trackingUrl()}}
+			{lang="shipped_by" sprintf="$shipment->shipped_date, $shipment->service"}
+		{{else}}
+			{lang="shipped_on" sprintf="$shipment->shipped_date"}
+		{{endif}}
+		{{if $shipment->trackingUrl()}}
+			&middot;
+			<a href="{$shipment->trackingUrl()}" target="_blank" rel='noreferrer'>{lang="track"}</a>
+		{{endif}}
+	{{endif}}
+</div>
+<br>
+
+{{if $shipment->label}}
+	{{if $easyPost and isset( $easyPost['tracker'] ) and \count( $easyPost['tracker']['tracking_details'] )}}
+		<div class="ipsGrid">
+			<div class="ipsGrid_span6">
+	{{endif}}
+	<div class="ipsBox">
+		<h2 class="ipsBox_titleBar">{lang="shipment_label"}</h2>
+		<div class='ipsPad'>
+			{{if $shipment->label instanceof \IPS\Http\Url}}
+				<a href="{$shipment->label}" target="_blank" rel='noreferrer'>
+					<img src="{$shipment->label}" class="ipsImage">
+				</a>
+			{{else}}
+				<a class="ipsButton ipsButton_normal ipsButton_fullWidth ipsButton_small" href="{$shipment->acpUrl()->setQueryString( array( 'do' => 'printout', 'print' => 'apilabel' ) )}" target='_blank' rel='noopener'>{lang="print_label"}</a>
+			{{endif}}
+		</div>
+	</div>
+	{{if $easyPost and isset( $easyPost['tracker'] ) and \count( $easyPost['tracker']['tracking_details'] )}}
+			</div>
+			<div class="ipsGrid_span6">
+				<div class="ipsBox">
+					<h2 class="ipsBox_titleBar">{lang="shipment_tracking"}</h2>
+					<div class="ipsPad">
+						<table class="ipsTable ipsAreaBackground_light">
+							{{foreach $easyPost['tracker']['tracking_details'] as $row}}
+								<tr>
+									<td>{datetime="strtotime( $row['datetime'] )"}</td>
+									<td>{$row['message']}</td>
+								</tr>
+							{{endforeach}}
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	{{endif}}
+	<br>
+{{endif}}
+<div class="ipsGrid">
+	<div class="ipsGrid_span6">
+		<div class="ipsBox">
+			<h2 class="ipsBox_titleBar">{lang="shipment_items"}</h2>
+			<div class="ipsPad">
+				<table class="ipsTable">
+					<thead>
+						<tr>
+							<th>{lang="invoice_item"}</th>
+							<th>{lang="invoice_quantity"}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{{foreach $shipment->items as $item}}
+							<tr>
+								<td class='ipsTable_wrap'>{$item['name']}</td>
+								<td>{$item['quantity']}</td>
+							</tr>
+						{{endforeach}}
+					</tbody>
+				</table>
+			</div>
+			<br>
+			<div class='ipsGrid ipsGrid_collapsePhone'>
+				<div class='ipsGrid_span6'>
+					<a class="ipsButton ipsButton_important ipsButton_fullWidth ipsButton_medium" href="{$shipment->acpUrl()->setQueryString( array( 'do' => 'printout', 'print' => 'packing_sheet' ) )}" target='_blank' rel='noopener'>{lang="print_packing_sheet"}</a>
+				</div>
+				<div class='ipsGrid_span6'>
+					<a class="ipsButton ipsButton_primary ipsButton_fullWidth ipsButton_medium" href="{$shipment->invoice->acpUrl()}">{lang="invoice_view"}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ipsGrid_span6">
+		<div class="ipsBox">
+			<h2 class="ipsBox_titleBar">{lang="shipping_address"}</h2>
+			<div class="ipsPad">
+				<div class="ipsClearfix">
+					{{if \IPS\GeoLocation::enabled()}}
+						<div class="ipsPos_left ipsPad_half">{$shipment->address()->map()->render( 200, 100 )|raw}</div>
+					{{endif}}
+					<div class="ipsPos_left">
+						{{$data = $shipment->data;}}
+						{$data['cm_first_name']} {$data['cm_last_name']}<br>
+						{$shipment->address()->toString('<br>')|raw}<br>
+						<br>
+						{{if $data['cm_phone']}}
+							<i class="fa fa-phone"></i> {$data['cm_phone']}
+						{{endif}}
+					</div>
+				</div>
+			</div>
+			<br>
+			<a class="ipsButton ipsButton_primary ipsButton_fullWidth ipsButton_medium" href="{$shipment->acpUrl()->setQueryString( array( 'do' => 'printout', 'print' => 'label' ) )}" target='_blank' rel='noopener'>{lang="print_label"}</a>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,5 @@
+<ips:template parameters="$stats, $chart" />
+<div class='ipsType_center ipsType_light ipsType_large'>
+	{lang="memberStatsDashboard_title" sprintf="$stats['member_count']" pluralize="$stats['member_count']"}
+</div>
+<div>{$chart|raw}</div>

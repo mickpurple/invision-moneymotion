@@ -1,0 +1,221 @@
+<ips:template parameters="$album, $table, $commentsAndReviews" />
+
+{{if $club = $album->category()->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $album->category()"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+<div class="ipsPageHeader ipsBox ipsPadding ipsResponsive_pull ipsClearfix ipsSpacer_bottom">
+	<div class='ipsPageHeader__meta ipsFlex ipsFlex-jc:between ipsFlex-ai:center ipsFlex-fw:wrap ipsGap:3'>
+		<div class='ipsFlex-flex:11'>
+			<h1 class="ipsType_pageTitle ipsContained_container">
+				{{if $album->asItem()->hidden() === 1}}
+					<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa fa-warning'></i></span></span>
+				{{elseif $album->asItem()->hidden() === -1}}
+					<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{$album->asItem()->hiddenBlurb()}'><i class='fa fa-eye-slash'></i></span></span>
+				{{elseif $album->asItem()->hidden() === -2}}
+					<span><span class="ipsBadge ipsBadge_icon ipsBadge_warning" data-ipsTooltip title='{$album->asItem()->deletedBlurb()}'><i class='fa fa-trash'></i></span></span>
+				{{endif}}
+				{{if $album->asItem()->mapped('featured')}}
+					<span><span class="ipsBadge ipsBadge_icon ipsBadge_positive" data-ipsTooltip title='{lang="featured"}'><i class='fa fa-star'></i></span></span>
+				{{endif}}
+				{{if $album->asItem()->canEdit()}}
+					<span class='ipsContained ipsType_break' data-controller="core.front.core.moderation">{{if $album->asItem()->locked()}}<i class='fa fa-lock'></i> {{endif}}
+						<span data-role="editableTitle" title='{lang="click_hold_edit"}'>{$album->_title}</span>
+					</span>
+				{{else}}
+					<span class='ipsContained ipsType_break'>{{if $album->asItem()->locked()}}<i class='fa fa-lock'></i> {{endif}}{$album->_title}</span>
+				{{endif}}
+			</h1>
+		</div>
+		<div class='ipsFlex-flex:01 ipsResponsive_hidePhone'>
+			<div class='ipsShareLinks'>
+				{{if $album->asItem()->shareLinks()}}
+					{template="shareButton" app="core" group="sharelinks" params="$album->asItem()"}
+				{{endif}}
+				{template="promote" app="core" group="global" params="$album->asItem()"}
+				{{$followerCount = \IPS\gallery\Image::containerFollowerCount( $album );}}
+				{template="follow" app="core" group="global" params="'gallery', 'album', $album->_id, $followerCount"}
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class='ipsColumns ipsColumns_collapsePhone'>
+	<div class='ipsColumn ipsColumn_veryWide'>
+		<div class='ipsBox ipsResponsive_pull lg:ipsPos_sticky'>
+			<div class='ipsPadding'>
+				{{if $album->coverPhoto('masked')}}
+					<div class='ipsSpacer_bottom'>
+						<div class='ipsImageBlock'>
+							<div class='ipsImageBlock__main'>
+								<img src='{$album->coverPhoto('masked')}' alt="{$album->name}" loading='lazy'>
+							</div>
+						</div>
+					</div>
+				{{endif}}
+
+				{{if $album->description}}
+					{{$truncateAttributes = array('data-ipsTruncate', 'data-ipsTruncate-size="10 lines"');}}
+					{template="richText" group="global" app="core" location="global" params="$album->description, array('ipsType_medium'), array(), $truncateAttributes"}
+				{{endif}}
+
+				{{if $album->type === \IPS\gallery\Album::AUTH_TYPE_PRIVATE}}
+					<span class="ipsBadge ipsBadge_warning">{lang="album_private_badge"}</span>
+				{{elseif $album->type === \IPS\gallery\Album::AUTH_TYPE_RESTRICTED}}
+					<span class="ipsBadge ipsBadge_warning">{lang="album_friend_only_badge"}</span>
+				{{endif}}
+
+				<ul class='ipsMargin_top ipsList_icons ipsType_semiBold'>
+					{{if !isset( \IPS\Request::i()->tab ) || \IPS\Request::i()->tab !== 'node_gallery_gallery'}}
+						<li class='ipsType_light ipsType_unbold'><i class='fa fa-user-circle-o'></i> {lang="album_created_by"} {$album->owner()->link()|raw}</li>
+					{{endif}}
+					{{if $album->last_img_date}}
+						<li class='ipsType_light ipsType_unbold'><i class="fa fa-clock-o"></i> {lang="updated"} {datetime="$album->last_img_date"}</li>
+					{{endif}}
+					<li class='ipsMargin_top'><i class='fa fa-camera'></i> {lang="num_images" pluralize="$album->count_imgs"}</li>
+					{{if $album->use_comments && $album->comments > 0}}
+						<li><i class='fa fa-comments-o'></i> {lang="gallery_album_num_comments_lc" pluralize="$album->comments"}</li>
+					{{endif}}
+					{{if $album->allow_comments && $album->count_comments > 0}}
+						<li><i class='fa fa-comment'></i> {lang="gallery_image_comments_s" pluralize="$album->count_comments"}</li>
+					{{endif}}
+                    {{if $album->use_reviews && $album->reviews > 0}}
+                        <li><i class='fa fa-comment'></i> {lang="gallery_album_num_reviews_lc" pluralize="$album->reviews"}</li>
+                    {{endif}}
+                    {{if $album->views > -1}}
+                    	<li id='elAlbumViews'>
+                            {{if \IPS\Application::appIsEnabled('cloud') and \IPS\Member::loggedIn()->modPermission('can_view_moderation_log')}}
+                                {{$url = "app=cloud&module=analytics&controller=analytics&contentClass=\IPS\gallery\Album\Item&contentId=" . $album->id;}}
+                                <i class='fa fa-eye'></i> <a href='{url="$url"}' data-ipsDialog data-ipsDialog-title='{lang="analytics"}' data-ipsTooltip title='{lang="analytics"}'>{lang="num_views_with_number" pluralize="$album->views"}</a>
+                            {{else}}
+                                <i class='fa fa-eye'></i> {lang="num_views_with_number" pluralize="$album->views"}
+                            {{endif}}
+                        </li>
+                    {{endif}}
+				</ul>
+
+				{{if \IPS\IPS::classUsesTrait( $album->asItem(), 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+					{template="reputation" app="core" group="global" params="$album->asItem()"}
+				{{endif}}
+			</div>
+			
+			{{if $album->canDelete() || $album->asItem()->canEdit() || $album->asItem()->canOnMessage( 'add' ) || $album->asItem()->canFeature() || $album->asItem()->canUnfeature() || $album->asItem()->canHide() || $album->asItem()->canUnhide() || $album->asItem()->canMove() || $album->asItem()->canLock() || $album->asItem()->canUnlock() || $album->asItem()->canReportOrRevoke() === TRUE}}
+				<div class='ipsItemControls ipsPadding'>
+					<ul class='ipsToolList ipsToolList_horizontal ipsPos_left sm:ipsMargin:none ipsClearfix ipsResponsive_noFloat ipsItemControls_left cGalleryAlbumControls'>
+					{{if $album->canDelete() || $album->asItem()->canEdit() || $album->asItem()->canOnMessage( 'add' ) || $album->asItem()->canFeature() || $album->asItem()->canUnfeature() || $album->asItem()->canHide() || $album->asItem()->canUnhide() || $album->asItem()->canMove() || $album->asItem()->canLock() || $album->asItem()->canUnlock()}}
+						<li>
+							<a href='#elAlbumActions_menu' id='elAlbumActions' class='ipsButton ipsButton_light ipsButton_verySmall ipsButton_fullWidth' data-ipsMenu>{lang="manage_album"} <i class='fa fa-caret-down'></i></a>
+							<ul id='elAlbumActions_menu' class='ipsMenu ipsMenu_auto ipsHide'>
+								{{if $album->asItem()->canReportOrRevoke() === TRUE}}
+									<li class='ipsMenu_item'>
+										<a href='{$album->url()->setQueryString('do', 'report')}' {{if member.member_id or \IPS\Helpers\Form\Captcha::supportsModal()}}data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-title="{lang="report_album"}" data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage="{lang="report_submit_success"}"{{endif}} title="{lang="report_album"}">{lang="report_album"}</a>
+									</li>
+									<li class='ipsMenu_sep'><hr></li>
+								{{endif}}
+								{{if $album->asItem()->canEdit() }}
+									<li class='ipsMenu_item'><a href='{$album->url()->setQueryString( array( 'do' => 'editAlbum' ) )}' title="{lang="edit_album"}" data-ipsDialog data-ipsDialog-title="{lang="edit_album"}">{lang="edit_album"}</a></li>
+								{{endif}}
+
+								{{if $album->asItem()->canFeature()}}
+									<li class='ipsMenu_item'><a href='{$album->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'feature' ) )}' title="{lang="feature_title_album"}">{lang="feature"}</a></li>
+								{{endif}}
+								{{if $album->asItem()->canUnfeature()}}				
+									<li class='ipsMenu_item'><a href='{$album->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'unfeature' ) )}' title="{lang="unfeature_title_album"}">{lang="unfeature"}</a></li>
+								{{endif}}
+								{{if $album->asItem()->canHide()}}				
+									<li class='ipsMenu_item'><a href='{$album->url()->setQueryString( array( 'do' => 'moderate', 'action' => 'hide' ) )}' title="{lang="hide_title_album"}" data-ipsDialog data-ipsDialog-title="{lang="hide"}">{lang="hide"}</a></li>
+								{{endif}}
+								{{if $album->asItem()->canUnhide()}}				
+									<li class='ipsMenu_item'><a href='{$album->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'unhide' ) )}' title="{{if $album->asItem()->hidden() === 1}}{lang="approve_title_album"}{{else}}{lang="unhide_title_album"}{{endif}}">{{if $album->asItem()->hidden() === 1}}{lang="approve"}{{else}}{lang="unhide"}{{endif}}</a></li>
+								{{endif}}
+								{{if $album->asItem()->canLock()}}				
+									<li class='ipsMenu_item'><a href='{$album->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'lock' ) )}' title="{lang="lock_title_album"}">{lang="lock"}</a></li>
+								{{endif}}
+								{{if $album->asItem()->canUnlock()}}				
+									<li class='ipsMenu_item'><a href='{$album->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'unlock' ) )}' title="{lang="unlock_title_album"}">{lang="unlock"}</a></li>
+								{{endif}}
+								{{if $album->asItem()->canMove()}}				
+									<li class='ipsMenu_item'><a href='{$album->url()->setQueryString( array( 'do' => 'move' ) )}' data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title="{lang="move"}"  title="{lang="galleryalbum_move_title"}">{lang="move"}</a></li>
+								{{endif}}
+
+								{{if $album->canDelete() }}
+									<li class='ipsMenu_item'><a href='{$album->url()->csrf()->setQueryString( array( 'do' => 'deleteAlbum' ) )}' data-ipsDialog data-ipsDialog-title="{lang="delete_album"}" title="{lang="delete_album"}">{lang="delete_album"}</a></li>
+								{{endif}}
+
+								{{if $album->cover_img_id AND \IPS\gallery\Image::modPermission( 'edit', \IPS\Member::loggedIn(), $album )}}
+									<li class='ipsMenu_item'><a href='{$album->url()->setQueryString( array( 'do' => 'unsetCoverPhoto', 'csrfKey' => \IPS\Session::i()->csrfKey ) )}' title='{lang="gallery_unset_cover"}'>{lang="gallery_unset_cover"}</a></li>
+								{{endif}}
+
+								{{if $album->asItem()->canOnMessage( 'add' )}}
+									<li class='ipsMenu_item'><a href='{$album->url()->setQueryString( array( 'do' => 'messageForm' ) )}' data-ipsDialog data-ipsDialog-title='{lang="add_message"}'>{lang="add_message"}</a></li>
+								{{endif}}
+                                {{if \IPS\Member::loggedIn()->modPermission('can_view_moderation_log')}}
+                                    <li class='ipsMenu_sep'><hr></li>
+                                    <li class="ipsMenu_item"><a data-ipsDialog data-ipsDialogTitle="{lang="moderation_log"}" href='{$album->url()->setQueryString( array( 'do' => 'modLog' ) )}'>{lang="moderation_log"}</a></li>
+                                {{endif}}
+							</ul>
+						</li>
+					{{elseif $album->asItem()->canReportOrRevoke() === TRUE}}
+						<li>
+							<a href='{$album->url()->setQueryString('do', 'report')}' class='ipsButton ipsButton_link ipsButton_verySmall ipsButton_fullWidth' {{if member.member_id or \IPS\Helpers\Form\Captcha::supportsModal()}}data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-title="{lang="report_album"}" data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage="{lang="report_submit_success"}"{{endif}} title="{lang="report_album"}">{lang="report_album"}</a>
+						</li>
+					{{endif}}
+					</ul>
+				</div>
+			{{endif}}
+
+			{{if \count( $album->_event )}}
+				<hr class='ipsHr'>
+				<div class='ipsSpacer_top cGalleryEvents ipsPadding'>
+					<h2 class='ipsType_sectionHead'>{lang="events_in_album" pluralize="\count( $album->_event )"}</h2>
+					{template="eventBlocks" group="view" app="calendar" params="$album->_event"}
+				</div>
+			{{endif}}
+		</div>
+	</div>
+	<div class='ipsColumn ipsColumn_fluid'>
+		{template="contentItemMessages" group="global" app="core" params="$album->asItem()->getMessages(), $album->asItem()"}
+		{{if $album->can('add')}}
+			<ul class="ipsToolList ipsToolList_horizontal ipsClearfix ipsSpacer_bottom">
+				{template="categoryButtons" group="browse" params="$album->can('add'), $album->category(), $album"}
+			</ul>
+		{{endif}}
+		<div class='ipsBox ipsResponsive_pull'>
+			{$table|raw}
+		</div>
+
+		{{if $commentsAndReviews}}
+			{{if ( $album->asItem()->use_reviews && $album->asItem()->container()->allow_reviews ) && ( $album->asItem()->use_comments && $album->asItem()->container()->allow_comments ) }}
+				<a id="replies"></a>
+				<h2 class='ipsHide'>{lang="user_feedback"}</h2>
+			{{endif}}
+
+			<div class='cGalleryAlbumFeedback ipsResponsive_pull ipsMargin_top'>
+				{{if (!( $album->asItem()->use_reviews && $album->asItem()->container()->allow_reviews ) && ( $album->asItem()->use_comments && $album->asItem()->container()->allow_comments )) OR (( $album->asItem()->use_reviews && $album->asItem()->container()->allow_reviews ) && !( $album->asItem()->use_comments && $album->asItem()->container()->allow_comments )) }}
+					<div class='ipsBox ipsPadding'>
+						{$commentsAndReviews|raw}
+					</div>
+				{{else}}
+					{$commentsAndReviews|raw}
+				{{endif}}
+			</div>
+		{{endif}}
+	</div>
+	<div class="ipsBox ipsPadding ipsResponsive_pull ipsResponsive_showPhone ipsMargin_top">
+		<div class='ipsShareLinks'>
+			<div>
+				{template="follow" app="core" group="global" params="'gallery', 'album', $album->_id, $followerCount"}
+			</div>
+			<div>
+				{template="promote" app="core" group="global" params="$album->asItem()"}
+			</div>
+		</div>
+	</div>
+</div>
+
+{{if $album->category()->club()}}
+	</div>
+{{endif}}

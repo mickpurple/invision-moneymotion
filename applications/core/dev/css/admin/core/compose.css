@@ -1,0 +1,15 @@
+.ipsDarkMode .ipsUploader .ipsUploader__row {
+    background: var(--c3);
+}
+
+.ipsDarkMode .ipsUploader .ipsUploader__rowInsert {
+    background: var(--c3);
+}
+
+.ipsDarkMode .ipsUploader:hover a {
+    color: #fff;
+}
+
+.ipsUploader .ipsUploader_rowTitle {
+    color: var(--c9);
+}

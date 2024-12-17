@@ -1,0 +1,330 @@
+<ips:template parameters="$invoice, $summary, $transactions, $shipments" />
+
+<div class='ipsPhotoPanel ipsPhotoPanel_mini ipsClearfix ipsSpacer_both ipsResponsive_showPhone ipsResponsive_block'>
+	{template="userPhoto" group="global" app="core" location="front" params="$invoice->member, 'mini'"}
+	<div>
+		<h3 class='ipsType_sectionHead'>
+			<strong>
+				{{if $invoice->member->member_id}}
+					<a class="ipsType_blendLinks" href="{$invoice->member->acpUrl()}">{$invoice->member->cm_name}</a>
+				{{else}}
+					{$invoice->member->cm_name}
+				{{endif}}
+			</strong>
+		</h3>
+		{{if $invoice->member->email}}
+			<p class='ipsType_reset ipsType_unbold ipsType_medium ipsType_light'>{$invoice->member->email}</p>
+		{{endif}}				
+	</div>
+</div>
+
+<div class='ipsGrid ipsGrid_collapsePhone'>
+	<div class='ipsGrid_span4'>
+		<div class='ipsBox ipsPad ipsType_center ipsSpacer_bottom cInvoiceStatus'>
+			{{if $invoice->status == 'paid'}}
+				<i class='fa fa-check-circle ipsType_huge'></i>
+			{{elseif $invoice->status == 'pend'}}
+				<i class='fa fa-clock-o ipsType_huge'></i>
+			{{elseif $invoice->status == 'expd'}}
+				<i class='fa fa-exclamation-circle ipsType_huge'></i>
+			{{elseif $invoice->status == 'canc'}}
+				<i class='fa fa-times-circle ipsType_huge'></i>
+			{{endif}}
+			<br>
+			<p class='ipsType_reset ipsType_sectionHead'><strong>{lang="istatus_{$invoice->status}"}</strong></p>
+			<p class='ipsType_reset ipsType_medium'>{lang="istatus_{$invoice->status}_desc"}</p>
+
+			{{if $invoice->status_extra and isset( $invoice->status_extra['type'] )}}
+				<p class='ipsType_reset ipsType_medium ipsSpacer_top'>
+					{{if $invoice->status_extra['type'] === 'manual'}}
+						{lang="invoice_status_extra" sprintf="\IPS\Member::load( $invoice->status_extra['setByID'] )->name, \IPS\DateTime::ts( $invoice->status_extra['date'] )"}
+					{{elseif $invoice->status_extra['type'] === 'zero'}}
+						{lang="invoice_status_zero"}
+					{{endif}}
+				</p>
+			{{endif}}
+		</div>
+
+		<div class='ipsBox ipsSpacer_bottom'>
+			<h2 class="ipsBox_titleBar">{lang="invoice_notes"}</h2>
+			<div class='ipsPad'>
+				<p class='ipsType_reset ipsType_normal'>
+					{{if $invoice->notes}}
+						{$invoice->notes}
+					{{else}}
+						<span class='ipsType_light'>
+							{lang="no_invoice_notes"}
+						</span>
+					{{endif}}
+				</p>
+
+				<p class='ipsType_reset ipsType_medium ipsSpacer_top'>
+					<a href="{$invoice->acpUrl()->setQueryString( array( 'do' => 'notes' ) )}" data-ipsDialog data-ipsDialog-title="{lang="invoice_notes"}" class='ipsButton ipsButton_light ipsButton_verySmall'>{lang="edit"}</a>
+				</p>
+			</div>
+		</div>
+
+		{{if $transactions}}
+			<div class='ipsSpacer_bottom ipsBox'>
+				<h2 class="ipsBox_titleBar">{lang="invoice_transactions"}</h2>
+				{$transactions|raw}
+			</div>
+		{{endif}}
+
+		{{if $shipments}}
+			<div class='ipsBox'>
+				<h2 class="ipsBox_titleBar">{lang="invoice_shipments"}</h2>
+				{$shipments|raw}
+			</div>
+		{{endif}}
+	</div>
+	<div class='ipsGrid_span8'>
+
+		<div class='ipsPhotoPanel ipsPhotoPanel_mini ipsClearfix ipsSpacer_bottom ipsResponsive_hidePhone'>
+			{template="userPhoto" group="global" app="core" location="front" params="$invoice->member, 'mini'"}
+			<div>
+				<h3 class='ipsType_sectionHead'>
+					<strong>
+						{{if $invoice->member->member_id}}
+							<a class="ipsType_blendLinks" href="{$invoice->member->acpUrl()}">{$invoice->member->cm_name}</a>
+						{{else}}
+							{$invoice->member->cm_name}
+						{{endif}}
+					</strong>
+				</h3>
+				{{if $invoice->member->email}}
+					<p class='ipsType_reset ipsType_unbold ipsType_medium ipsType_light'>{$invoice->member->email}</p>
+				{{endif}}				
+			</div>
+		</div>
+		
+		<div class='ipsBox'>
+			<h2 class='ipsBox_titleBar'>{lang="invoice"}</h2>
+			<div class='ipsPad'>
+				<div class='ipsGrid ipsGrid_collapsePhone ipsSpacer_bottom'>
+					<div class='ipsGrid_span7'>
+						{{if $invoice->billaddress}}
+							<h2 class='ipsType_reset ipsType_normal'><strong>{lang="invoice_billedto"}</strong></h2>
+							<p class='ipsType_reset ipsType_normal'>
+								{$invoice->billaddress->toString('<br>')|raw}
+							</p>
+							{{if isset( $invoice->billaddress->vat ) and $invoice->billaddress->vat}}
+								<p class='ipsType_reset ipsType_normal ipsSpacer_top ipsSpacer_half'>
+									{lang="cm_checkout_vat_number"}: {template="vatNumber" group="global" params="$invoice->billaddress->vat"}
+								</p>
+							{{endif}}
+						{{endif}}
+
+						{{if $invoice->shipaddress}}
+							<h2 class='ipsType_reset ipsType_normal ipsSpacer_top'><strong>{lang="shipping_address"}</strong></h2>
+							<p class='ipsType_reset ipsType_normal'>
+								{$invoice->shipaddress->toString('<br>')|raw}
+							</p>
+						{{endif}}
+					</div>
+					<div class='ipsGrid_span5'>
+						<h2 class='ipsType_reset ipsType_normal'><strong>{lang="invoice_date"}</strong></h2>
+						<p class='ipsType_reset ipsType_normal ipsSpacer_bottom ipsSpacer_half'>
+							{$invoice->date}
+						</p>
+
+						<h2 class='ipsType_reset ipsType_normal'><strong>{lang="invoice_paiddate"}</strong></h2>
+						<p class='ipsType_reset ipsType_normal ipsSpacer_bottom'>
+							{$invoice->paid}
+						</p>
+
+						<h2 class='ipsType_reset ipsType_normal'><strong>{lang="invoice_po_number"}</strong></h2>
+						<p class='ipsType_reset ipsType_normal ipsSpacer_bottom'>
+							{{if $invoice->po}}
+								{$invoice->po}
+							{{else}}
+								<span class='ipsType_light'>{lang="none"}</span>
+							{{endif}}
+							&nbsp;&nbsp;
+							<a href="{$invoice->acpUrl()->setQueryString( array( 'do' => 'poNumber' ) )}" data-ipsDialog class='ipsType_small'>({lang="edit"})</a>
+						</p>
+					</div>
+				</div>
+
+				<div class='ipsAreaBackground_reset'>
+					<table class="ipsTable ipsTable_zebra">
+						<thead>
+							<tr>
+								<th>{lang="invoice_item"}</th>
+								<th>{lang="invoice_unit_price"}</th>
+								<th>{lang="invoice_quantity"}</th>
+								<th>{lang="invoice_line_price"}</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{foreach $summary['items'] as $k => $item}}
+								<tr>
+									<td class="ipsTable_wrap">
+										<span title="{lang="$item->_title"}" data-ipsTooltip><i class="fa fa-{$item->_icon}"></i></span> &nbsp; 
+										{{if $url = $item->acpUrl()}}
+											<a href="{$url}">{$item->name}</a>
+										{{else}}
+											{$item->name}
+										{{endif}}
+										{{if \count( $item->details )}}
+											<span class="ipsType_light">
+												{{foreach $item->details as $k => $v}}
+													{{if $displayValue = trim( \IPS\nexus\Package\CustomField::load( $k )->displayValue( $v, TRUE ) )}}
+														{lang="nexus_pfield_{$k}"}: {$displayValue|raw}<br>
+													{{endif}}
+												{{endforeach}}
+											</span>
+										{{endif}}
+									</td>
+									<td>{$item->price}</td>
+									<td>{$item->quantity}</td>
+									<td>
+										{{if $item->payTo}}
+											<a href="#" data-ipsDialog data-ipsDialog-content="#el_item{$k}_commission" data-ipsDialog-title="{$item->name}{{if $item->quantity > 1}} x{$item->quantity}{{endif}}">
+												{$item->linePrice()}
+											</a>
+											<div id="el_item{$k}_commission" class="ipsHide">
+												{{$recipientAmounts = $item->recipientAmounts();}}
+												<table class="ipsTable ipsTable_zebra">
+													<thead>
+														<tr>
+															<th></th>
+															<th>{lang="invoice_unit_price"}</th>
+															<th>{lang="invoice_line_price"}</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td></td>
+															<td>{$item->price}</td>
+															<td>{$item->linePrice()}</td>
+														</tr>
+														{{if $item->commission and $item->fee}}
+															<tr>
+																<td>{lang="invoice_site_commission" sprintf="$item->commission"}</td>
+																<td>{$recipientAmounts['site_commission_unit']}</td>
+																<td>{$recipientAmounts['site_commission_line']}</td>
+															</tr>
+															<tr>
+																<td colspan="2">{lang="invoice_site_fee"}</td>
+																<td>{$item->fee}</td>
+															</tr>
+															<tr>
+																<td colspan="2"><strong>{lang="invoice_site_total"}</strong></td>
+																<td><strong class="">{$recipientAmounts['site_total']}</strong></td>
+															</tr>
+															<tr>
+																<td colspan="2"><strong>{lang="invoice_amount_recipient" sprintf="$item->payTo->name"}</strong></td>
+																<td><strong class="">{$recipientAmounts['recipient_final']}</strong></td>
+															</tr>
+														{{elseif $item->commission}}
+															<tr>
+																<td>{lang="invoice_site_commission" sprintf="$item->commission"}</td>
+																<td>{$recipientAmounts['site_commission_unit']}</td>
+																<td>{$recipientAmounts['site_commission_line']}</td>
+															</tr>
+															<tr>
+																<td>{lang="invoice_amount_recipient" sprintf="$item->payTo->name"}</td>
+																<td>{$recipientAmounts['recipient_unit']}</td>
+																<td>{$recipientAmounts['recipient_line']}</td>
+															</tr>
+														{{elseif $item->fee}}
+															<tr>
+																<td colspan="2">{lang="invoice_site_fee"}</td>
+																<td>{$item->fee}</td>
+															</tr>
+															<tr>
+																<td colspan="2">{lang="invoice_amount_recipient" sprintf="$item->payTo->name"}</td>
+																<td>{$recipientAmounts['recipient_final']}</td>
+															</tr>
+														{{endif}}
+													</tbody>
+												</table>
+											</div>
+										{{else}}
+											{$item->linePrice()}
+										{{endif}}
+									</td>
+								</tr>
+							{{endforeach}}
+						</tbody>
+						<tfoot>
+							<tr class='cInvoice_subtotal'>
+								<td colspan="3"><strong>{lang="subtotal"}</strong></td>
+								<td><strong>{$summary['subtotal']}</strong></td>
+							</tr>
+							{{foreach $summary['shipping'] as $shipping}}
+								<tr>
+									<td colspan="3">{$shipping->name}</td>
+									<td>{$shipping->linePrice()}</td>
+								</tr>
+							{{endforeach}}
+							{{foreach $summary['tax'] as $taxId => $tax}}
+								<tr>
+									<td colspan="3">
+										{lang="nexus_tax_{$taxId}"}
+										{{if $tax['type'] !== 'single'}}
+											{{if $tax['type'] === 'eu' and $invoice->billaddress->business and $invoice->billaddress->vat}}
+												({lang="tax_rate_eu"}: {expression="$tax['rate']*100"}%)
+											{{elseif $invoice->billaddress->business}}
+												({lang="tax_rate_business"}: {expression="$tax['rate']*100"}%)
+											{{else}}
+												({lang="tax_rate_consumer"}: {expression="$tax['rate']*100"}%)
+											{{endif}}
+										{{else}}
+											({expression="$tax['rate']*100"}%)
+										{{endif}}
+									</td>
+									<td>{$tax['amount']}</td>
+								</tr>
+							{{endforeach}}
+							<tr class='cInvoice_subtotal'>
+								<td colspan="3"><strong class="ipsType_large">{lang="total"}</strong></td>
+								<td><strong class="ipsType_large">{$summary['total']}</strong></td>
+							</tr>
+                            {{$recipients = $invoice->payToRecipients();}}
+                            {{$commission = $invoice->commission( $invoice->total->amount->subtract( \IPS\Math\Number::sum( $recipients ) ) );}}
+							{{if $recipients or ( $commission AND settings.ref_on )}}
+								{{$totalForSite = $summary['total']->amount->subtract( \IPS\Math\Number::sum( $recipients ) );}}
+								{{foreach $recipients as $recipient => $amount}}
+									{{$customer = \IPS\nexus\Customer::load( $recipient );}}
+									<tr>
+										<td colspan="3">
+											<div class='ipsPhotoPanel ipsPhotoPanel_tiny ipsClearfix'>
+												<a href="{$customer->acpUrl()}" class='ipsPos_left'><img src='{$customer->photo}' class='ipsUserPhoto ipsUserPhoto_tiny'></a>
+												<div>
+													<a href="{$customer->acpUrl()}" class="ipsType_blendLinks"><strong>{lang="invoice_amount_recipient" sprintf="\IPS\Member::load( $recipient )->name"}</strong></a>
+												</div>
+											</div>
+										</td>
+										<td><strong>{money="$amount" currency="$invoice->currency"}</strong></td>
+									</tr>
+								{{endforeach}}
+
+								{{if isset( $commission ) and $commission['rule']}}
+									{{$totalForSite = $totalForSite->subtract( $commission['amount']->amount );}}
+									<tr>
+										<td colspan="3">
+											<div class='ipsPhotoPanel ipsPhotoPanel_tiny ipsClearfix'>
+												<a href="{$commission['referrer']->acpUrl()}" class='ipsPos_left'><img src='{$commission['referrer']->photo}' class='ipsUserPhoto ipsUserPhoto_tiny'></a>
+												<div>
+													<a href="{$commission['referrer']->acpUrl()}" class="ipsType_blendLinks"><strong>{lang="invoice_amount_commission" sprintf="$commission['referrer']->name"}</strong></a>
+													<br>{$commission['rule']->_title}
+												</div>
+											</div>
+										</td>
+										<td><strong>{$commission['amount']}</strong></td>
+									</tr>
+								{{endif}}
+								<tr class='cInvoice_subtotal'>
+									<td colspan="3"><strong class="">{lang="invoice_site_total"}</strong></td>
+									<td><strong class="">{money="$totalForSite" currency="$invoice->currency"}</strong></td>
+								</tr>
+							{{endif}}
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

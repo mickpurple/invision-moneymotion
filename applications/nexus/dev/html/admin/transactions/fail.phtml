@@ -1,0 +1,34 @@
+<ips:template parameters="$transaction, $log" />
+
+<li class='ipsClearfix cTransaction_negative'>
+	<div class='cTransaction_icon ipsPos_left'>
+		<i class='fa fa-times'></i>
+	</div>
+	<div class='cTransaction_info ipsType_normal'>
+		<h3 class="ipsType_sectionHead">
+			<strong>
+				{lang="tstatus_fail_set"}
+			</strong>
+		</h3>
+		<br>
+		{{if isset( $log['on'] ) and $log['on']}}
+			{expression="\IPS\DateTime::ts( $log['on'] )"}
+			{{if isset( $log['by'] ) and $log['by']}}
+				<br>
+				<span class='ipsType_medium ipsType_light'>
+					{lang="byline_nodate" sprintf="\IPS\Member::load( $log['by'] )->name"}
+				</span>
+			{{endif}}
+		{{endif}}
+		{{if isset( $log['note'] ) and $log['note']}}
+			<p class='ipsType_reset cTransaction_note ipsType_medium'>
+				{lang="trans_extra_{$log['note']}"}
+			</p>
+		{{endif}}
+		{{if isset( $log['noteRaw'] ) and $log['noteRaw']}}
+			<p class='ipsType_reset cTransaction_note ipsType_medium'>
+				{$log['noteRaw']}
+			</p>
+		{{endif}}
+	</div>
+</li>

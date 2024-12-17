@@ -1,0 +1,2 @@
+<ips:template parameters="$imageUrl, $imageName" />
+<p><img {{if settings.lazy_load_enabled}}src="{expression="\IPS\Text\Parser::blankImage()"}" data-{{endif}}src="{$imageUrl}" class="ipsImage ipsImage_thumbnailed" alt="{$imageName}"></p>

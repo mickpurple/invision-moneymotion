@@ -1,0 +1,20 @@
+<ips:template parameters="$links, $url" />
+
+<div class='ipsPad'>
+	<h4 class='ipsType_sectionHead'>{lang="block_invite"}</h4>
+	<hr class='ipsHr'>
+	<h5 class='ipsType_normal ipsType_reset'>{lang="link_to_site"}</h5>
+
+	<input type='text' value='{$url}' class='ipsField_fullWidth'>
+
+	{{if \count( $links ) }}
+	<h5 class='ipsType_normal ipsType_reset ipsSpacer_top'>{lang="share_externally"}</h5>
+	<ul class='ipsList_inline ipsList_noSpacing ipsClearfix'>
+		{{foreach $links as $link }}
+		<li>{$link|raw}</li>
+		{{endforeach}}
+	</ul>
+	<hr class='ipsHr'>
+	{{endif}}
+	<button class='ipsHide ipsButton ipsButton_small ipsButton_light ipsButton_fullWidth ipsMargin_top:half' data-controller='core.front.core.webshare' data-role='webShare' data-webShareTitle='{lang="block_invite_text" sprintf="\IPS\Settings::i()->board_name"}' data-webShareText='{lang="block_invite_text" sprintf="\IPS\Settings::i()->board_name"}' data-webShareUrl='{$url}'>{{if \count( $links )}}{lang="more_share_options"}{{else}}{lang="share"}{{endif}}</button>
+</div>

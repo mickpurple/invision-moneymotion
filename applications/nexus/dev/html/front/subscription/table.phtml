@@ -1,0 +1,60 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+<div class='ipsPageHeader ipsClearfix ipsType_center ipsSpacer_bottom ipsSpacer_double'>
+	{{if isset( \IPS\Request::i()->register ) and \IPS\Settings::i()->nexus_subs_register and (int) \IPS\Request::i()->register === 1}}
+		<h1 class='ipsType_veryLarge'>{lang="nexus_sub_sign_up_title"}</h1>
+		<p class="ipsType_large ipsType_center ipsType_light">
+			{lang="nexus_sub_sign_up_desc"}
+		</p>
+    {{elseif isset( \IPS\Request::i()->register ) and \IPS\Settings::i()->nexus_subs_register and (int) \IPS\Request::i()->register === 2}}
+        <h1 class='ipsType_veryLarge'>{lang="nexus_sub_needed_title"}</h1>
+        <p class="ipsType_large ipsType_center ipsType_light">
+            {lang="nexus_sub_needed_desc"}
+        </p>
+	{{else}}
+		<h1 class='ipsType_veryLarge'>{lang="nexus_front_subscriptions"}</h1>
+        {{if $table->activeSubscription and $table->activeSubscription->purchase->billing_agreement and !$table->activeSubscription->purchase->billing_agreement->canceled}}
+        <p class="ipsMessage ipsMessage_info ipsType_left">
+            {lang="nexus_sub_active_billingagreement_desc" sprintf="$table->activeSubscription->purchase->billing_agreement->url()"}
+        </p>
+        {{endif}}
+	{{endif}}
+
+	{{if \count( \IPS\nexus\Money::currencies() ) > 1}}
+	<div class='ipsPos_right ipsResponsive_noFloat'>
+		{{$baseUrl = \IPS\Http\Url::internal('app=nexus&module=subscriptions&controller=subscriptions', 'front', 'nexus_subscriptions');}}
+        {{if isset( \IPS\Request::i()->register )}}
+            {{$baseUrl = $baseUrl->setQueryString( 'register', (int) \IPS\Request::i()->register );}}
+        {{endif}}
+		{{$memberCurrency = ( ( isset( \IPS\Request::i()->cookie['currency'] ) and \in_array( \IPS\Request::i()->cookie['currency'], \IPS\nexus\Money::currencies() ) ) ? \IPS\Request::i()->cookie['currency'] : \IPS\nexus\Customer::loggedIn()->defaultCurrency() );}}
+		<a href='#elCurrencyChooser_menu' data-ipsMenu id='elCurrencyChooser' class='ipsButton ipsButton_veryLight ipsButton_small ipsSpacer_top ipsSpacer_half'>{$memberCurrency} <i class='fa fa-caret-down'></i></a>
+		<ul class='ipsMenu ipsMenu_veryNarrow ipsHide' id='elCurrencyChooser_menu' {{if isset( $_SESSION['cart'] ) and \count( $_SESSION['cart'] )}}data-controller="nexus.front.store.currencySelect"{{endif}}>
+			{{foreach \IPS\nexus\Money::currencies() as $currency}}
+				<li class='ipsMenu_item' {{if $currency == $memberCurrency}}data-selected{{endif}}>
+					<a href='{$baseUrl->setQueryString( 'currency', $currency )->csrf()}' title='{lang="set_currency_to" sprintf="$currency"}'>
+					{{if $currency == $memberCurrency}}<i class='fa fa-check'></i> {{endif}}{$currency}
+					</a>
+				</li>
+			{{endforeach}}
+		</ul>
+	</div>
+	{{endif}}
+</div>
+<div class="ipsButtonBar ipsPad_half ipsClearfix ipsClear ipsSpacer_bottom {{if $table->pages <= 1}}ipsHide{{endif}}" data-role="tablePagination">
+	{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+</div>
+
+{{if \is_array( $rows ) AND \count( $rows )}}
+	<div class='ipsClear {{foreach $table->classes as $class}}{$class} {{endforeach}}' id='elTable_{$table->uniqueId}' data-controller='nexus.front.subscriptions.main' data-role='tableRows'>
+		<div class='ipsGrid ipsGrid_collapsePhone' data-ipsGrid data-ipsGrid-equalHeights='row'>
+			{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+		</div>
+	</div>
+{{else}}
+	<p class="ipsType_large ipsType_center ipsType_light">
+			{lang="nexus_subs_non_available"}
+	</p>
+{{endif}}
+
+<div class="ipsButtonBar ipsPad_half ipsClearfix ipsClear ipsSpacer_top {{if $table->pages <= 1}}ipsHide{{endif}}" data-role="tablePagination">
+	{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+</div>

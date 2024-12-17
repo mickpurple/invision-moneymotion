@@ -1,0 +1,34 @@
+.ipsBadge {
+	padding: 0px 12px;
+}
+
+.ipsBadge, 
+.ipsBadge.ipsBadge_normal {
+	height: 23px;
+	line-height: 23px;
+	border-radius: 19px;
+}
+
+.ipsBadge_new:not(.ipsBadge_front), .ipsBadge_style1:not(.ipsBadge_front){
+	--badge--background: var(--dark);
+	--badge--color: #fff;
+}
+
+.ipsBadge_positive:not(.ipsBadge_front), .ipsBadge_style4:not(.ipsBadge_front) {
+	--badge--background: #49bd5b;
+	--badge--color: #fff;
+}
+
+.ipsBadge_neutral:not(.ipsBadge_front), .ipsBadge_style6:not(.ipsBadge_front){
+	--badge--background: #5f7794;
+	--badge--color: #fff;
+}
+
+.ipsItemStatus:not( .ipsItemStatus_large ) {
+	color: #385e8a;
+	color: var(--primary);
+}
+
+.ipsApp .ipsNotificationCount {
+	background: #B63F3F;
+}

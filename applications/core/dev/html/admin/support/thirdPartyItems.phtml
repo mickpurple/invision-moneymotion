@@ -1,0 +1,76 @@
+<ips:template parameters="$apps, $plugins, $themes, $editor, $ads" />
+<div data-controller='core.admin.support.dashboard'>
+	<div class='ipsPadding' data-role="customizationsWrapper">
+	<ul class="ipsDataList">
+		{{if \count( $apps )}}
+			<li class="ipsDataItem">
+				<div class="ipsDataItem_icon ipsType_issue ipsPos_top ipsType_large"><i class="fa fa-info-circle"></i></div>
+				<div class="ipsDataItem_generic ipsType_issue">
+					{lang="support_third_party_apps_count" pluralize="\count( $apps )"}
+				</div>
+			</li>
+		{{else}}
+			<li class="ipsDataItem">
+				<div class="ipsDataItem_icon ipsType_success ipsPos_top ipsType_large"><i class="fa fa-check"></i></div>
+				<div class="ipsDataItem_generic ipsType_success">{lang="support_third_party_no_apps"}</div>
+			</li>
+		{{endif}}
+		{{if \count( $plugins )}}
+			<li class="ipsDataItem">
+				<div class="ipsDataItem_icon ipsType_issue ipsPos_top ipsType_large"><i class="fa fa-info-circle"></i></div>
+				<div class="ipsDataItem_generic ipsType_issue">
+					{lang="support_third_party_plugins_count" pluralize="\count( $plugins )"}
+				</div>
+			</li>
+		{{else}}
+			<li class="ipsDataItem">
+				<div class="ipsDataItem_icon ipsType_success ipsPos_top ipsType_large"><i class="fa fa-check"></i></div>
+				<div class="ipsDataItem_generic ipsType_success">{lang="support_third_party_no_plugins"}</div>
+			</li>
+		{{endif}}
+		{{if $themes}}
+			<li class="ipsDataItem">
+				<div class="ipsDataItem_icon ipsType_issue ipsPos_top ipsType_large"><i class="fa fa-info-circle"></i></div>
+				<div class="ipsDataItem_generic ipsType_issue">
+					{lang="support_third_party_theme_count"}
+				</div>
+			</li>
+		{{else}}
+			<li class="ipsDataItem">
+				<div class="ipsDataItem_icon ipsType_success ipsPos_top ipsType_large"><i class="fa fa-check"></i></div>
+				<div class="ipsDataItem_generic ipsType_success">{lang="support_third_party_no_theme"}</div>
+			</li>
+		{{endif}}
+		{{if $editor}}
+			<li class="ipsDataItem">
+				<div class="ipsDataItem_icon ipsType_issue ipsPos_top ipsType_large"><i class="fa fa-info-circle"></i></div>
+				<div class="ipsDataItem_generic ipsType_issue">
+					{lang="support_third_party_editor_count"}
+				</div>
+			</li>
+		{{else}}
+			<li class="ipsDataItem">
+				<div class="ipsDataItem_icon ipsType_success ipsPos_top ipsType_large"><i class="fa fa-check"></i></div>
+				<div class="ipsDataItem_generic ipsType_success">{lang="support_third_party_no_editor"}</div>
+			</li>
+		{{endif}}
+		{{if \count( $ads )}}
+			<li class="ipsDataItem">
+				<div class="ipsDataItem_icon ipsType_issue ipsPos_top ipsType_large"><i class="fa fa-info-circle"></i></div>
+				<div class="ipsDataItem_generic ipsType_issue">
+					{lang="support_third_party_ads_count" pluralize="\count( $ads )"}
+				</div>
+			</li>
+		{{else}}
+			<li class="ipsDataItem">
+				<div class="ipsDataItem_icon ipsType_success ipsPos_top ipsType_large"><i class="fa fa-check"></i></div>
+				<div class="ipsDataItem_generic ipsType_success">{lang="support_third_party_no_ads"}</div>
+			</li>
+		{{endif}}
+	</ul>
+	</div>
+	<div class="ipsAreaBackground_light ipsClearfix ipsPadding ipsType_center {{if !$themes AND !$editor AND !\count( $ads ) AND !(\count( $apps )) AND !(\count( $plugins ))}}ipsHide{{endif}}">
+		<button href='{url="app=core&module=support&controller=support&do=thirdparty&enable=0" csrf="true"}' class='ipsButton ipsButton_important' data-role="disableCustomizations">{lang="health_disable_customizations"}</button>
+		<button href="{url="app=core&module=support&controller=support&do=thirdparty&enable=1&type=all" csrf="true"}" data-role="enableCustomizations" class="ipsButton ipsButton_important ipsHide">{lang="support_third_party_enable_all"}</button>
+	</div>
+</div>

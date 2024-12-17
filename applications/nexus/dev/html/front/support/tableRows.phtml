@@ -1,0 +1,48 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $row}}
+	<li class="ipsDataItem {{if $row->unread()}}ipsDataItem_unread{{endif}}">
+		<div class='ipsDataItem_generic ipsDataItem_size3 ipsPos_top ipsType_center'>
+			{template="userPhoto" group="global" app="core" params="\IPS\Member::load( $row->last_reply_by ), 'small'"}
+		</div>
+		<div class='ipsDataItem_main'>
+			<h4 class='ipsDataItem_title ipsType_sectionHead ipsType_break'>
+				{{if $row->unread()}}<span class='ipsItemStatus'><a href='{$row->url( 'getNewComment' )}'><i class="fa fa-circle"></i></a></span>{{endif}} <a href='{$row->url()}'>{{if $row->mapped('title')}}{$row->mapped('title')}{{else}}<em class="ipsType_light">{lang="content_deleted"}</em>{{endif}}</a> <span class='ipsType_light ipsType_unbold ipsType_normal'>#{$row->id}</span>
+			</h4>
+			<div class='ipsDataItem_meta ipsType_light'>
+				<ul class='ipsList_inline ipsSpacer_top ipsSpacer_half'>
+					<li>
+						{template="status" group="support" location="admin" params="$row->status"}
+					</li>
+					<li>
+						{lang="in"} <strong>{template="department" group="support" location="admin" params="$row->department"}</strong>
+					</li>
+					<li>
+						<i class='fa fa-clock-o'></i>
+						{{if $row->replies == 1}}
+							{{if $row->last_reply_by === \IPS\Member::loggedIn()->member_id}}
+								{lang="support_you_created" sprintf="\IPS\DateTime::ts( $row->last_reply )->relative()"}
+							{{else}}
+								{lang="support_x_created" sprintf="\IPS\Member::load( $row->last_reply_by )->name, \IPS\DateTime::ts( $row->last_reply )->relative()"}
+							{{endif}}
+						{{else}}
+							{{if $row->last_reply_by === \IPS\Member::loggedIn()->member_id}}
+								{lang="support_you_replied" sprintf="\IPS\DateTime::ts( $row->last_reply )->relative()"}
+							{{else}}
+								{lang="support_x_replied" sprintf="\IPS\Member::load( $row->last_reply_by )->name, \IPS\DateTime::ts( $row->last_reply )->relative()"}
+							{{endif}}
+						{{endif}}
+					</li>
+				</ul>
+			</div>
+			<div class='ipsType_break ipsContained ipsType_medium ipsSpacer_top ipsSpacer_half' data-ipsTruncate data-ipsTruncate-size='2 lines' data-ipsTruncate-type='remove'>
+				{$row->truncated()|raw}
+			</div>
+			{{if $row->purchase}}
+				<p class='ipsType_reset ipsType_medium ipsType_light ipsSpacer_top ipsSpacer_half ipsType_blendLinks'>{lang="request_is_for"} <strong>{$row->purchase->_title}</strong></p>
+			{{endif}}
+		</div>
+		<div class='ipsDataItem_generic ipsDataItem_size2 ipsType_right ipsPos_top'>
+			<span class='ipsCommentCount'>{$row->replies}</span>
+		</div>
+	</li>
+{{endforeach}}

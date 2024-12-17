@@ -1,0 +1,80 @@
+<ips:template parameters="$notification, $shipment, $email" />
+<br />
+{$email->language->addToStack( "email_notify_shipment", FALSE )}
+<br />
+<br />
+<em style='color: #8c8c8c'>&mdash; {setting="board_name"}</em>
+<br />
+<br />
+
+<h3 style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 24px; font-weight: 500; color: #333333; line-height: 21px; margin: 0">
+	{expression="sprintf( $email->language->get('shipment_number'), $shipment->id )"}
+</h3>
+<br />
+
+<a href='{url="app=nexus&module=payments&controller=shipping" base="admin"}' style="color: #ffffff; font-family: 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background: {setting="email_color"}; line-height: 32px; padding: 0 10px; display: inline-block; border-radius: 3px;">{$email->language->addToStack("shipment_view", FALSE)}</a>
+
+<br />
+<br />
+
+<table cellpadding="10" cellspacing="0" border="0" width="100%">
+	<tr>
+		<td dir='{dir}' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px" bgcolor="#f0f0f0">
+			<strong>{$email->language->addToStack("shipment_details", FALSE)}</strong>
+		</td>
+	</tr>
+	<tr>
+		<td dir='{dir}' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px" bgcolor="#f9f9f9">
+			<table width="100%" cellpadding="2" cellspacing="0" border="0">
+				<tr>
+					<td dir='{dir}' width="150" align='right' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px; vertical-align: top"><strong>{$email->language->addToStack("shipping_address", FALSE)}</strong></td>
+					<td dir='{dir}' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px">
+						{{$data = $shipment->data;}}
+						&nbsp;&nbsp;{$data['cm_first_name']} {$data['cm_last_name']}<br />
+						&nbsp;&nbsp;{$shipment->address()->toString('<br />&nbsp;&nbsp;')|raw}<br />
+						{{if $data['cm_phone']}}
+							&nbsp;&nbsp;{$data['cm_phone']}<br />
+						{{endif}}
+					</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' width="150" align='right' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px"><strong>{$email->language->addToStack("o_method", FALSE)}</strong></td>
+					<td dir='{dir}' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px">&nbsp;&nbsp;{$shipment->method->getTitleForLanguage( $email->language )}</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' width="150" align='right' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px"><strong>{$email->language->addToStack("o_date", FALSE)}</strong></td>
+					<td dir='{dir}' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px">&nbsp;&nbsp;{$shipment->date}</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<br />
+
+<table cellpadding="10" cellspacing="0" border="0" width="100%">
+	<tr>
+		<td dir='{dir}' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px" bgcolor="#f0f0f0">
+			<table width="100%" cellpadding="2" cellspacing="0" border="0">
+				<tr>
+					<td dir='{dir}' width="50" align='left' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px; vertical-align: top;"><strong>{$email->language->addToStack("item_id", FALSE)}</strong></td>
+					<td dir='{dir}' width="500" align='left' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px; vertical-align: top;"><strong>{$email->language->addToStack("invoice_item", FALSE)}</strong></td>
+					<td dir='{dir}' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px"><strong>{$email->language->addToStack("invoice_quantity", FALSE)}</strong></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td dir='{dir}' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px" bgcolor="#f9f9f9">
+			<table width="100%" cellpadding="2" cellspacing="0" border="0">
+				{{foreach $shipment->items as $item}}
+					<tr>
+						<td dir='{dir}' width="50" align='left' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px; vertical-align: top;">{$item['id']}</td>
+						<td dir='{dir}' width="500" align='left' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px; vertical-align: top;"><strong>{$item['name']}</strong></td>
+						<td dir='{dir}' style="font-family: 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; color: #333333; line-height: 21px">{$item['quantity']}</td>
+					</tr>
+				{{endforeach}}
+			</table>
+		</td>
+	</tr>
+</table>
+<br />

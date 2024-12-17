@@ -1,0 +1,49 @@
+<ips:template parameters="$calendars, $thisCalendar, $jump, $downloadLinks" />
+
+{{if $thisCalendar and $club = $thisCalendar->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $thisCalendar"}
+	{{endif}}
+{{endif}}
+
+<div class="ipsPageHeader ipsResponsive_pull ipsBox ipsPadding ipsMargin_bottom" id='elCalendarsHeader'>
+	<div class="ipsFlex ipsFlex-fw:wrap ipsFlex-ai:center ipsGap:2">
+		<div class='ipsFlex-flex:11'>
+			<span class="ipsType_pageTitle">
+				{{if $thisCalendar and $club = $thisCalendar->club()}}
+					{$thisCalendar->_title}
+				{{else}}
+					<a href='#elCalendars_menu' id='elCalendars' data-ipsMenu data-ipsMenu-appendTo="#elCalendarsHeader" class='ipsType_blendLinks'>{{if $thisCalendar}}{$thisCalendar->_title}{{else}}{lang="all_calendars"}{{endif}} &nbsp;<i class='fa fa-caret-down'></i></a>
+				{{endif}}
+			</span>
+		</div>
+		<div class='ipsFlex-flex:00'>
+			<div class='ipsFlex ipsFlex-ai:center ipsGap:2'>
+                {{if $thisCalendar and \IPS\Application::appIsEnabled('cloud')}}
+                    {template="analyticsButton" app="cloud" group="analytics" params="$thisCalendar, $thisCalendar->id"}
+                {{endif}}
+				<a href='#elCalendarSettings_menu' id='elCalendarSettings' data-ipsMenu data-ipsMenu-alignCenter data-ipsMenu-appendTo="#elCalendarsHeader" class='ipsButton ipsButton_light ipsButton_verySmall'>{lang="subscribe_button"} <i class='fa fa-caret-down'></i></a>
+				<a href='#elCalendarJump' data-ipsMenu data-ipsMenu-menuID='elCalendarJump' data-ipsMenu-closeOnClick='false' class='ipsButton ipsButton_light ipsButton_verySmall'>{lang="jump_to"} <i class='fa fa-caret-down'></i></a>
+				{{if $thisCalendar}}
+					<div class='ipsResponsive_hidePhone'>
+						{template="follow" app="core" group="global" params="'calendar', 'calendar', $thisCalendar->id, \IPS\calendar\Event::containerFollowerCount( $thisCalendar )"}
+					</div>
+				{{endif}}
+			</div>
+		</div>
+	</div>
+</div>
+
+{$jump->customTemplate( array( \IPS\Theme::i()->getTemplate( 'browse' ), 'dateJump' ) )|raw}
+
+<ul class='ipsMenu ipsMenu_auto ipsHide' id='elCalendars_menu'>
+	<li class='ipsMenu_item'><a href='{url="app=calendar&module=calendar&controller=view&view=month" seoTemplate="calendar"}'><span class='cCalendarIcon cEvents_style_blank'></span> {lang="all_calendars"}</a></li>
+	{{foreach $calendars as $calendar}}
+		{{if $club = $calendar->club()}}
+			<li class='ipsMenu_item'><a href='{$calendar->url()}'><span class='cCalendarIcon cEvents_style_blank'></span> {lang="club_node" sprintf="$club->name, $calendar->_title"}</a></li>
+		{{else}}
+			<li class='ipsMenu_item'><a href='{$calendar->url()}'><span class='cCalendarIcon cEvents_style{$calendar->id}'></span> {$calendar->_title}</a></li>
+		{{endif}}
+	{{endforeach}}
+</ul>
+{template="subscribeMenu" app="calendar" group="global" params="$thisCalendar, $downloadLinks"}

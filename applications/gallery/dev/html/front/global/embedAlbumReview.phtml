@@ -1,0 +1,59 @@
+<ips:template parameters="$comment, $item, $url" />
+
+<div data-embedInfo-maxSize='{{if settings.max_internalembed_width}}{setting="max_internalembed_width"}{{else}}100%{{endif}}' class='ipsRichEmbed' {{if settings.gallery_nsfw}} data-controller="gallery.front.global.nsfw"{{endif}}>
+	{template="embedHeader" group="embed" app="core" params="$comment, $item->mapped('title'), $comment->mapped('date'), $url"}
+	<div class='ipsPadding'>
+		{{if $item->asNode()->coverPhoto('small')}}
+			<div class='ipsImageBlock ipsImageBlock--embed-hero'>
+				<a href='{$item->asNode()->url()}' class='ipsImageBlock__main'>
+					<img src='{$item->asNode()->coverPhoto('masked')}' alt="{$item->asNode()->name}" loading="lazy">
+				</a>
+			</div>
+		{{endif}}
+		{{$images = \IPS\Gallery\Image::getItemsWithPermission( array( array( 'image_album_id=?', $item->asNode()->id ) ), ( $item->asNode()->sort_options == 'title' ) ? 'image_caption ASC' : \IPS\gallery\Image::$databasePrefix . \IPS\gallery\Image::$databaseColumnMap[ $item->asNode()->sort_options ] . ' DESC', 19 );}}
+		{{if \count( $images )}}
+			<ul class='ipsList_reset cGalleryEmbed_albumStrip ipsAreaBackground_light'>
+				{{foreach $images as $albumImage}}
+					<li>
+						<div class='ipsImageBlock ipsImageBlock--ratio'>
+							<a href='{$albumImage->url()}' class='ipsImageBlock__main'>
+								{{if $albumImage->masked_file_name}}
+									<img src='{file="$albumImage->masked_file_name" extension="gallery_Images"}' loading="lazy">
+								{{endif}}
+							</a>
+							{template="nsfwOverlay" app="gallery" location="front" group="global" params="$albumImage, FALSE"}
+						</div>
+					</li>
+				{{endforeach}}
+
+				{{if $item->asNode()->count_imgs > 19}}
+					<li>
+						<div class='ipsImageBlock ipsImageBlock--ratio'>
+							<a href='{$albumNode->url()}' class='ipsImageBlock__main'><span>+{expression="$albumNode->count_imgs - 19"}</span></a>
+						</div>
+					</li>
+				{{endif}}
+			</ul>
+		{{endif}}
+		<div class='ipsSpacer_bottom ipsPadding_top ipsType_blendLinks'>
+			{template="embedOriginalItem" group="embed" app="core" params="$item"}
+		</div>
+
+		{template="rating" app="core" params="'veryLarge', $comment->mapped('rating')" group="global"} 
+		{{if $comment->mapped('votes_total')}}
+			<p class='ipsType_reset ipsType_medium'>{$comment->helpfulLine()|raw}</p>
+		{{endif}}
+		<hr class='ipsHr'>
+		<div class='ipsType_richText ipsType_medium ipsSpacer_top ipsSpacer_half' data-truncate='3'>
+			{$comment->truncated(TRUE)|raw}
+		</div>
+
+		{{if settings.reputation_enabled and \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and \count( $comment->reactions() )}}
+			<ul class='ipsList_inline ipsSpacer_top ipsSpacer_half'>
+				<li>
+					{template="reactionOverview" app="core" group="global" params="$comment, TRUE, 'small'"}
+				</li>
+			</ul>
+		{{endif}}
+	</div>
+</div>

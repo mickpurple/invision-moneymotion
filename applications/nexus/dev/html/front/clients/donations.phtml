@@ -1,0 +1,38 @@
+<ips:template parameters="" />
+
+<h1 class='ipsType_pageTitle'>{lang="current_donation_goals"}</h1>
+
+{{if request.thanks}}
+	<p class="ipsMessage ipsMessage_success">{lang="thanks_for_your_donation"}</p>
+	<br>
+{{endif}}
+{{foreach \IPS\nexus\Donation\Goal::roots() as $goal}}
+	<div class="ipsAreaBackground_light" id="elDonationGoal{$goal->id}">
+		<h2 class="ipsType_sectionTitle ipsType_reset">{$goal->_title}</h2>
+		<div class="ipsPad">
+			{{if $desc = member.language()->get("nexus_donategoal_{$goal->id}_desc")}}
+				<div class="ipsAreaBackground_reset ipsPad ipsSpacer_bottom">
+					<div class="ipsType_richText">
+						{$desc|raw}
+					</div>
+				</div>
+			{{endif}}
+			{{if $goal->goal}}
+				<div class="cDonateProgressBar">
+					<div class="cDonateProgressBar_progress" style="width:{expression="100/$goal->goal*$goal->current"}%"></div>
+				</div>
+				<p class="ipsType_center ipsType_normal">
+					<strong>{lang="donate_progress" sprintf="new \IPS\nexus\Money( $goal->current, $goal->currency ), new \IPS\nexus\Money( $goal->goal, $goal->currency )"}</strong>
+				</p>
+			{{else}}
+				<p class="ipsType_center ipsType_normal">
+					<strong>{lang="donate_sofar" sprintf="new \IPS\nexus\Money( $goal->current, $goal->currency )"}</strong>
+				</p>
+			{{endif}}
+		</div>
+		<div class="ipsAreaBackground ipsPad ipsType_center">
+			<a href="{$goal->url()->setQueryString( 'noDesc', 1 )}" class="ipsButton ipsButton_primary" {{if member.member_id }} data-ipsDialog {{endif}} >{lang="donate_to_goal"}</a>
+		</div>
+	</div>
+	<br>
+{{endforeach}}

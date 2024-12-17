@@ -1,0 +1,36 @@
+<ips:template parameters="$k, $enabled" />
+
+<div class='ipsFlex-flex:11'>
+	<h3 class="ipsType_reset ipsType_large ipsType_bold ipsType_darkText cNotificationTypes__row__title">
+		{lang="notifications__$k"}
+	</h3>
+
+	{{if \count( $enabled )}}
+		<ul class='ipsList_reset ipsFlex ipsFlex-ai:center sm:ipsFlex-fd:column sm:ipsFlex-ai:start ipsGap:4 sm:ipsGap:1 cNotificationTypes__row__types'>
+			{{foreach $enabled as $k => $v}}
+				{{if $v['icon'] !== 'envelope-o' and $v['icon'] !== 'bell-o' and $v['icon'] !== 'mobile'}}
+					<li {{if isset( $v['description'] )}}title="{lang="$v['description']"}" data-ipsTooltip{{endif}}>
+						<i class="fa fa-fw fa-{$v['icon']}"></i> {$v['title']}
+					</li>
+				{{endif}}
+				{{if $v['icon'] === 'bell-o' or $v['icon'] === 'mobile'}}
+					<li>
+						<i class="fa fa-fw fa-{$v['icon']}"></i> {$v['title']}
+					</li>
+				{{endif}}
+				{{if $v['icon'] === 'envelope-o'}}
+					<li>
+						<i class="fa fa-fw fa-{$v['icon']}"></i> {$v['title']}
+					</li>
+				{{endif}}
+			{{endforeach}}
+		</ul>
+	{{else}}
+		<p class='ipsType_reset ipsType_light'>
+			{lang="notifications_none_selected"}
+		</p>
+	{{endif}}
+</div>
+<div class="cNotificationSettings_expand ipsType_center">
+	<i class="fa fa-angle-down"></i>
+</div>

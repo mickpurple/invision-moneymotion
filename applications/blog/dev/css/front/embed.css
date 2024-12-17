@@ -1,0 +1,16 @@
+.cBlogEmbed .ipsRichEmbed_moreInfo {
+	overflow: hidden;
+}
+
+.cBlogEmbed .ipsRichEmbed_moreInfo li {
+	position: relative;
+}
+
+html[dir="ltr"] .cBlogEmbed .ipsRichEmbed_moreInfo .ipsNotificationCount {
+	top: 0;
+	right: 0;
+}
+html[dir="rtl"] .cBlogEmbed .ipsRichEmbed_moreInfo .ipsNotificationCount {
+	top: 0;
+	left: 0;
+}
